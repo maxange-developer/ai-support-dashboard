@@ -7,9 +7,5 @@ model: sonnet
 Scope: src/app/**/actions.ts · src/app/api/ · src/lib/db/ · src/lib/validations/
 Not scope: React components · styles
 
-1. Zod schema first — in lib/validations/, validate before any logic
-2. RLS by default · service role: inline comment explaining why
-3. Never expose stack traces to client · return `{ success, data, error }`
-4. Server Actions over Route Handlers for mutations
-5. SDK first (Anthropic/OpenAI/Stripe) — raw fetch only as fallback
-6. Rate limit public endpoints with @upstash/ratelimit
+1. Rate limit all public API routes — never skip
+2. Stream AI responses via ReadableStream (route handler, not Server Action)

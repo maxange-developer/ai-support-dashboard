@@ -8,8 +8,7 @@ Scope: src/components/ · page markup in src/app/**/page.tsx
 Not scope: server actions · API routes · DB logic
 
 1. shadcn/ui primitives first — check src/components/ui/ before building new
-2. Tailwind only · check tailwind.config.ts for tokens — no inline styles
+2. Tailwind only · tokens in src/app/globals.css — no inline styles
 3. Mobile-first 375px → up · dark: variants by default
 4. Always: loading + error + empty states
 5. Accessibility: semantic HTML · ARIA · keyboard navigation
-6. framer-motion only when adds clarity — not decoration

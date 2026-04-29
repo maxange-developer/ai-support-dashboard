@@ -1,15 +1,16 @@
-# Architectural Decisions — [PROJECT_NAME]
+# Architectural Decisions — ai-support-dashboard
 
-## Data layer
-[Decision: e.g., pgvector over Pinecone — reason: cost + latency at scale]
+## Vector store
+pgvector over Pinecone/Qdrant — single vendor (Supabase), no extra infra cost
 
 ## Auth
-[Decision: e.g., Supabase Auth over Clerk — reason: single vendor, RLS native]
+Supabase Auth — native RLS integration, no third-party vendor
 
-## Forms / mutations
-[Decision: Server Actions over Route Handlers — reason: less boilerplate, type-safe]
+## Mutations
+Server Actions over Route Handlers — type-safe, no extra API layer
 
 ## Components
-[Decision: shadcn/ui copied — reason: full control, no upstream lock-in]
+shadcn/ui copied — full control, no upstream breaking changes
 
-## [Add decisions here as they are made — never reopen without explicit ask]
+## Embeddings
+openai text-embedding-3-small — best cost/quality at 1536d

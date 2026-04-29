@@ -40,11 +40,9 @@ pnpm db:push · pnpm db:seed · gh pr create
 10. Embeddings: text-embedding-3-small (1536 dims) · chunk size: 512 tokens
 
 ## Forbidden
-- `any` type (use `unknown` + narrowing)
 - `as Type` cast without runtime check
 - `console.log` in prod (use lib/logger.ts)
 - Hardcoded API keys
-- TODO without GitHub issue ref
 
 ## Pre-commit
 - [ ] pnpm build passes · [ ] pnpm test passes

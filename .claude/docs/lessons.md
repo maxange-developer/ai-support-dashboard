@@ -1,4 +1,2 @@
-# Lessons Learned — [PROJECT_NAME]
+# Lessons Learned — ai-support-dashboard
 <!-- append-only via /lessons command -->
-
-[YYYY-MM-DD] problema incontrato → fix applicato
