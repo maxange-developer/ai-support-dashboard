@@ -42,7 +42,7 @@ export default async function OrgHomePage({
       <h1 className="text-2xl font-bold">Dashboard</h1>
 
       {/* 2×2 stat cards */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <StatCard
           title="Conversazioni totali"
           value={stats.total}
