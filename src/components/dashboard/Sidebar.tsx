@@ -27,7 +27,7 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
       {/* Logo */}
       <div className="flex h-16 items-center gap-2 px-5 border-b border-white/10 shrink-0">
         <Zap size={18} className="text-neon-blue shrink-0" aria-hidden />
-        <span className="font-bold text-base tracking-wide neon-text">Angel1</span>
+        <span className="font-bold text-base tracking-widest text-neon-blue neon-text">Angel1</span>
       </div>
 
       {/* Org name */}
@@ -37,7 +37,7 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-2 space-y-0.5">
+      <nav className="flex-1 py-2 space-y-0.5">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const fullPath = `/app/${orgSlug}/${href}`
           const isActive = pathname.startsWith(fullPath)
@@ -47,16 +47,13 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
               href={fullPath}
               onClick={onNavigate}
               className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 group relative',
+                'flex items-center gap-3 py-2.5 text-sm uppercase tracking-wider font-medium transition-all duration-200',
                 isActive
-                  ? 'text-neon-blue bg-neon-blue/8'
-                  : 'text-white/60 hover:text-neon-blue hover:bg-white/4',
+                  ? 'text-neon-blue bg-neon-blue/10 border-l-2 border-neon-blue pl-[calc(1.25rem-2px)] pr-4 rounded-r-lg'
+                  : 'text-white/60 hover:text-white hover:bg-white/5 px-5',
               )}
             >
-              {isActive && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-neon-blue rounded-r-full" />
-              )}
-              <Icon size={15} aria-hidden className={cn('shrink-0 transition-colors', isActive ? 'text-neon-blue' : 'text-white/40 group-hover:text-neon-blue')} />
+              <Icon size={15} aria-hidden className={cn('shrink-0', isActive ? 'text-neon-blue' : 'text-white/40')} />
               {label}
             </Link>
           )

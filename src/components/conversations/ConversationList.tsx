@@ -46,9 +46,9 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
             key={p.value}
             onClick={() => router.push(`/app/${orgSlug}/conversations?period=${p.value}`)}
             className={cn(
-              'px-4 py-1.5 text-sm rounded-full border transition-all duration-200',
+              'px-4 py-1.5 text-xs font-semibold uppercase tracking-wider border transition-all duration-200',
               period === p.value
-                ? 'bg-neon-blue/15 text-neon-blue border-neon-blue/40 font-medium'
+                ? 'bg-neon-blue/10 text-neon-blue border-neon-blue/40'
                 : 'bg-transparent text-white/40 border-white/15 hover:text-white hover:border-white/30',
             )}
           >
@@ -58,11 +58,11 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
       </div>
 
       {conversations.length === 0 ? (
-        <div className="glass rounded-xl border border-white/10 py-16 text-center">
+        <div className="glass rounded-lg border-2 border-white/10 py-16 text-center">
           <p className="text-sm text-white/35">Nessuna conversazione nel periodo selezionato.</p>
         </div>
       ) : (
-        <div className="glass rounded-xl border border-white/10 overflow-hidden">
+        <div className="glass rounded-lg border-2 border-white/10 overflow-hidden">
           {/* Table header */}
           <div className="flex items-center gap-4 px-4 py-3 border-b border-white/8 bg-white/2">
             <p className="flex-1 text-xs font-medium text-white/40 uppercase tracking-wider">Visitatore</p>
@@ -86,7 +86,7 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
                 {new Date(conv.startedAt).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
               </p>
               <p className="text-xs text-white/50 text-right w-16 font-mono shrink-0">{conv.messageCount}</p>
-              <p className="text-xs text-neon-blue/70 text-right w-20 font-mono shrink-0">
+              <p className="text-xs text-neon-blue text-right w-20 font-mono shrink-0">
                 ${(conv.costCents / 100).toFixed(4)}
               </p>
             </button>
@@ -103,7 +103,7 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
                 : 'Conversazione'}
             </DialogTitle>
           </DialogHeader>
-          <div className="overflow-y-auto max-h-[55vh] space-y-3">
+          <div className="overflow-y-auto max-h-[55vh] space-y-3 custom-scrollbar">
             {isPending ? (
               <p className="py-4 text-center text-sm text-white/35">Caricamento…</p>
             ) : messages.length === 0 ? (
@@ -116,10 +116,10 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
                 >
                   <div
                     className={cn(
-                      'max-w-[80%] rounded-xl px-3 py-2 text-sm',
+                      'max-w-[80%] rounded-lg px-3 py-2 text-sm',
                       msg.role === 'user'
-                        ? 'bg-neon-blue/10 border border-neon-blue/30 text-white'
-                        : 'glass border border-white/10 text-white/90',
+                        ? 'glass border border-neon-blue/30 bg-neon-blue/5 text-white'
+                        : 'glass border border-white/10 bg-white/2 text-white/90',
                     )}
                   >
                     {msg.content}

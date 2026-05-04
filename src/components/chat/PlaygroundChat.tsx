@@ -117,14 +117,14 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
   }
 
   return (
-    <div className="flex flex-col glass rounded-xl border border-white/10 h-[calc(100vh-7rem)]">
+    <div className="flex flex-col glass rounded-lg border-2 border-white/10 h-[calc(100vh-7rem)]">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0 custom-scrollbar">
         {messages.length === 0 && !isStreaming && (
           <div className="flex flex-col items-center justify-center h-full text-center gap-4">
             {hasDocuments ? (
               <div className="space-y-2">
-                <div className="w-10 h-10 rounded-full border border-neon-blue/30 flex items-center justify-center mx-auto">
+                <div className="w-10 h-10 border border-neon-blue/30 flex items-center justify-center mx-auto">
                   <span className="text-neon-blue text-lg">✦</span>
                 </div>
                 <p className="text-sm text-white/40">Fai una domanda. Le risposte si basano sui tuoi documenti.</p>
@@ -146,7 +146,7 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
         ))}
 
         {isStreaming && (
-          <div className="max-w-[80%] glass rounded-xl border border-white/10 px-4 py-3 text-sm">
+          <div className="mr-8 glass border border-white/10 bg-white/2 rounded-lg px-4 py-3 text-sm">
             {pendingText ? (
               <span className="whitespace-pre-wrap text-white/90">
                 {pendingText}
@@ -154,9 +154,9 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
               </span>
             ) : (
               <div className="flex items-center gap-1.5 py-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-neon-blue animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-neon-blue animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-neon-blue animate-bounce" style={{ animationDelay: '300ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-neon-blue animate-pulse" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-neon-blue animate-pulse" style={{ animationDelay: '200ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-neon-blue animate-pulse" style={{ animationDelay: '400ms' }} />
               </div>
             )}
           </div>
@@ -179,13 +179,13 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
             placeholder="Scrivi una domanda… (Invio per inviare, Shift+Invio per andare a capo)"
             disabled={isStreaming}
             rows={1}
-            className="flex-1 resize-none max-h-32 min-h-[2.5rem] px-4 py-2.5 rounded-xl bg-white/5 border border-white/20 text-white placeholder:text-white/30 text-sm focus:outline-none focus:border-neon-blue focus:bg-neon-blue/5 transition-all duration-200 disabled:opacity-50"
+            className="flex-1 resize-none max-h-32 min-h-[2.5rem] px-3 py-2.5 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50"
           />
           <button
             type="submit"
             disabled={isStreaming || !input.trim()}
             aria-label="Invia"
-            className="p-2.5 rounded-xl bg-neon-blue text-black hover:bg-neon-blue/80 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shrink-0"
+            className="p-2.5 bg-neon-blue text-black hover:bg-neon-blue/80 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shrink-0"
           >
             <Send size={16} aria-hidden />
           </button>
@@ -204,10 +204,10 @@ function MessageBubble({ message }: { message: Message }) {
     <div className={cn('flex', isUser ? 'justify-end' : 'justify-start')}>
       <div
         className={cn(
-          'max-w-[80%] rounded-xl px-4 py-3 text-sm',
+          'max-w-[80%] rounded-lg px-4 py-3 text-sm',
           isUser
-            ? 'bg-neon-blue/10 border border-neon-blue/30 text-white text-right ml-auto'
-            : 'glass border border-white/10 text-white',
+            ? 'glass border border-neon-blue/30 bg-neon-blue/5 ml-8 text-white'
+            : 'glass border border-white/10 bg-white/2 mr-8 text-white',
         )}
       >
         <p className="whitespace-pre-wrap leading-relaxed">{message.content}</p>

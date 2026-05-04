@@ -21,16 +21,16 @@ export default function Header({ orgSlug, orgName, userEmail }: HeaderProps) {
   }
 
   return (
-    <header className="flex h-14 items-center border-b border-white/10 px-4 gap-3 shrink-0 glass">
+    <header className="glass border-b border-white/10 px-6 py-4 flex items-center justify-between shrink-0">
       <MobileSidebar orgSlug={orgSlug} orgName={orgName} />
       <div className="flex-1" />
-      <span className="hidden sm:block text-xs text-white/40 truncate max-w-[200px]">
+      <span className="hidden sm:block text-xs text-white/40 truncate max-w-[200px] mr-4">
         {userEmail}
       </span>
       <button
         onClick={handleLogout}
         aria-label="Logout"
-        className="p-2 rounded-lg text-white/40 hover:text-neon-blue hover:bg-neon-blue/8 transition-all duration-200"
+        className="p-2 text-white/40 hover:text-neon-blue hover:bg-neon-blue/8 transition-all duration-200"
       >
         <LogOut size={15} />
       </button>

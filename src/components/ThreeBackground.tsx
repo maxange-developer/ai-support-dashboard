@@ -10,17 +10,17 @@ function StarField() {
   const positions = useMemo(() => {
     const arr = new Float32Array(5000 * 3)
     for (let i = 0; i < 5000; i++) {
-      arr[i * 3] = (Math.random() - 0.5) * 120
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 120
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 120
+      arr[i * 3] = (Math.random() - 0.5) * 100
+      arr[i * 3 + 1] = (Math.random() - 0.5) * 100
+      arr[i * 3 + 2] = (Math.random() - 0.5) * 100
     }
     return arr
   }, [])
 
-  useFrame(({ clock }) => {
+  useFrame((_, delta) => {
     if (!pointsRef.current) return
-    pointsRef.current.rotation.x = clock.elapsedTime * 0.04
-    pointsRef.current.rotation.y = clock.elapsedTime * 0.025
+    pointsRef.current.rotation.x += delta / 10
+    pointsRef.current.rotation.y += delta / 15
   })
 
   return (
@@ -32,7 +32,7 @@ function StarField() {
         size={0.12}
         color="#00f0ff"
         transparent
-        opacity={0.75}
+        opacity={0.7}
         sizeAttenuation
       />
     </points>
@@ -44,14 +44,17 @@ export default function ThreeBackground() {
     <div
       style={{
         position: 'fixed',
-        inset: 0,
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
         zIndex: -10,
         pointerEvents: 'none',
       }}
       aria-hidden
     >
       <Canvas
-        camera={{ position: [0, 0, 35], fov: 60 }}
+        camera={{ position: [0, 0, 30], fov: 75 }}
         gl={{ antialias: false, alpha: true }}
         style={{ background: 'transparent' }}
       >

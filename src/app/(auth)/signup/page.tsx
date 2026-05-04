@@ -20,7 +20,7 @@ export default function SignupPage() {
 
   if (state && 'pending' in state) {
     return (
-      <div className="glass rounded-2xl border border-neon-blue/30 p-8 text-center space-y-3 neon-border">
+      <div className="glass rounded-lg border border-neon-blue/30 p-8 text-center space-y-3">
         <div className="w-12 h-12 rounded-full border-2 border-neon-blue flex items-center justify-center mx-auto">
           <span className="text-neon-blue text-lg">✓</span>
         </div>
@@ -31,16 +31,18 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="glass rounded-2xl border border-neon-blue/30 p-8 space-y-6 neon-border">
+    <div className="glass rounded-lg border border-neon-blue/30 p-8 space-y-6">
       <div className="text-center space-y-1">
-        <h1 className="text-2xl font-bold neon-text">Crea account</h1>
+        <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
+          Crea account<span className="text-neon-pink">.</span>
+        </h1>
         <p className="text-sm text-white/50">Inizia il tuo periodo di prova gratuito</p>
       </div>
 
       <button
         type="button"
         onClick={handleGoogleSignup}
-        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-white/20 bg-white/5 text-sm font-medium text-white hover:bg-white/10 hover:border-neon-blue/40 transition-all duration-200"
+        className="w-full flex items-center justify-center gap-2 py-2.5 border border-white/20 bg-white/5 text-sm font-medium text-white hover:bg-white/10 hover:border-neon-blue/40 transition-all duration-200"
       >
         <GoogleIcon />
         Continua con Google
@@ -71,7 +73,7 @@ export default function SignupPage() {
               type={field === 'password' ? 'password' : field === 'email' ? 'email' : 'text'}
               autoComplete={field === 'nome' ? 'name' : field === 'email' ? 'email' : 'new-password'}
               required
-              className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/20 text-white placeholder:text-white/30 text-sm focus:outline-none focus:border-neon-blue focus:bg-neon-blue/5 transition-all duration-200"
+              className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
               placeholder={field === 'nome' ? 'Mario Rossi' : field === 'email' ? 'tu@esempio.it' : '••••••••'}
             />
           </div>
@@ -80,15 +82,16 @@ export default function SignupPage() {
         <button
           type="submit"
           disabled={isPending}
-          className="w-full py-2.5 rounded-xl bg-neon-blue text-black font-bold text-sm hover:bg-neon-blue/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-[0_0_20px_rgba(0,240,255,0.4)]"
+          className="w-full py-3 border-2 border-neon-blue text-white font-semibold uppercase tracking-wider text-sm overflow-hidden relative hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isPending ? 'Registrazione…' : 'Crea account'}
+          <span className="absolute inset-0 bg-neon-blue transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
+          <span className="relative z-10">{isPending ? 'Registrazione…' : 'Crea account'}</span>
         </button>
       </form>
 
       <p className="text-center text-sm text-white/40">
         Hai già un account?{' '}
-        <Link href="/login" className="text-neon-blue hover:text-neon-blue/80 transition-colors">
+        <Link href="/login" className="text-neon-blue hover:text-neon-blue/70 transition-colors">
           Accedi
         </Link>
       </p>

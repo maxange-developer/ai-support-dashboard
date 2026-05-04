@@ -52,23 +52,23 @@ export default async function EmbedPage({
     <div className="max-w-2xl space-y-8 animate-fade-up">
       <div>
         <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
-          Widget da incorporare
+          Widget da incorporare<span className="text-neon-pink">.</span>
         </h1>
         <p className="text-sm text-white/40 mt-1">
           Crea una chiave API, copia lo snippet e incollalo nel tuo sito.
         </p>
       </div>
 
-      <section className="glass rounded-xl border border-white/10 p-6 space-y-4">
-        <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Chiavi API</h2>
+      <section className="glass rounded-lg p-6 border-2 border-white/10 space-y-4">
+        <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider">Chiavi API</h2>
         <ApiKeyManager keys={keys} createAction={boundCreate} deleteAction={boundDelete} />
       </section>
 
-      <section className="glass rounded-xl border border-white/10 p-6 space-y-4">
-        <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Codice da incorporare</h2>
+      <section className="glass rounded-lg p-6 border-2 border-white/10 space-y-4">
+        <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider">Codice da incorporare</h2>
         <p className="text-sm text-white/40">
           Sostituisci{' '}
-          <code className="font-mono text-xs border border-neon-blue/30 bg-neon-blue/8 text-neon-blue px-1.5 py-0.5 rounded">
+          <code className="font-mono text-xs border border-neon-blue/30 bg-neon-blue/8 text-neon-blue px-1.5 py-0.5">
             YOUR_API_KEY
           </code>{' '}
           con la chiave creata sopra.
@@ -76,9 +76,9 @@ export default async function EmbedPage({
         <EmbedSnippet snippet={snippet} />
       </section>
 
-      <section className="glass rounded-xl border border-white/10 p-6 space-y-4">
-        <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Anteprima widget</h2>
-        <div className="rounded-xl border border-white/10 overflow-hidden h-[500px]">
+      <section className="glass rounded-lg p-6 border-2 border-white/10 space-y-4">
+        <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider">Anteprima widget</h2>
+        <div className="border border-white/10 overflow-hidden h-[500px]">
           <iframe
             src={`/widget/${orgSlug}`}
             className="w-full h-full"

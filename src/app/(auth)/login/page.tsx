@@ -19,16 +19,18 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="glass rounded-2xl border border-neon-blue/30 p-8 space-y-6 neon-border">
+    <div className="glass rounded-lg border border-neon-blue/30 p-8 space-y-6">
       <div className="text-center space-y-1">
-        <h1 className="text-2xl font-bold neon-text">Accedi</h1>
+        <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
+          Accedi<span className="text-neon-pink">.</span>
+        </h1>
         <p className="text-sm text-white/50">Entra nel tuo account Angel1</p>
       </div>
 
       <button
         type="button"
         onClick={handleGoogleLogin}
-        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-white/20 bg-white/5 text-sm font-medium text-white hover:bg-white/10 hover:border-neon-blue/40 transition-all duration-200"
+        className="w-full flex items-center justify-center gap-2 py-2.5 border border-white/20 bg-white/5 text-sm font-medium text-white hover:bg-white/10 hover:border-neon-blue/40 transition-all duration-200"
       >
         <GoogleIcon />
         Continua con Google
@@ -58,7 +60,7 @@ export default function LoginPage() {
             type="email"
             autoComplete="email"
             required
-            className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/20 text-white placeholder:text-white/30 text-sm focus:outline-none focus:border-neon-blue focus:bg-neon-blue/5 transition-all duration-200"
+            className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
             placeholder="tu@esempio.it"
           />
         </div>
@@ -73,7 +75,7 @@ export default function LoginPage() {
             type="password"
             autoComplete="current-password"
             required
-            className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/20 text-white placeholder:text-white/30 text-sm focus:outline-none focus:border-neon-blue focus:bg-neon-blue/5 transition-all duration-200"
+            className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
             placeholder="••••••••"
           />
         </div>
@@ -81,15 +83,16 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={isPending}
-          className="w-full py-2.5 rounded-xl bg-neon-blue text-black font-bold text-sm hover:bg-neon-blue/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-[0_0_20px_rgba(0,240,255,0.4)]"
+          className="w-full py-3 border-2 border-neon-blue text-white font-semibold uppercase tracking-wider text-sm overflow-hidden relative hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isPending ? 'Accesso in corso…' : 'Accedi'}
+          <span className="absolute inset-0 bg-neon-blue transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
+          <span className="relative z-10">{isPending ? 'Accesso in corso…' : 'Accedi'}</span>
         </button>
       </form>
 
       <p className="text-center text-sm text-white/40">
         Non hai un account?{' '}
-        <Link href="/signup" className="text-neon-blue hover:text-neon-blue/80 transition-colors">
+        <Link href="/signup" className="text-neon-blue hover:text-neon-blue/70 transition-colors">
           Registrati
         </Link>
       </p>

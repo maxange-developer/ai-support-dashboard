@@ -31,16 +31,19 @@ export default async function DocumentsPage({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
-            Documenti
+            Documenti<span className="text-neon-pink">.</span>
           </h1>
-          <p className="text-white/40 text-sm mt-1">{documents.length} documento{documents.length !== 1 ? 'i' : ''} caricato{documents.length !== 1 ? 'i' : ''}</p>
+          <p className="text-white/40 text-sm mt-1">
+            {documents.length} documento{documents.length !== 1 ? 'i' : ''} caricato{documents.length !== 1 ? 'i' : ''}
+          </p>
         </div>
         <Link
           href={`/app/${orgSlug}/documents/new`}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-neon-blue text-black font-semibold text-sm hover:bg-neon-blue/80 hover:shadow-[0_0_20px_rgba(0,240,255,0.3)] transition-all duration-200"
+          className="flex items-center gap-2 px-6 py-2.5 border-2 border-neon-blue text-white font-semibold uppercase tracking-wider text-sm overflow-hidden relative hover:text-black motion-reduce:hover:text-white transition-all duration-300 group"
         >
-          <Plus size={15} aria-hidden />
-          Nuovo documento
+          <span className="absolute inset-0 bg-neon-blue transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
+          <Plus size={14} aria-hidden className="relative z-10" />
+          <span className="relative z-10">Nuovo</span>
         </Link>
       </div>
 

@@ -34,19 +34,19 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
     <div className="space-y-5">
       {/* Raw key shown once */}
       {rawKey && (
-        <div className="rounded-xl border border-amber-500/30 bg-amber-500/8 p-4 space-y-3">
+        <div className="border border-amber-500/30 bg-amber-500/8 p-4 space-y-3">
           <div className="flex items-start gap-2">
             <AlertCircle size={14} className="text-amber-400 shrink-0 mt-0.5" aria-hidden />
             <p className="text-sm font-medium text-amber-300">Salva questa chiave — non sarà più mostrata.</p>
           </div>
           <div className="flex items-center gap-2">
-            <code className="flex-1 font-mono text-xs bg-black/40 rounded-lg px-3 py-2 border border-white/10 break-all select-all text-white/80">
+            <code className="flex-1 font-mono text-xs bg-black/40 px-3 py-2 border border-white/10 break-all select-all text-white/80">
               {rawKey}
             </code>
             <button
               onClick={copyRawKey}
               aria-label="Copia chiave"
-              className="p-2 rounded-lg border border-white/20 bg-white/5 hover:border-neon-blue/40 hover:text-neon-blue text-white/50 transition-all"
+              className="p-2 border border-white/20 bg-white/5 hover:border-neon-blue/40 hover:text-neon-blue text-white/50 transition-all"
             >
               {keyCopied ? <Check size={13} /> : <Copy size={13} />}
             </button>
@@ -66,16 +66,17 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
             placeholder="es. Sito principale"
             required
             disabled={isCreating}
-            className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/20 text-white placeholder:text-white/30 text-sm focus:outline-none focus:border-neon-blue focus:bg-neon-blue/5 transition-all duration-200 disabled:opacity-50"
+            className="w-full px-3 py-2.5 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50"
           />
         </div>
         <button
           type="submit"
           disabled={isCreating}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-neon-blue text-black font-semibold text-sm hover:bg-neon-blue/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+          className="flex items-center gap-1.5 px-5 py-2.5 border-2 border-neon-blue text-white font-semibold uppercase tracking-wider text-xs overflow-hidden relative hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
         >
-          <Plus size={13} aria-hidden />
-          {isCreating ? 'Creazione…' : 'Crea'}
+          <span className="absolute inset-0 bg-neon-blue transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
+          <Plus size={13} aria-hidden className="relative z-10" />
+          <span className="relative z-10">{isCreating ? 'Creazione…' : 'Crea'}</span>
         </button>
       </form>
       {createError && <p className="text-sm text-red-400">{createError}</p>}
@@ -89,7 +90,10 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
       ) : (
         <div className="space-y-2">
           {keys.map((key) => (
-            <div key={key.id} className="glass rounded-xl border border-white/10 flex items-center gap-3 px-4 py-3 hover-lift transition-all duration-200">
+            <div
+              key={key.id}
+              className="glass rounded-lg border-2 border-white/10 hover:border-neon-blue/30 hover-lift transition-all duration-200 flex items-center gap-3 px-4 py-3"
+            >
               <Key size={13} className="text-neon-blue/50 shrink-0" aria-hidden />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-white">{key.name ?? 'Senza nome'}</p>
@@ -108,7 +112,7 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
                   type="submit"
                   disabled={isDeleting}
                   aria-label={`Elimina chiave ${key.name ?? ''}`}
-                  className="p-1.5 rounded-lg text-white/30 hover:text-red-400 hover:bg-red-500/10 transition-all disabled:opacity-40"
+                  className="p-1.5 text-white/30 hover:text-red-400 hover:bg-red-500/10 transition-all disabled:opacity-40"
                 >
                   <Trash2 size={13} aria-hidden />
                 </button>

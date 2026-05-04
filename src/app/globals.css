@@ -103,39 +103,79 @@
   body {
     background: #000000;
     color: #ffffff;
-    font-family: 'Inter', -apple-system, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
   html {
     @apply font-sans;
   }
   :focus-visible {
     outline: 2px solid #00f0ff;
-    outline-offset: 2px;
+    outline-offset: 3px;
+    border-radius: 2px;
   }
 }
 
 @layer utilities {
   .glass {
-    background: rgba(255, 255, 255, 0.04);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .hover-lift {
-    transition: transform 300ms ease, box-shadow 300ms ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   .hover-lift:hover {
     transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 240, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
   }
 
   .neon-text {
-    text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff40;
+    text-shadow: 0 0 10px var(--color-neon-blue), 0 0 20px var(--color-neon-blue);
   }
 
   .neon-border {
     box-shadow: 0 0 10px rgba(0, 240, 255, 0.3), inset 0 0 10px rgba(0, 240, 255, 0.05);
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    display: block;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--color-neon-blue), var(--color-neon-pink));
+    border-radius: 10px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-up {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+    .hover-lift:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+}
+
+@supports not (backdrop-filter: blur(10px)) {
+  .glass {
+    background: rgba(0, 0, 0, 0.8);
   }
 }
 
@@ -153,13 +193,5 @@
 @layer utilities {
   .animate-fade-up {
     animation: fadeUp 0.5s ease-out both;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .animate-fade-up,
-    .hover-lift:hover {
-      animation: none;
-      transform: none;
-    }
   }
 }

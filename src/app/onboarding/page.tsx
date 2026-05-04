@@ -31,9 +31,11 @@ export default function OnboardingPage() {
     <div className="min-h-screen flex items-center justify-center bg-black p-4">
       <ThreeBackground />
       <div className="w-full max-w-md relative z-10 animate-fade-up">
-        <div className="glass rounded-2xl border border-neon-blue/30 p-8 space-y-6 neon-border">
+        <div className="glass rounded-lg border border-neon-blue/30 p-8 space-y-6">
           <div className="text-center space-y-1">
-            <h1 className="text-2xl font-bold neon-text">Crea organizzazione</h1>
+            <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
+              Crea organizzazione<span className="text-neon-pink">.</span>
+            </h1>
             <p className="text-sm text-white/50">Potrai invitare altri membri in seguito.</p>
           </div>
 
@@ -52,7 +54,7 @@ export default function OnboardingPage() {
                 required
                 onChange={handleNameChange}
                 placeholder="Acme Inc."
-                className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/20 text-white placeholder:text-white/30 text-sm focus:outline-none focus:border-neon-blue focus:bg-neon-blue/5 transition-all duration-200"
+                className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
               />
             </div>
 
@@ -67,7 +69,7 @@ export default function OnboardingPage() {
                 value={slug}
                 onChange={(e) => { setSlugEdited(true); setSlug(e.target.value) }}
                 placeholder="acme-inc"
-                className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/20 text-white placeholder:text-white/30 text-sm font-mono focus:outline-none focus:border-neon-blue focus:bg-neon-blue/5 transition-all duration-200"
+                className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 font-mono focus:outline-none focus:border-neon-blue transition-colors duration-200"
               />
               {slug && (
                 <p className="text-xs text-white/35">
@@ -79,9 +81,10 @@ export default function OnboardingPage() {
             <button
               type="submit"
               disabled={isPending || !slug}
-              className="w-full py-2.5 rounded-xl bg-neon-blue text-black font-bold text-sm hover:bg-neon-blue/80 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-[0_0_20px_rgba(0,240,255,0.4)]"
+              className="w-full py-3 border-2 border-neon-blue text-white font-semibold uppercase tracking-wider text-sm overflow-hidden relative hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {isPending ? 'Creazione…' : 'Crea organizzazione'}
+              <span className="absolute inset-0 bg-neon-blue transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
+              <span className="relative z-10">{isPending ? 'Creazione…' : 'Crea organizzazione'}</span>
             </button>
           </form>
         </div>

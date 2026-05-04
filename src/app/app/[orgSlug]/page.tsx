@@ -39,8 +39,8 @@ export default async function OrgHomePage({
   return (
     <div className="space-y-8 animate-fade-up">
       <div>
-        <h1 className="text-3xl font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
-          Dashboard
+        <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
+          Dashboard<span className="text-neon-pink">.</span>
         </h1>
         <p className="text-white/40 text-sm mt-1">Panoramica delle conversazioni e dei costi AI</p>
       </div>
@@ -72,15 +72,19 @@ export default async function OrgHomePage({
 
       {/* Cost chart */}
       <section className="space-y-3">
-        <h2 className="text-base font-semibold text-white/70">Costo ultimi 7 giorni</h2>
+        <h2 className="text-sm font-semibold text-white/60 uppercase tracking-wider">
+          Costo ultimi 7 giorni
+        </h2>
         <CostChart data={costStats.daily} />
       </section>
 
       {/* Top questions */}
       {topQuestions.length > 0 && (
         <section className="space-y-3">
-          <h2 className="text-base font-semibold text-white/70">Domande più frequenti</h2>
-          <div className="glass rounded-xl border border-white/10 divide-y divide-white/8">
+          <h2 className="text-sm font-semibold text-white/60 uppercase tracking-wider">
+            Domande più frequenti
+          </h2>
+          <div className="glass rounded-lg border-2 border-white/10 divide-y divide-white/8">
             {topQuestions.map((q, i) => (
               <div key={i} className="flex items-center gap-3 px-4 py-3 hover:bg-white/3 transition-colors">
                 <span className="w-5 shrink-0 text-xs font-mono text-white/30 text-right">{i + 1}</span>
@@ -93,10 +97,10 @@ export default async function OrgHomePage({
       )}
 
       {topQuestions.length === 0 && stats.total === 0 && (
-        <div className="glass rounded-xl border border-white/10 p-8 text-center">
+        <div className="glass rounded-lg border-2 border-white/10 p-8 text-center">
           <p className="text-white/40 text-sm">
             Nessuna conversazione ancora. Usa il{' '}
-            <a href={`/app/${orgSlug}/playground`} className="text-neon-blue hover:text-neon-blue/80 transition-colors">
+            <a href={`/app/${orgSlug}/playground`} className="text-neon-blue hover:text-neon-blue/70 transition-colors">
               playground
             </a>{' '}
             o incorpora il widget per iniziare.
@@ -119,12 +123,12 @@ function StatCard({
   icon: React.ReactNode
 }) {
   return (
-    <div className="glass rounded-xl border border-white/10 p-5 hover-lift">
+    <div className="glass rounded-lg p-6 border-2 border-white/10 hover:border-neon-blue/30 transition-colors hover-lift">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-xs font-medium text-white/45 uppercase tracking-wider">{title}</p>
+        <p className="text-xs uppercase tracking-widest text-white/40 font-medium">{title}</p>
         <span className="text-neon-blue/60">{icon}</span>
       </div>
-      <p className="text-3xl font-bold text-neon-blue">{value}</p>
+      <p className="text-4xl font-bold text-neon-blue">{value}</p>
       {sub && <p className="text-xs text-white/35 mt-1">{sub}</p>}
     </div>
   )

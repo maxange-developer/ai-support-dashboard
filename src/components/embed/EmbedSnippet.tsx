@@ -15,14 +15,14 @@ export default function EmbedSnippet({ snippet }: { snippet: string }) {
 
   return (
     <div className="space-y-2">
-      <div className="relative rounded-xl border border-neon-blue/30 bg-white/3">
-        <pre className="overflow-x-auto p-4 pr-12 text-xs font-mono leading-relaxed text-neon-blue/80">
+      <div className="relative bg-white/5 border border-neon-blue/30 rounded-lg">
+        <pre className="overflow-x-auto p-4 pr-12 text-sm font-mono leading-relaxed text-neon-green">
           <code>{snippet}</code>
         </pre>
         <button
           onClick={copy}
           aria-label="Copia snippet"
-          className="absolute top-2 right-2 p-1.5 rounded-lg border border-white/15 bg-white/5 text-white/40 hover:text-neon-blue hover:border-neon-blue/40 transition-all"
+          className="absolute top-2 right-2 p-1.5 border border-white/15 bg-white/5 text-white/40 hover:text-neon-blue hover:border-neon-blue/40 transition-all"
         >
           {copied ? <Check size={12} aria-hidden /> : <Copy size={12} aria-hidden />}
         </button>

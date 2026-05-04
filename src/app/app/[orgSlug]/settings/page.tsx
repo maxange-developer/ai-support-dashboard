@@ -4,10 +4,15 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { listApiKeys } from '@/lib/db/api-keys'
 import { createKeyAction, deleteKeyAction } from '../embed/actions'
 import ApiKeyManager from '@/components/embed/ApiKeyManager'
-import { Shield, Building2, Key, AlertTriangle } from 'lucide-react'
 
 type MembershipRow = { org_id: string; role: string }
 type OrgRow = { id: string; name: string; slug: string; plan: string }
+
+const PLAN_BADGE: Record<string, { label: string; cls: string }> = {
+  free: { label: 'Free', cls: 'text-white/50 border border-white/20 bg-white/5' },
+  pro: { label: 'Pro', cls: 'text-neon-blue border border-neon-blue/40 bg-neon-blue/8' },
+  enterprise: { label: 'Enterprise', cls: 'text-neon-green border border-neon-green/40 bg-neon-green/8' },
+}
 
 export default async function SettingsPage({
   params,
@@ -47,96 +52,71 @@ export default async function SettingsPage({
   const boundCreate = createKeyAction.bind(null, orgSlug)
   const boundDelete = deleteKeyAction.bind(null, orgSlug)
 
-  const planLabel: Record<string, string> = {
-    free: 'Free',
-    pro: 'Pro',
-    enterprise: 'Enterprise',
-  }
+  const badge = PLAN_BADGE[org.plan] ?? PLAN_BADGE.free
 
   return (
     <div className="max-w-2xl space-y-6 animate-fade-up">
       <div>
         <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
-          Impostazioni
+          Impostazioni<span className="text-neon-pink">.</span>
         </h1>
         <p className="text-white/40 text-sm mt-1">Gestisci la tua organizzazione e le chiavi API</p>
       </div>
 
-      {/* Organization */}
-      <section className="glass rounded-xl border border-white/10 p-6 space-y-4">
-        <div className="flex items-center gap-2 mb-4">
-          <Building2 size={15} className="text-neon-blue/70" aria-hidden />
-          <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Organizzazione</h2>
-        </div>
+      {/* Card 1 — Organization */}
+      <section className="glass rounded-lg p-6 border-2 border-white/10 hover:border-neon-blue/30 transition-colors duration-300 space-y-4">
+        <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Organizzazione</h2>
+
         <div className="space-y-3">
-          <Row label="Nome" value={org.name} />
-          <Row label="Slug" value={org.slug} mono />
-          <Row
-            label="Piano"
-            value={
-              <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${
-                org.plan === 'pro'
-                  ? 'text-neon-blue border-neon-blue/40 bg-neon-blue/8'
-                  : org.plan === 'enterprise'
-                  ? 'text-neon-pink border-neon-pink/40 bg-neon-pink/8'
-                  : 'text-white/50 border-white/20 bg-white/5'
-              }`}>
-                {planLabel[org.plan] ?? org.plan}
-              </span>
-            }
-          />
-          <Row label="Ruolo" value={isAdmin ? 'Admin' : 'Membro'} />
-          <Row label="Account" value={user.email ?? '—'} />
+          <Row label="Nome">
+            <span className="text-base font-semibold text-white">{org.name}</span>
+          </Row>
+          <Row label="Slug">
+            <span className="font-mono text-sm text-white/70">{org.slug}</span>
+          </Row>
+          <Row label="Piano">
+            <span className={`px-2.5 py-1 text-xs font-medium ${badge.cls}`}>
+              {badge.label}
+            </span>
+          </Row>
+          <Row label="Ruolo">
+            <span className="text-sm text-white/70">{isAdmin ? 'Admin' : 'Membro'}</span>
+          </Row>
+          <Row label="Account">
+            <span className="text-sm text-white/70">{user.email ?? '—'}</span>
+          </Row>
         </div>
       </section>
 
-      {/* API Keys */}
-      <section className="glass rounded-xl border border-white/10 p-6 space-y-4">
-        <div className="flex items-center gap-2 mb-4">
-          <Key size={15} className="text-neon-blue/70" aria-hidden />
-          <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Chiavi API</h2>
-        </div>
+      {/* Card 2 — API Keys */}
+      <section className="glass rounded-lg p-6 border-2 border-white/10 space-y-4">
+        <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Chiavi API</h2>
         <ApiKeyManager keys={keys} createAction={boundCreate} deleteAction={boundDelete} />
       </section>
 
-      {/* Security */}
-      <section className="glass rounded-xl border border-white/10 p-6 space-y-4">
-        <div className="flex items-center gap-2 mb-4">
-          <Shield size={15} className="text-neon-blue/70" aria-hidden />
-          <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider">Sicurezza</h2>
-        </div>
+      {/* Card 3 — Danger Zone */}
+      <section className="glass rounded-lg p-6 border-2 border-red-500/30 space-y-4">
+        <h2 className="text-xs font-semibold text-red-400 uppercase tracking-wider mb-2">Zona pericolosa</h2>
         <p className="text-sm text-white/40">
-          Le richieste al widget sono limitate a 10 al minuto per organizzazione. Le chiavi API sono hashed con SHA-256 e non vengono mai memorizzate in chiaro.
+          L'eliminazione dell'organizzazione è irreversibile e cancella tutti i documenti, le conversazioni e le chiavi API.
         </p>
-      </section>
-
-      {/* Danger zone */}
-      <section className="rounded-xl border border-red-500/30 bg-red-500/4 p-6 space-y-3">
-        <div className="flex items-center gap-2">
-          <AlertTriangle size={15} className="text-red-400" aria-hidden />
-          <h2 className="text-sm font-semibold text-red-400 uppercase tracking-wider">Zona pericolosa</h2>
-        </div>
-        <p className="text-sm text-white/40">
-          Per eliminare l'organizzazione contatta il supporto. Questa operazione è irreversibile e cancella tutti i documenti, le conversazioni e le chiavi API.
-        </p>
+        <button
+          type="button"
+          disabled
+          className="px-6 py-2.5 border-2 border-red-500 text-red-400 font-semibold uppercase tracking-wider text-sm overflow-hidden relative hover:text-black hover:bg-red-500 motion-reduce:hover:bg-transparent motion-reduce:hover:text-red-400 transition-all duration-300 group disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Elimina organizzazione
+        </button>
       </section>
     </div>
   )
 }
 
-function Row({
-  label,
-  value,
-  mono,
-}: {
-  label: string
-  value: React.ReactNode
-  mono?: boolean
-}) {
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
       <span className="text-xs text-white/40 uppercase tracking-wider font-medium">{label}</span>
-      <span className={`text-sm text-white/80 ${mono ? 'font-mono text-xs' : ''}`}>{value}</span>
+      <div>{children}</div>
     </div>
   )
 }
