@@ -23,20 +23,6 @@ export async function loginAction(_prev: State, formData: FormData): Promise<Sta
     return { error: 'Email o password non corretti' }
   }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) return { error: 'Autenticazione fallita' }
-
-  type MembershipRow = { organizations: { slug: string } }
-  const { data } = await supabase
-    .from('memberships')
-    .select('organizations!inner(slug)')
-    .eq('user_id', user.id)
-    .limit(1)
-    .returns<MembershipRow[]>()
-
-  const orgSlug = data?.[0]?.organizations?.slug
-  redirect(orgSlug ? `/app/${orgSlug}` : '/onboarding')
+  // Root page handles org-slug routing; redirect there to avoid duplicating logic
+  redirect('/')
 }
