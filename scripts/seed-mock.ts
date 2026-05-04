@@ -10,21 +10,12 @@
  *   NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
  */
 
-import { readFileSync } from 'fs'
+import { config } from 'dotenv'
 import { createHash } from 'crypto'
 import { createClient } from '@supabase/supabase-js'
 import { MOCK_ORGS, MOCK_DOCUMENTS, MOCK_CONVERSATIONS, MOCK_API_KEYS } from '../src/lib/mock/index'
 
-// Load .env.local
-try {
-  const raw = readFileSync('.env.local', 'utf-8')
-  for (const line of raw.split('\n')) {
-    const m = line.match(/^([A-Z_][A-Z0-9_]*)=(.+)$/)
-    if (m) process.env[m[1]] ??= m[2].replace(/^["']|["']$/g, '')
-  }
-} catch {
-  // rely on shell env
-}
+config({ path: '.env.local' })
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
