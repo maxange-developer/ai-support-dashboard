@@ -118,13 +118,57 @@ async function main() {
     else { keyCount++; console.log(`  ✓ api_key: ${key.name} (plaintext: ${key.plaintext})`) }
   }
 
+  // ── 5. Test User + Membership ─────────────────────────────────────────────
+  const TEST_EMAIL = 'test@angel1.dev'
+  const TEST_PASSWORD = 'Test1234!'
+  const ORG_1_ID = MOCK_ORGS[0].id
+
+  // createUser is idempotent-ish: if email exists, it returns the existing user
+  const { data: userData, error: userErr } = await admin.auth.admin.createUser({
+    email: TEST_EMAIL,
+    password: TEST_PASSWORD,
+    email_confirm: true,
+  })
+
+  let testUserId: string | null = null
+
+  if (userErr) {
+    if (userErr.message.includes('already been registered') || userErr.message.includes('already exists')) {
+      // Fetch the existing user by email
+      const { data: listData } = await admin.auth.admin.listUsers()
+      const existing = listData?.users.find((u) => u.email === TEST_EMAIL)
+      if (existing) {
+        testUserId = existing.id
+        console.log(`  ↩ test user already exists: ${TEST_EMAIL}`)
+      } else {
+        console.warn(`  ✗ could not resolve existing test user: ${userErr.message}`)
+      }
+    } else {
+      console.warn(`  ✗ createUser: ${userErr.message}`)
+    }
+  } else {
+    testUserId = userData.user.id
+    console.log(`  ✓ test user created: ${TEST_EMAIL}`)
+  }
+
+  if (testUserId) {
+    const { error: memErr } = await admin.from('memberships').upsert(
+      { user_id: testUserId, org_id: ORG_1_ID, role: 'admin' },
+      { onConflict: 'user_id,org_id' },
+    )
+    if (memErr) console.warn(`  membership upsert: ${memErr.message}`)
+    else console.log(`  ✓ membership: ${TEST_EMAIL} → ${MOCK_ORGS[0].slug} (admin)`)
+  }
+
   // ── Summary ───────────────────────────────────────────────────────────────
   console.log('\n✅ Mock seed complete!')
   console.log(`   Orgs:          ${MOCK_ORGS.length}`)
   console.log(`   Documents:     ${docCount}/${MOCK_DOCUMENTS.length}`)
   console.log(`   Conversations: ${convCount}/${MOCK_CONVERSATIONS.length} (${msgCount} messages)`)
   console.log(`   API Keys:      ${keyCount}/${MOCK_API_KEYS.length}`)
-  console.log('\nPlayground: /app/acme/playground')
+  console.log(`   Test user:     ${TEST_EMAIL} / ${TEST_PASSWORD}`)
+  console.log('\nTest login: /login → /app/acme')
+  console.log('Playground:  /app/acme/playground')
   console.log('Use USE_MOCK_AI=true in .env.local to bypass real AI calls.\n')
 }
 
