@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { embedBatch } from '@/lib/ai/embeddings'
 import { similaritySearch } from '@/lib/ai/retrieval'
 import { streamChat } from '@/lib/ai/chat'
+import { mockChatResponse } from '@/lib/mock/ai-responses'
 import { createConversation, insertMessage } from '@/lib/db/conversations'
 import { logger } from '@/lib/logger'
 import type { ChatMessage } from '@/lib/ai/chat'
@@ -132,14 +133,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Rate limit exceeded (max 10 req/min)' }, { status: 429 })
   }
 
-  // 3. Embed message + similarity search
+  // 3. Embed message + similarity search (skipped when USE_MOCK_AI=true)
   let chunks: RetrievalChunk[]
-  try {
-    const [queryEmbedding] = await embedBatch([message])
-    chunks = await similaritySearch(orgId, queryEmbedding)
-  } catch (err) {
-    logger.error('retrieval failed', err)
-    return NextResponse.json({ error: 'Retrieval failed' }, { status: 500 })
+  if (process.env.USE_MOCK_AI === 'true') {
+    chunks = []
+  } else {
+    try {
+      const [queryEmbedding] = await embedBatch([message])
+      chunks = await similaritySearch(orgId, queryEmbedding)
+    } catch (err) {
+      logger.error('retrieval failed', err)
+      return NextResponse.json({ error: 'Retrieval failed' }, { status: 500 })
+    }
   }
 
   // 4. Create or resume conversation
@@ -171,16 +176,21 @@ export async function POST(request: NextRequest) {
   const readable = new ReadableStream({
     async start(controller) {
       try {
-        for await (const event of streamChat(chatMessages, chunks, orgName)) {
+        const chatGenerator =
+          process.env.USE_MOCK_AI === 'true'
+            ? mockChatResponse(message)
+            : streamChat(chatMessages, chunks, orgName)
+
+        for await (const event of chatGenerator) {
           if (event.type === 'token') {
             fullText += event.text
             controller.enqueue(
               encoder.encode(`data: ${JSON.stringify({ type: 'token', text: event.text })}\n\n`),
             )
           } else if (event.type === 'done') {
-            // claude-sonnet-4-6: $3/MTok input, $15/MTok output
+            // gpt-4o-mini: $0.15/MTok input, $0.60/MTok output
             const costCents = Math.round(
-              (event.usage.input_tokens * 3 + event.usage.output_tokens * 15) / 10_000,
+              (event.usage.input_tokens * 15 + event.usage.output_tokens * 60) / 1_000_000,
             )
             const tokensUsed = event.usage.input_tokens + event.usage.output_tokens
 

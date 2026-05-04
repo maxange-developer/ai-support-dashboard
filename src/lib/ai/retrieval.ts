@@ -20,7 +20,7 @@ type RpcRow = {
 export async function similaritySearch(
   orgId: string,
   queryEmbedding: number[],
-  topK = 5,
+  topK = 3,
 ): Promise<RetrievalChunk[]> {
   const admin = createAdminClient()
   const { data, error } = await admin.rpc('match_chunks', {
