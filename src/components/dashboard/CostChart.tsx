@@ -19,8 +19,8 @@ interface ChartPoint {
 export default function CostChart({ data }: { data: DailyCost[] }) {
   if (data.length === 0) {
     return (
-      <div className="h-44 flex items-center justify-center rounded-md border bg-muted/30">
-        <p className="text-sm text-muted-foreground">Nessun dato negli ultimi 7 giorni</p>
+      <div className="h-44 flex items-center justify-center rounded-xl glass border border-white/10">
+        <p className="text-sm text-white/30">Nessun dato negli ultimi 7 giorni</p>
       </div>
     )
   }
@@ -31,18 +31,18 @@ export default function CostChart({ data }: { data: DailyCost[] }) {
   }))
 
   return (
-    <div className="h-44 rounded-md border bg-card p-3">
+    <div className="h-44 rounded-xl glass border border-white/10 p-3">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.06)" />
           <XAxis
             dataKey="day"
-            tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+            tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.35)' }}
             tickLine={false}
             axisLine={false}
           />
           <YAxis
-            tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+            tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.35)' }}
             tickLine={false}
             axisLine={false}
             tickFormatter={(v: number) => `$${v.toFixed(3)}`}
@@ -55,14 +55,15 @@ export default function CostChart({ data }: { data: DailyCost[] }) {
             }}
             contentStyle={{
               fontSize: 12,
-              borderRadius: 6,
-              border: '1px solid hsl(var(--border))',
-              background: 'hsl(var(--card))',
-              color: 'hsl(var(--card-foreground))',
+              borderRadius: 8,
+              border: '1px solid rgba(0,240,255,0.2)',
+              background: 'rgba(0,0,0,0.85)',
+              backdropFilter: 'blur(10px)',
+              color: '#ffffff',
             }}
-            cursor={{ fill: 'hsl(var(--muted))' }}
+            cursor={{ fill: 'rgba(0,240,255,0.06)' }}
           />
-          <Bar dataKey="cost" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={40} />
+          <Bar dataKey="cost" fill="#00f0ff" fillOpacity={0.8} radius={[4, 4, 0, 0]} maxBarSize={40} />
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import Sidebar from '@/components/dashboard/Sidebar'
 import Header from '@/components/dashboard/Header'
+import ThreeBackgroundClient from '@/components/ThreeBackgroundClient'
 
 type OrgRow = { id: string; name: string; slug: string }
 type MembershipRow = { org_id: string }
@@ -42,7 +43,8 @@ export default async function DashboardLayout({
   if (!org) notFound()
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-black">
+      <ThreeBackgroundClient />
       <Sidebar orgSlug={org.slug} orgName={org.name} />
       <div className="flex flex-1 flex-col overflow-hidden min-w-0">
         <Header orgSlug={org.slug} orgName={org.name} userEmail={user.email ?? ''} />

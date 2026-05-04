@@ -1,10 +1,6 @@
 'use client'
 
 import { useState, useActionState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
 import { Trash2, Plus, Key, AlertCircle, Copy, Check } from 'lucide-react'
 import type { ApiKeyListItem } from '@/lib/db/api-keys'
 
@@ -35,85 +31,93 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
   }
 
   return (
-    <div className="space-y-6">
-      {/* Raw key shown once after creation */}
+    <div className="space-y-5">
+      {/* Raw key shown once */}
       {rawKey && (
-        <div className="rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-800 p-4 space-y-3">
+        <div className="rounded-xl border border-amber-500/30 bg-amber-500/8 p-4 space-y-3">
           <div className="flex items-start gap-2">
-            <AlertCircle size={15} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" aria-hidden />
-            <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
-              Salva questa chiave — non sarà più mostrata.
-            </p>
+            <AlertCircle size={14} className="text-amber-400 shrink-0 mt-0.5" aria-hidden />
+            <p className="text-sm font-medium text-amber-300">Salva questa chiave — non sarà più mostrata.</p>
           </div>
           <div className="flex items-center gap-2">
-            <code className="flex-1 font-mono text-xs bg-white dark:bg-black/30 rounded px-3 py-2 border break-all select-all">
+            <code className="flex-1 font-mono text-xs bg-black/40 rounded-lg px-3 py-2 border border-white/10 break-all select-all text-white/80">
               {rawKey}
             </code>
-            <Button size="icon-sm" variant="outline" onClick={copyRawKey} aria-label="Copia chiave">
-              {keyCopied ? <Check size={12} /> : <Copy size={12} />}
-            </Button>
+            <button
+              onClick={copyRawKey}
+              aria-label="Copia chiave"
+              className="p-2 rounded-lg border border-white/20 bg-white/5 hover:border-neon-blue/40 hover:text-neon-blue text-white/50 transition-all"
+            >
+              {keyCopied ? <Check size={13} /> : <Copy size={13} />}
+            </button>
           </div>
         </div>
       )}
 
       {/* Create form */}
       <form action={createFormAction} className="flex gap-2 items-end">
-        <div className="space-y-1.5 flex-1">
-          <Label htmlFor="key-name">Nuova chiave API</Label>
-          <Input
+        <div className="flex-1 space-y-1.5">
+          <label htmlFor="key-name" className="text-xs font-medium text-white/50 uppercase tracking-wider">
+            Nuova chiave API
+          </label>
+          <input
             id="key-name"
             name="name"
             placeholder="es. Sito principale"
             required
             disabled={isCreating}
+            className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/20 text-white placeholder:text-white/30 text-sm focus:outline-none focus:border-neon-blue focus:bg-neon-blue/5 transition-all duration-200 disabled:opacity-50"
           />
         </div>
-        <Button type="submit" disabled={isCreating}>
-          <Plus size={14} aria-hidden />
+        <button
+          type="submit"
+          disabled={isCreating}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-neon-blue text-black font-semibold text-sm hover:bg-neon-blue/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+        >
+          <Plus size={13} aria-hidden />
           {isCreating ? 'Creazione…' : 'Crea'}
-        </Button>
+        </button>
       </form>
-      {createError && <p className="text-sm text-destructive">{createError}</p>}
+      {createError && <p className="text-sm text-red-400">{createError}</p>}
 
       {/* Key list */}
       {keys.length === 0 ? (
-        <div className="flex flex-col items-center py-8 text-center gap-2">
-          <Key size={32} className="text-muted-foreground" aria-hidden />
-          <p className="text-sm text-muted-foreground">Nessuna chiave API. Creane una per iniziare.</p>
+        <div className="flex flex-col items-center py-10 text-center gap-3">
+          <Key size={28} className="text-white/20" aria-hidden />
+          <p className="text-sm text-white/35">Nessuna chiave API. Creane una per iniziare.</p>
         </div>
       ) : (
-        <div className="divide-y rounded-md border">
+        <div className="space-y-2">
           {keys.map((key) => (
-            <div key={key.id} className="flex items-center gap-3 px-4 py-3">
-              <Key size={14} className="text-muted-foreground shrink-0" aria-hidden />
+            <div key={key.id} className="glass rounded-xl border border-white/10 flex items-center gap-3 px-4 py-3 hover-lift transition-all duration-200">
+              <Key size={13} className="text-neon-blue/50 shrink-0" aria-hidden />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium">{key.name ?? 'Senza nome'}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm font-medium text-white">{key.name ?? 'Senza nome'}</p>
+                <p className="text-xs text-white/35">
                   {key.last_used_at
                     ? `Usata il ${new Date(key.last_used_at).toLocaleDateString('it-IT')}`
                     : 'Mai usata'}
                 </p>
               </div>
-              <Badge variant="secondary" className="font-mono text-[10px] hidden sm:flex shrink-0">
+              <span className="font-mono text-[10px] text-white/25 hidden sm:block shrink-0">
                 {key.id.slice(0, 8)}…
-              </Badge>
+              </span>
               <form action={deleteFormAction}>
                 <input type="hidden" name="id" value={key.id} />
-                <Button
+                <button
                   type="submit"
-                  size="icon-sm"
-                  variant="ghost"
                   disabled={isDeleting}
                   aria-label={`Elimina chiave ${key.name ?? ''}`}
+                  className="p-1.5 rounded-lg text-white/30 hover:text-red-400 hover:bg-red-500/10 transition-all disabled:opacity-40"
                 >
-                  <Trash2 size={13} className="text-destructive" aria-hidden />
-                </Button>
+                  <Trash2 size={13} aria-hidden />
+                </button>
               </form>
             </div>
           ))}
         </div>
       )}
-      {deleteError && <p className="text-sm text-destructive">{deleteError}</p>}
+      {deleteError && <p className="text-sm text-red-400">{deleteError}</p>}
     </div>
   )
 }

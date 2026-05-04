@@ -45,8 +45,13 @@ export default async function ConversationsPage({
   const boundGetMessages = getConversationMessages.bind(null, orgSlug)
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Conversazioni</h1>
+    <div className="space-y-6 animate-fade-up">
+      <div>
+        <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
+          Conversazioni
+        </h1>
+        <p className="text-white/40 text-sm mt-1">{conversations.length} conversazion{conversations.length !== 1 ? 'i' : 'e'} nel periodo</p>
+      </div>
       <ConversationList
         conversations={conversations}
         period={period}

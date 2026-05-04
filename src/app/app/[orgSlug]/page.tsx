@@ -3,7 +3,6 @@ import { MessageCircle, TrendingUp, DollarSign, BarChart2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getConversationStats, getCostStats, getTopQuestions } from '@/lib/db/analytics'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import CostChart from '@/components/dashboard/CostChart'
 
 type OrgRow = { id: string; name: string }
@@ -38,52 +37,55 @@ export default async function OrgHomePage({
   const avgDollars = (costStats.avgPerConvCents / 100).toFixed(4)
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+    <div className="space-y-8 animate-fade-up">
+      <div>
+        <h1 className="text-3xl font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
+          Dashboard
+        </h1>
+        <p className="text-white/40 text-sm mt-1">Panoramica delle conversazioni e dei costi AI</p>
+      </div>
 
-      {/* 2×2 stat cards */}
+      {/* Stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <StatCard
           title="Conversazioni totali"
           value={stats.total}
-          icon={<MessageCircle size={15} aria-hidden />}
+          icon={<MessageCircle size={16} aria-hidden />}
         />
         <StatCard
           title="Conversazioni oggi"
           value={stats.today}
           sub={`${stats.week} negli ultimi 7 giorni`}
-          icon={<TrendingUp size={15} aria-hidden />}
+          icon={<TrendingUp size={16} aria-hidden />}
         />
         <StatCard
           title="Costo totale"
           value={`$${totalDollars}`}
-          icon={<DollarSign size={15} aria-hidden />}
+          icon={<DollarSign size={16} aria-hidden />}
         />
         <StatCard
           title="Costo medio / conversazione"
           value={`$${avgDollars}`}
-          icon={<BarChart2 size={15} aria-hidden />}
+          icon={<BarChart2 size={16} aria-hidden />}
         />
       </div>
 
       {/* Cost chart */}
       <section className="space-y-3">
-        <h2 className="text-base font-semibold">Costo ultimi 7 giorni</h2>
+        <h2 className="text-base font-semibold text-white/70">Costo ultimi 7 giorni</h2>
         <CostChart data={costStats.daily} />
       </section>
 
       {/* Top questions */}
       {topQuestions.length > 0 && (
         <section className="space-y-3">
-          <h2 className="text-base font-semibold">Domande più frequenti</h2>
-          <div className="rounded-md border divide-y">
+          <h2 className="text-base font-semibold text-white/70">Domande più frequenti</h2>
+          <div className="glass rounded-xl border border-white/10 divide-y divide-white/8">
             {topQuestions.map((q, i) => (
-              <div key={i} className="flex items-center gap-3 px-4 py-2.5">
-                <span className="w-5 shrink-0 text-xs font-mono text-muted-foreground text-right">
-                  {i + 1}
-                </span>
-                <p className="flex-1 text-sm truncate">{q.content}</p>
-                <span className="text-xs text-muted-foreground shrink-0">{q.count}×</span>
+              <div key={i} className="flex items-center gap-3 px-4 py-3 hover:bg-white/3 transition-colors">
+                <span className="w-5 shrink-0 text-xs font-mono text-white/30 text-right">{i + 1}</span>
+                <p className="flex-1 text-sm text-white/80 truncate">{q.content}</p>
+                <span className="text-xs text-neon-blue shrink-0 font-mono">{q.count}×</span>
               </div>
             ))}
           </div>
@@ -91,13 +93,15 @@ export default async function OrgHomePage({
       )}
 
       {topQuestions.length === 0 && stats.total === 0 && (
-        <p className="text-sm text-muted-foreground">
-          Nessuna conversazione ancora. Usa il{' '}
-          <a href={`/app/${orgSlug}/playground`} className="underline underline-offset-2">
-            playground
-          </a>{' '}
-          o incorpora il widget per iniziare.
-        </p>
+        <div className="glass rounded-xl border border-white/10 p-8 text-center">
+          <p className="text-white/40 text-sm">
+            Nessuna conversazione ancora. Usa il{' '}
+            <a href={`/app/${orgSlug}/playground`} className="text-neon-blue hover:text-neon-blue/80 transition-colors">
+              playground
+            </a>{' '}
+            o incorpora il widget per iniziare.
+          </p>
+        </div>
       )}
     </div>
   )
@@ -115,15 +119,13 @@ function StatCard({
   icon: React.ReactNode
 }) {
   return (
-    <Card>
-      <CardHeader className="flex-row items-center justify-between pb-1">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        <span className="text-muted-foreground">{icon}</span>
-      </CardHeader>
-      <CardContent>
-        <p className="text-2xl font-bold tracking-tight">{value}</p>
-        {sub && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}
-      </CardContent>
-    </Card>
+    <div className="glass rounded-xl border border-white/10 p-5 hover-lift">
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-xs font-medium text-white/45 uppercase tracking-wider">{title}</p>
+        <span className="text-neon-blue/60">{icon}</span>
+      </div>
+      <p className="text-3xl font-bold text-neon-blue">{value}</p>
+      {sub && <p className="text-xs text-white/35 mt-1">{sub}</p>}
+    </div>
   )
 }
