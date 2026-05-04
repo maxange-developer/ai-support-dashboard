@@ -8,7 +8,7 @@ import { validateUploadFile } from '@/lib/validations/document'
 import { parseFile } from '@/lib/ai/parsing'
 import { chunkText } from '@/lib/ai/chunking'
 import { embedBatch } from '@/lib/ai/embeddings'
-import { insertDocument, updateDocumentStatus, insertChunks } from '@/lib/db/documents'
+import { insertDocument, updateDocumentStatus, insertChunks, deleteDocumentsFromDB } from '@/lib/db/documents'
 import { logger } from '@/lib/logger'
 
 type State = { error: string } | null
@@ -114,4 +114,38 @@ export async function uploadDocument(
   await updateDocumentStatus(admin, docId, 'ready')
   revalidatePath(`/app/${orgSlug}/documents`)
   redirect(`/app/${orgSlug}/documents`)
+}
+
+export async function deleteDocumentsAction(
+  orgSlug: string,
+  orgId: string,
+  ids: string[],
+): Promise<{ error?: string }> {
+  if (ids.length === 0) return {}
+
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const { data: membershipData } = await supabase
+    .from('memberships')
+    .select('org_id')
+    .eq('user_id', user.id)
+    .eq('org_id', orgId)
+    .returns<MembershipRow[]>()
+
+  if (!membershipData || membershipData.length === 0) return { error: 'Access denied' }
+
+  const admin = createAdminClient()
+  try {
+    await deleteDocumentsFromDB(admin, ids, orgId)
+  } catch (err) {
+    logger.error('deleteDocumentsAction failed', err)
+    return { error: 'Failed to delete documents' }
+  }
+
+  revalidatePath(`/app/${orgSlug}/documents`)
+  return {}
 }

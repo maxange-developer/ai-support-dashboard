@@ -7,11 +7,11 @@ import { cn } from '@/lib/utils'
 import { FileText, MessageSquare, Code2, MessageCircle, Settings, Zap } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { href: 'documents', label: 'Documenti', icon: FileText },
+  { href: 'documents', label: 'Documents', icon: FileText },
   { href: 'playground', label: 'Playground', icon: MessageSquare },
   { href: 'embed', label: 'Embed', icon: Code2 },
-  { href: 'conversations', label: 'Conversazioni', icon: MessageCircle },
-  { href: 'settings', label: 'Impostazioni', icon: Settings },
+  { href: 'conversations', label: 'Conversations', icon: MessageCircle },
+  { href: 'settings', label: 'Settings', icon: Settings },
 ]
 
 interface SidebarProps {
@@ -35,7 +35,7 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
 
       {/* Org name */}
       <div className="px-5 pt-4 pb-2">
-        <p className="text-xs text-white/40 uppercase tracking-widest font-medium">Organizzazione</p>
+        <p className="text-xs text-white/40 uppercase tracking-widest font-medium">Organization</p>
         <p className="text-sm text-white/80 font-medium mt-0.5 truncate">{orgName}</p>
       </div>
 
@@ -52,11 +52,11 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
               className={cn(
                 'flex items-center gap-3 py-2.5 text-sm uppercase tracking-wider font-medium transition-all duration-200',
                 isActive
-                  ? 'text-neon-blue bg-neon-blue/10 border-l-2 border-neon-blue pl-[calc(1.25rem-2px)] pr-4 rounded-r-lg'
-                  : 'text-white/60 hover:text-white hover:bg-white/5 px-5',
+                  ? 'text-neon-blue opacity-100 bg-neon-blue/10 border-l-2 border-neon-blue pl-[calc(1.25rem-2px)] pr-4 rounded-r-lg'
+                  : 'text-neon-blue opacity-40 hover:opacity-70 px-5',
               )}
             >
-              <Icon size={15} aria-hidden className={cn('shrink-0', isActive ? 'text-neon-blue' : 'text-white/40')} />
+              <Icon size={15} aria-hidden className="shrink-0" />
               {label}
             </Link>
           )

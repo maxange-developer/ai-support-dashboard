@@ -42,29 +42,29 @@ export default async function OrgHomePage({
         <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
           Dashboard<span className="text-neon-pink">.</span>
         </h1>
-        <p className="text-white/40 text-sm mt-1">Panoramica delle conversazioni e dei costi AI</p>
+        <p className="text-white/40 text-sm mt-1">Overview of conversations and AI costs</p>
       </div>
 
       {/* Stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <StatCard
-          title="Conversazioni totali"
+          title="Total conversations"
           value={stats.total}
           icon={<MessageCircle size={16} aria-hidden />}
         />
         <StatCard
-          title="Conversazioni oggi"
+          title="Today's conversations"
           value={stats.today}
-          sub={`${stats.week} negli ultimi 7 giorni`}
+          sub={`${stats.week} in the last 7 days`}
           icon={<TrendingUp size={16} aria-hidden />}
         />
         <StatCard
-          title="Costo totale"
+          title="Total cost"
           value={`$${totalDollars}`}
           icon={<DollarSign size={16} aria-hidden />}
         />
         <StatCard
-          title="Costo medio / conversazione"
+          title="Avg cost / conversation"
           value={`$${avgDollars}`}
           icon={<BarChart2 size={16} aria-hidden />}
         />
@@ -72,8 +72,8 @@ export default async function OrgHomePage({
 
       {/* Cost chart */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-white/60 uppercase tracking-wider">
-          Costo ultimi 7 giorni
+        <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider">
+          Cost — last 7 days
         </h2>
         <CostChart data={costStats.daily} />
       </section>
@@ -81,8 +81,8 @@ export default async function OrgHomePage({
       {/* Top questions */}
       {topQuestions.length > 0 && (
         <section className="space-y-3">
-          <h2 className="text-sm font-semibold text-white/60 uppercase tracking-wider">
-            Domande più frequenti
+          <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider">
+            Top questions
           </h2>
           <div className="glass rounded-lg border-2 border-white/10 divide-y divide-white/8">
             {topQuestions.map((q, i) => (
@@ -99,11 +99,11 @@ export default async function OrgHomePage({
       {topQuestions.length === 0 && stats.total === 0 && (
         <div className="glass rounded-lg border-2 border-white/10 p-8 text-center">
           <p className="text-white/40 text-sm">
-            Nessuna conversazione ancora. Usa il{' '}
+            No conversations yet. Use the{' '}
             <a href={`/app/${orgSlug}/playground`} className="text-neon-blue hover:text-neon-blue/70 transition-colors">
               playground
             </a>{' '}
-            o incorpora il widget per iniziare.
+            or embed the widget to get started.
           </p>
         </div>
       )}

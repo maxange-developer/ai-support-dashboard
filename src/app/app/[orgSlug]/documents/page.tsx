@@ -1,9 +1,8 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
-import { Plus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getDocumentsByOrg } from '@/lib/db/documents'
-import DocumentList from '@/components/documents/DocumentList'
+import { deleteDocumentsAction } from './actions'
+import DocumentsView from '@/components/documents/DocumentsView'
 
 type OrgRow = { id: string }
 
@@ -25,29 +24,19 @@ export default async function DocumentsPage({
   if (!org) notFound()
 
   const documents = await getDocumentsByOrg(supabase, org.id)
+  const boundDelete = deleteDocumentsAction.bind(null, orgSlug, org.id)
 
   return (
     <div className="space-y-6 animate-fade-up">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
-            Documenti<span className="text-neon-pink">.</span>
-          </h1>
-          <p className="text-white/40 text-sm mt-1">
-            {documents.length} documento{documents.length !== 1 ? 'i' : ''} caricato{documents.length !== 1 ? 'i' : ''}
-          </p>
-        </div>
-        <Link
-          href={`/app/${orgSlug}/documents/new`}
-          className="flex items-center gap-2 px-6 py-2.5 border-2 border-neon-blue text-white font-semibold uppercase tracking-wider text-sm overflow-hidden relative hover:text-black motion-reduce:hover:text-white transition-all duration-300 group"
-        >
-          <span className="absolute inset-0 bg-neon-blue transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
-          <Plus size={14} aria-hidden className="relative z-10" />
-          <span className="relative z-10">Nuovo</span>
-        </Link>
+      <div>
+        <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
+          Documents<span className="text-neon-pink">.</span>
+        </h1>
+        <p className="text-white/40 text-sm mt-1">
+          {documents.length} document{documents.length !== 1 ? 's' : ''} uploaded
+        </p>
       </div>
-
-      <DocumentList documents={documents} />
+      <DocumentsView documents={documents} orgSlug={orgSlug} deleteAction={boundDelete} />
     </div>
   )
 }

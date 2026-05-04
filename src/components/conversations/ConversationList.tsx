@@ -7,10 +7,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { cn } from '@/lib/utils'
 
 const PERIODS = [
-  { value: 'today', label: 'Oggi' },
-  { value: '7d', label: '7 giorni' },
-  { value: '30d', label: '30 giorni' },
-  { value: 'all', label: 'Tutte' },
+  { value: 'today', label: 'Today' },
+  { value: '7d', label: '7 days' },
+  { value: '30d', label: '30 days' },
+  { value: 'all', label: 'All' },
 ]
 
 interface Props {
@@ -59,16 +59,16 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
 
       {conversations.length === 0 ? (
         <div className="glass rounded-lg border-2 border-white/10 py-16 text-center">
-          <p className="text-sm text-white/35">Nessuna conversazione nel periodo selezionato.</p>
+          <p className="text-sm text-white/35">No conversations in the selected period.</p>
         </div>
       ) : (
         <div className="glass rounded-lg border-2 border-white/10 overflow-hidden">
           {/* Table header */}
           <div className="flex items-center gap-4 px-4 py-3 border-b border-white/8 bg-white/2">
-            <p className="flex-1 text-xs font-medium text-white/40 uppercase tracking-wider">Visitatore</p>
-            <p className="text-xs font-medium text-white/40 uppercase tracking-wider hidden sm:block">Data</p>
-            <p className="text-xs font-medium text-white/40 uppercase tracking-wider text-right w-16">Msg</p>
-            <p className="text-xs font-medium text-white/40 uppercase tracking-wider text-right w-20">Costo</p>
+            <p className="flex-1 text-xs font-medium text-white/40 uppercase tracking-wider">Visitor</p>
+            <p className="text-xs font-medium text-white/40 uppercase tracking-wider hidden sm:block">Date</p>
+            <p className="text-xs font-medium text-white/40 uppercase tracking-wider text-right w-16">Msgs</p>
+            <p className="text-xs font-medium text-white/40 uppercase tracking-wider text-right w-20">Cost</p>
           </div>
 
           {conversations.map((conv) => (
@@ -79,11 +79,11 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
             >
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-white truncate">
-                  {conv.visitorId ? `Visitatore ${conv.visitorId.slice(0, 8)}` : 'Anonimo'}
+                  {conv.visitorId ? `Visitor ${conv.visitorId.slice(0, 8)}` : 'Anonymous'}
                 </p>
               </div>
               <p className="text-xs text-white/35 hidden sm:block shrink-0">
-                {new Date(conv.startedAt).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                {new Date(conv.startedAt).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
               </p>
               <p className="text-xs text-white/50 text-right w-16 font-mono shrink-0">{conv.messageCount}</p>
               <p className="text-xs text-neon-blue text-right w-20 font-mono shrink-0">
@@ -99,15 +99,15 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
           <DialogHeader>
             <DialogTitle className="text-white">
               {selectedConv
-                ? new Date(selectedConv.startedAt).toLocaleString('it-IT')
-                : 'Conversazione'}
+                ? new Date(selectedConv.startedAt).toLocaleString('en-GB')
+                : 'Conversation'}
             </DialogTitle>
           </DialogHeader>
           <div className="overflow-y-auto max-h-[55vh] space-y-3 custom-scrollbar">
             {isPending ? (
-              <p className="py-4 text-center text-sm text-white/35">Caricamento…</p>
+              <p className="py-4 text-center text-sm text-white/35">Loading…</p>
             ) : messages.length === 0 ? (
-              <p className="py-4 text-center text-sm text-white/35">Nessun messaggio.</p>
+              <p className="py-4 text-center text-sm text-white/35">No messages.</p>
             ) : (
               messages.map((msg) => (
                 <div

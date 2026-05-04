@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useActionState } from 'react'
-import { Trash2, Plus, Key, AlertCircle, Copy, Check } from 'lucide-react'
+import { Plus, Key, AlertCircle, Copy, Check, Trash2 } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import type { ApiKeyListItem } from '@/lib/db/api-keys'
 
 type CreateState = { rawKey: string } | { error: string } | null
@@ -17,6 +18,7 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
   const [createState, createFormAction, isCreating] = useActionState(createAction, null)
   const [deleteState, deleteFormAction, isDeleting] = useActionState(deleteAction, null)
   const [keyCopied, setKeyCopied] = useState(false)
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null)
 
   const rawKey = createState && 'rawKey' in createState ? createState.rawKey : null
   const createError = createState && 'error' in createState ? createState.error : null
@@ -30,14 +32,16 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
     })
   }
 
+  const keyToDelete = keys.find((k) => k.id === pendingDeleteId)
+
   return (
     <div className="space-y-5">
-      {/* Raw key shown once */}
+      {/* Raw key one-time disclosure */}
       {rawKey && (
         <div className="border border-amber-500/30 bg-amber-500/8 p-4 space-y-3">
           <div className="flex items-start gap-2">
             <AlertCircle size={14} className="text-amber-400 shrink-0 mt-0.5" aria-hidden />
-            <p className="text-sm font-medium text-amber-300">Salva questa chiave — non sarà più mostrata.</p>
+            <p className="text-sm font-medium text-amber-300">Save this key — it won't be shown again.</p>
           </div>
           <div className="flex items-center gap-2">
             <code className="flex-1 font-mono text-xs bg-black/40 px-3 py-2 border border-white/10 break-all select-all text-white/80">
@@ -45,8 +49,8 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
             </code>
             <button
               onClick={copyRawKey}
-              aria-label="Copia chiave"
-              className="p-2 border border-white/20 bg-white/5 hover:border-neon-blue/40 hover:text-neon-blue text-white/50 transition-all"
+              aria-label="Copy key"
+              className="p-2 border border-white/20 bg-white/5 hover:border-neon-blue/40 hover:text-neon-blue text-white/50 transition-all shrink-0"
             >
               {keyCopied ? <Check size={13} /> : <Copy size={13} />}
             </button>
@@ -54,74 +58,125 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
         </div>
       )}
 
-      {/* Create form */}
-      <form action={createFormAction} className="flex gap-2 items-end">
+      {/* Create form — FIX 6: items-center + h-10 */}
+      <form action={createFormAction} className="flex items-center gap-2">
         <div className="flex-1 space-y-1.5">
           <label htmlFor="key-name" className="text-xs font-medium text-white/50 uppercase tracking-wider">
-            Nuova chiave API
+            New API Key
           </label>
           <input
             id="key-name"
             name="name"
-            placeholder="es. Sito principale"
+            placeholder="e.g. Main website"
             required
             disabled={isCreating}
-            className="w-full px-3 py-2.5 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50"
+            className="w-full h-10 px-3 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50"
           />
         </div>
         <button
           type="submit"
           disabled={isCreating}
-          className="flex items-center gap-1.5 px-5 py-2.5 border-2 border-neon-blue text-white font-semibold uppercase tracking-wider text-xs overflow-hidden relative hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+          className="flex items-center gap-1.5 h-10 px-5 mt-[1.375rem] border-2 border-neon-blue text-white font-semibold uppercase tracking-wider text-xs overflow-hidden relative hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
         >
           <span className="absolute inset-0 bg-neon-blue transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
           <Plus size={13} aria-hidden className="relative z-10" />
-          <span className="relative z-10">{isCreating ? 'Creazione…' : 'Crea'}</span>
+          <span className="relative z-10">{isCreating ? 'Creating…' : 'Create'}</span>
         </button>
       </form>
       {createError && <p className="text-sm text-red-400">{createError}</p>}
 
-      {/* Key list */}
+      {/* Key list — FIX 7: masked display */}
       {keys.length === 0 ? (
         <div className="flex flex-col items-center py-10 text-center gap-3">
           <Key size={28} className="text-white/20" aria-hidden />
-          <p className="text-sm text-white/35">Nessuna chiave API. Creane una per iniziare.</p>
+          <p className="text-sm text-white/35">No API keys yet. Create one to get started.</p>
         </div>
       ) : (
         <div className="space-y-2">
           {keys.map((key) => (
             <div
               key={key.id}
-              className="glass rounded-lg border-2 border-white/10 hover:border-neon-blue/30 hover-lift transition-all duration-200 flex items-center gap-3 px-4 py-3"
+              className="glass rounded-lg border-2 border-white/10 hover:border-neon-blue/30 transition-colors duration-200 p-4 flex items-center justify-between gap-4"
             >
-              <Key size={13} className="text-neon-blue/50 shrink-0" aria-hidden />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white">{key.name ?? 'Senza nome'}</p>
-                <p className="text-xs text-white/35">
+              {/* Left: name + date */}
+              <div className="min-w-0 shrink-0">
+                <p className="text-sm font-medium text-white truncate">{key.name ?? 'Unnamed'}</p>
+                <p className="text-xs text-white/40 mt-0.5">
                   {key.last_used_at
-                    ? `Usata il ${new Date(key.last_used_at).toLocaleDateString('it-IT')}`
-                    : 'Mai usata'}
+                    ? `Last used ${new Date(key.last_used_at).toLocaleDateString('en-GB')}`
+                    : `Created ${new Date(key.created_at).toLocaleDateString('en-GB')}`}
                 </p>
               </div>
-              <span className="font-mono text-[10px] text-white/25 hidden sm:block shrink-0">
-                {key.id.slice(0, 8)}…
-              </span>
-              <form action={deleteFormAction}>
-                <input type="hidden" name="id" value={key.id} />
+
+              {/* Centre: masked input */}
+              <input
+                readOnly
+                value={`sk-${key.id.slice(0, 4)}••••••••••••••••`}
+                className="flex-1 bg-white/5 border border-white/10 px-3 py-1.5 text-sm font-mono text-white/50 min-w-0 focus:outline-none"
+                aria-label="Masked API key"
+              />
+
+              {/* Right: copy (disabled — key shown once) + delete */}
+              <div className="flex items-center gap-1.5 shrink-0">
                 <button
-                  type="submit"
-                  disabled={isDeleting}
-                  aria-label={`Elimina chiave ${key.name ?? ''}`}
-                  className="p-1.5 text-white/30 hover:text-red-400 hover:bg-red-500/10 transition-all disabled:opacity-40"
+                  type="button"
+                  disabled
+                  title="Key shown only once at creation"
+                  aria-label="Copy key (unavailable)"
+                  className="h-8 px-2.5 border border-neon-blue/20 text-neon-blue/30 text-xs flex items-center gap-1 disabled:cursor-not-allowed"
                 >
-                  <Trash2 size={13} aria-hidden />
+                  <Copy size={11} aria-hidden />
                 </button>
-              </form>
+                <button
+                  type="button"
+                  onClick={() => setPendingDeleteId(key.id)}
+                  aria-label={`Delete key ${key.name ?? ''}`}
+                  className="h-8 px-2.5 border border-red-500/30 text-red-400/70 text-xs flex items-center gap-1 hover:border-red-500/60 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                >
+                  <Trash2 size={11} aria-hidden />
+                </button>
+              </div>
             </div>
           ))}
         </div>
       )}
       {deleteError && <p className="text-sm text-red-400">{deleteError}</p>}
+
+      {/* Delete confirm dialog */}
+      <Dialog open={!!pendingDeleteId} onOpenChange={(o) => { if (!o) setPendingDeleteId(null) }}>
+        <DialogContent className="sm:max-w-md bg-black/95 border-white/15 backdrop-blur-xl">
+          <DialogHeader>
+            <DialogTitle className="text-white">Delete API key?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-white/50 mt-1">
+            Key <span className="font-semibold text-white">{keyToDelete?.name ?? 'Unnamed'}</span> will be permanently deleted.
+            Any integrations using this key will stop working immediately.
+          </p>
+          <div className="flex justify-end gap-3 mt-4">
+            <button
+              onClick={() => setPendingDeleteId(null)}
+              className="h-9 px-4 border border-white/20 text-white/60 text-xs uppercase tracking-wider hover:text-white hover:border-white/40 transition-all"
+            >
+              Cancel
+            </button>
+            {pendingDeleteId && (
+              <form
+                action={deleteFormAction}
+                onSubmit={() => setPendingDeleteId(null)}
+              >
+                <input type="hidden" name="id" value={pendingDeleteId} />
+                <button
+                  type="submit"
+                  disabled={isDeleting}
+                  className="h-9 px-5 bg-red-500 text-black font-semibold text-xs uppercase tracking-wider hover:bg-red-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  {isDeleting ? 'Deleting…' : 'Delete'}
+                </button>
+              </form>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

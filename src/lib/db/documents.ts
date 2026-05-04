@@ -74,3 +74,28 @@ export async function getDocumentsByOrg(
   if (error) throw new Error(`getDocumentsByOrg: ${error.message}`)
   return data ?? []
 }
+
+// service role — deletes chunks first (FK constraint), then documents; org_id guard prevents cross-org deletion
+export async function deleteDocumentsFromDB(
+  admin: SupabaseClient,
+  ids: string[],
+  orgId: string,
+): Promise<void> {
+  if (ids.length === 0) return
+
+  const { error: chunksError } = await admin
+    .from('chunks')
+    .delete()
+    .in('document_id', ids)
+    .eq('org_id', orgId)
+
+  if (chunksError) throw new Error(`deleteDocumentsFromDB chunks: ${chunksError.message}`)
+
+  const { error } = await admin
+    .from('documents')
+    .delete()
+    .in('id', ids)
+    .eq('org_id', orgId)
+
+  if (error) throw new Error(`deleteDocumentsFromDB: ${error.message}`)
+}

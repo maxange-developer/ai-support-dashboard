@@ -48,10 +48,10 @@ export default async function ConversationsPage({
     <div className="space-y-6 animate-fade-up">
       <div>
         <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
-          Conversazioni<span className="text-neon-pink">.</span>
+          Conversations<span className="text-neon-pink">.</span>
         </h1>
         <p className="text-white/40 text-sm mt-1">
-          {conversations.length} conversazion{conversations.length !== 1 ? 'i' : 'e'} nel periodo
+          {conversations.length} conversation{conversations.length !== 1 ? 's' : ''} in the period
         </p>
       </div>
       <ConversationList

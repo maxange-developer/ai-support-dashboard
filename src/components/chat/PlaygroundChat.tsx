@@ -4,6 +4,13 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { Send, ChevronDown, ChevronUp, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+const QUICK_QUESTIONS = [
+  'What can you help me with?',
+  'Summarize the main topics',
+  'What are the key policies?',
+  'How do I get started?',
+]
+
 interface Source {
   documentId: string
   documentTitle: string
@@ -36,11 +43,9 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, pendingText])
 
-  const handleSubmit = useCallback(
-    async (e?: React.FormEvent) => {
-      e?.preventDefault()
-      const text = input.trim()
-      if (!text || isStreaming) return
+  const sendMessage = useCallback(
+    async (text: string) => {
+      if (!text.trim() || isStreaming) return
 
       setInput('')
       setError(null)
@@ -75,7 +80,7 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
 
           for (const part of parts) {
             if (!part.startsWith('data: ')) continue
-            let data: { type: string; text?: string; sources?: Source[]; tokensUsed?: number; conversationId?: string; error?: string }
+            let data: { type: string; text?: string; sources?: Source[]; conversationId?: string; error?: string }
             try {
               data = JSON.parse(part.slice(6)) as typeof data
             } catch {
@@ -94,19 +99,27 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
               setPendingText('')
               if (data.conversationId) setConversationId(data.conversationId)
             } else if (data.type === 'error') {
-              setError(data.error ?? 'Errore durante la risposta')
+              setError(data.error ?? 'Error generating response')
             }
           }
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Errore di rete')
+        setError(err instanceof Error ? err.message : 'Network error')
       } finally {
         setIsStreaming(false)
         pendingRef.current = ''
         setPendingText('')
       }
     },
-    [input, isStreaming, orgSlug, conversationId],
+    [isStreaming, orgSlug, conversationId],
+  )
+
+  const handleSubmit = useCallback(
+    async (e?: React.FormEvent) => {
+      e?.preventDefault()
+      await sendMessage(input.trim())
+    },
+    [input, sendMessage],
   )
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -116,32 +129,48 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
     }
   }
 
+  const showQuickQuestions = messages.length === 0 && !isStreaming && hasDocuments
+
   return (
     <div className="flex flex-col glass rounded-lg border-2 border-white/10 h-[calc(100vh-7rem)]">
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0 custom-scrollbar">
         {messages.length === 0 && !isStreaming && (
-          <div className="flex flex-col items-center justify-center h-full text-center gap-4">
+          <div className="flex flex-col items-center justify-center h-full text-center gap-6">
             {hasDocuments ? (
-              <div className="space-y-2">
-                <div className="w-10 h-10 border border-neon-blue/30 flex items-center justify-center mx-auto">
-                  <span className="text-neon-blue text-lg">✦</span>
+              <>
+                <div className="space-y-2">
+                  <div className="w-10 h-10 border border-neon-blue/30 flex items-center justify-center mx-auto">
+                    <span className="text-neon-blue text-lg">✦</span>
+                  </div>
+                  <p className="text-sm text-white/40">Ask a question. Answers are based on your documents.</p>
                 </div>
-                <p className="text-sm text-white/40">Fai una domanda. Le risposte si basano sui tuoi documenti.</p>
-              </div>
+                {/* Quick question chips */}
+                <div className="flex flex-wrap justify-center gap-2 max-w-lg">
+                  {QUICK_QUESTIONS.map((q) => (
+                    <button
+                      key={q}
+                      onClick={() => void sendMessage(q)}
+                      className="glass border border-neon-blue/30 text-neon-blue/80 text-sm px-4 py-2 rounded-full hover:border-neon-blue hover:text-neon-blue transition-all duration-200"
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              </>
             ) : (
               <>
                 <FileText size={36} className="text-white/20" aria-hidden />
                 <div className="space-y-1">
-                  <p className="font-medium text-sm text-white/60">Nessun documento</p>
-                  <p className="text-sm text-white/35">Carica documenti per iniziare a usare il playground.</p>
+                  <p className="font-medium text-sm text-white/60">No documents</p>
+                  <p className="text-sm text-white/35">Upload documents to start using the playground.</p>
                 </div>
               </>
             )}
           </div>
         )}
 
-        {messages.map((msg, i) => (
+        {!showQuickQuestions && messages.map((msg, i) => (
           <MessageBubble key={i} message={msg} />
         ))}
 
@@ -162,32 +191,31 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
           </div>
         )}
 
-        {error && (
-          <p className="text-sm text-red-400 text-center py-2">{error}</p>
-        )}
+        {error && <p className="text-sm text-red-400 text-center py-2">{error}</p>}
 
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
+      {/* Input — FIX 6: items-center + h-10 */}
       <div className="border-t border-white/10 p-4 shrink-0">
-        <form onSubmit={(e) => void handleSubmit(e)} className="flex gap-2 items-end">
+        <form onSubmit={(e) => void handleSubmit(e)} className="flex items-center gap-2">
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Scrivi una domanda… (Invio per inviare, Shift+Invio per andare a capo)"
+            placeholder="Ask a question… (Enter to send, Shift+Enter for new line)"
             disabled={isStreaming}
             rows={1}
-            className="flex-1 resize-none max-h-32 min-h-[2.5rem] px-3 py-2.5 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50"
+            className="flex-1 resize-none h-10 px-3 py-2 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50"
+            style={{ lineHeight: '1.5rem' }}
           />
           <button
             type="submit"
             disabled={isStreaming || !input.trim()}
-            aria-label="Invia"
-            className="p-2.5 bg-neon-blue text-black hover:bg-neon-blue/80 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shrink-0"
+            aria-label="Send"
+            className="h-10 w-10 flex items-center justify-center bg-neon-blue text-black hover:bg-neon-blue/80 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shrink-0"
           >
-            <Send size={16} aria-hidden />
+            <Send size={15} aria-hidden />
           </button>
         </form>
       </div>
@@ -220,7 +248,7 @@ function MessageBubble({ message }: { message: Message }) {
               className="flex items-center gap-1 text-xs text-white/35 hover:text-neon-pink transition-colors"
             >
               {showSources ? <ChevronUp size={12} aria-hidden /> : <ChevronDown size={12} aria-hidden />}
-              {message.sources!.length} fonte{message.sources!.length !== 1 ? 'i' : 'e'}
+              {message.sources!.length} source{message.sources!.length !== 1 ? 's' : ''}
             </button>
 
             {showSources && (

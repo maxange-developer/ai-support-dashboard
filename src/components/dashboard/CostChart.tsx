@@ -20,13 +20,13 @@ export default function CostChart({ data }: { data: DailyCost[] }) {
   if (data.length === 0) {
     return (
       <div className="h-44 flex items-center justify-center rounded-xl glass border border-white/10">
-        <p className="text-sm text-white/30">Nessun dato negli ultimi 7 giorni</p>
+        <p className="text-sm text-white/30">No data for the last 7 days</p>
       </div>
     )
   }
 
   const chartData: ChartPoint[] = data.map((d) => ({
-    day: new Date(d.day).toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric' }),
+    day: new Date(d.day).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric' }),
     cost: d.costCents / 100,
   }))
 
@@ -51,7 +51,7 @@ export default function CostChart({ data }: { data: DailyCost[] }) {
           <Tooltip
             formatter={(value) => {
               const n = typeof value === 'number' ? value : typeof value === 'string' ? parseFloat(value) : 0
-              return [`$${n.toFixed(4)}`, 'Costo']
+              return [`$${n.toFixed(4)}`, 'Cost']
             }}
             contentStyle={{
               fontSize: 12,
