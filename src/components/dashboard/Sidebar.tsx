@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
@@ -21,6 +22,8 @@ interface SidebarProps {
 
 export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
   const pathname = usePathname()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
   return (
     <div className="flex h-full flex-col">
@@ -40,7 +43,7 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
       <nav className="flex-1 py-2 space-y-0.5">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const fullPath = `/app/${orgSlug}/${href}`
-          const isActive = pathname.startsWith(fullPath)
+          const isActive = mounted && pathname.startsWith(fullPath)
           return (
             <Link
               key={href}
