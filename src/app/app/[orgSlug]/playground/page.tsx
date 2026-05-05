@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import PlaygroundChat from '@/components/chat/PlaygroundChat'
+import { getTranslations } from 'next-intl/server'
 
 type OrgRow = { id: string }
 
@@ -29,9 +30,13 @@ export default async function PlaygroundPage({
     .eq('status', 'ready')
 
   const hasDocuments = (count ?? 0) > 0
+  const t = await getTranslations('playground')
 
   return (
-    <div className="h-full">
+    <div className="h-full flex flex-col gap-4">
+      <h1 className="font-bold text-neon-blue shrink-0" style={{ fontSize: 'var(--fs-page)' }}>
+        {t('title')}<span className="text-neon-pink">.</span>
+      </h1>
       <PlaygroundChat orgSlug={orgSlug} hasDocuments={hasDocuments} />
     </div>
   )

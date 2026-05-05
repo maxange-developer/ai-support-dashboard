@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { listApiKeys } from '@/lib/db/api-keys'
 import { createKeyAction, deleteKeyAction } from '../embed/actions'
 import ApiKeyManager from '@/components/embed/ApiKeyManager'
+import { getTranslations } from 'next-intl/server'
 
 type MembershipRow = { org_id: string; role: string }
 type OrgRow = { id: string; name: string; slug: string; plan: string }
@@ -51,14 +52,15 @@ export default async function SettingsPage({
   const keys = await listApiKeys(createAdminClient(), org.id)
   const boundCreate = createKeyAction.bind(null, orgSlug)
   const boundDelete = deleteKeyAction.bind(null, orgSlug)
+  const t = await getTranslations('settings')
 
   const badge = PLAN_BADGE[org.plan] ?? PLAN_BADGE.free
 
   return (
     <div className="max-w-2xl space-y-6 animate-fade-up">
       <div>
-        <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
-          Settings<span className="text-neon-pink">.</span>
+        <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
+          {t('title')}<span className="text-neon-pink">.</span>
         </h1>
         <p className="text-white/40 text-sm mt-1">Manage your organization and API keys</p>
       </div>

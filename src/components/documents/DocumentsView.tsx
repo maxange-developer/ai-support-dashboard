@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { FileText, Plus, Trash2, X, CheckSquare, Square } from 'lucide-react'
+import { FileText, Plus, Trash2, X, CheckSquare, Square, AlertCircle } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 import type { DocumentListItem } from '@/lib/db/documents'
@@ -94,7 +94,7 @@ export default function DocumentsView({ documents, orgSlug, deleteAction }: Prop
           <p className="text-sm text-white/40">No documents yet. Upload one to get started.</p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className={cn('space-y-2', selecting && 'pb-24')}>
           {documents.map((doc) => {
             const { label, cls } = STATUS_STYLES[doc.status]
             const isSelected = selected.has(doc.id)
@@ -135,7 +135,7 @@ export default function DocumentsView({ documents, orgSlug, deleteAction }: Prop
         </div>
       )}
 
-      {/* Selection footer */}
+      {/* Selection footer — outside scroll, fixed */}
       {selecting && (
         <div className="fixed bottom-0 left-0 right-0 z-30 glass border-t border-white/10 px-6 py-4 flex items-center gap-4 md:left-60">
           <p className="flex-1 text-sm text-white/70 font-medium">
@@ -170,7 +170,12 @@ export default function DocumentsView({ documents, orgSlug, deleteAction }: Prop
           <p className="text-sm text-white/50 mt-1">
             This action cannot be undone. All chunks and embeddings will be permanently removed.
           </p>
-          {deleteError && <p className="text-sm text-red-400 mt-2">{deleteError}</p>}
+          {deleteError && (
+            <div className="flex items-center gap-2 p-3 border border-red-500/30 bg-red-500/8 text-red-400 mt-2">
+              <AlertCircle size={14} className="shrink-0" aria-hidden />
+              <p className="text-sm">{deleteError}</p>
+            </div>
+          )}
           <div className="flex justify-end gap-3 mt-4">
             <button
               onClick={() => setConfirmOpen(false)}

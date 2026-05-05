@@ -2,6 +2,8 @@
 
 import { useActionState } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { AlertCircle } from 'lucide-react'
 import { signupAction } from './actions'
 import { createClient } from '@/lib/supabase/client'
 
@@ -9,6 +11,7 @@ type State = { error: string } | { pending: string } | null
 
 export default function SignupPage() {
   const [state, formAction, isPending] = useActionState<State, FormData>(signupAction, null)
+  const t = useTranslations('auth')
 
   async function handleGoogleSignup() {
     const supabase = createClient()
@@ -24,7 +27,7 @@ export default function SignupPage() {
         <div className="w-12 h-12 rounded-full border-2 border-neon-blue flex items-center justify-center mx-auto">
           <span className="text-neon-blue text-lg">✓</span>
         </div>
-        <p className="text-lg font-semibold neon-text">Controlla la tua email</p>
+        <p className="text-lg font-semibold text-neon-blue">{t('checkEmail')}</p>
         <p className="text-sm text-white/50">{state.pending}</p>
       </div>
     )
@@ -33,10 +36,10 @@ export default function SignupPage() {
   return (
     <div className="glass rounded-lg border border-neon-blue/30 p-8 space-y-6">
       <div className="text-center space-y-1">
-        <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
-          Crea account<span className="text-neon-pink">.</span>
+        <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
+          {t('signupTitle')}<span className="text-neon-pink">.</span>
         </h1>
-        <p className="text-sm text-white/50">Inizia il tuo periodo di prova gratuito</p>
+        <p className="text-sm text-white/50">{t('signupSubtitle')}</p>
       </div>
 
       <button
@@ -45,7 +48,7 @@ export default function SignupPage() {
         className="w-full flex items-center justify-center gap-2 py-2.5 border border-white/20 bg-white/5 text-sm font-medium text-white hover:bg-white/10 hover:border-neon-blue/40 transition-all duration-200"
       >
         <GoogleIcon />
-        Continua con Google
+        {t('continueGoogle')}
       </button>
 
       <div className="relative">
@@ -53,31 +56,62 @@ export default function SignupPage() {
           <span className="w-full border-t border-white/10" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-transparent px-2 text-white/30">oppure</span>
+          <span className="bg-transparent px-2 text-white/30">{t('or')}</span>
         </div>
       </div>
 
       <form action={formAction} className="space-y-4">
         {state && 'error' in state && state.error && (
-          <p className="text-sm text-red-400 text-center">{state.error}</p>
+          <div className="flex items-center gap-2 p-3 border border-red-500/30 bg-red-500/8 text-red-400">
+            <AlertCircle size={14} className="shrink-0" aria-hidden />
+            <p className="text-sm">{state.error}</p>
+          </div>
         )}
 
-        {(['nome', 'email', 'password'] as const).map((field) => (
-          <div key={field} className="space-y-1.5">
-            <label htmlFor={field} className="text-xs font-medium text-white/60 uppercase tracking-wider">
-              {field === 'nome' ? 'Nome' : field === 'email' ? 'Email' : 'Password'}
-            </label>
-            <input
-              id={field}
-              name={field}
-              type={field === 'password' ? 'password' : field === 'email' ? 'email' : 'text'}
-              autoComplete={field === 'nome' ? 'name' : field === 'email' ? 'email' : 'new-password'}
-              required
-              className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
-              placeholder={field === 'nome' ? 'Mario Rossi' : field === 'email' ? 'tu@esempio.it' : '••••••••'}
-            />
-          </div>
-        ))}
+        <div className="space-y-1.5">
+          <label htmlFor="nome" className="text-xs font-medium text-white/60 uppercase tracking-wider">
+            {t('name')}
+          </label>
+          <input
+            id="nome"
+            name="nome"
+            type="text"
+            autoComplete="name"
+            required
+            className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
+            placeholder={t('namePlaceholder')}
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label htmlFor="email" className="text-xs font-medium text-white/60 uppercase tracking-wider">
+            {t('email')}
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
+            placeholder={t('emailPlaceholder')}
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label htmlFor="password" className="text-xs font-medium text-white/60 uppercase tracking-wider">
+            {t('password')}
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="new-password"
+            required
+            className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
+            placeholder="••••••••"
+          />
+        </div>
 
         <button
           type="submit"
@@ -85,14 +119,14 @@ export default function SignupPage() {
           className="w-full py-3 border-2 border-neon-blue text-white font-semibold uppercase tracking-wider text-sm overflow-hidden relative hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <span className="absolute inset-0 bg-neon-blue transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
-          <span className="relative z-10">{isPending ? 'Registrazione…' : 'Crea account'}</span>
+          <span className="relative z-10">{isPending ? t('signingUp') : t('signupSubmit')}</span>
         </button>
       </form>
 
       <p className="text-center text-sm text-white/40">
-        Hai già un account?{' '}
+        {t('alreadyAccount')}{' '}
         <Link href="/login" className="text-neon-blue hover:text-neon-blue/70 transition-colors">
-          Accedi
+          {t('loginLink')}
         </Link>
       </p>
     </div>

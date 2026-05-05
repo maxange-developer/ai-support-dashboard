@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useActionState } from 'react'
-import { Plus, Key, AlertCircle, Copy, Check, Trash2 } from 'lucide-react'
+import { useState, useActionState, useEffect } from 'react'
+import { Plus, Key, AlertCircle, Copy, Check, Trash2, Eye, EyeOff, X } from 'lucide-react'
+import { toast } from 'sonner'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import type { ApiKeyListItem } from '@/lib/db/api-keys'
 
@@ -17,19 +18,38 @@ interface ApiKeyManagerProps {
 export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiKeyManagerProps) {
   const [createState, createFormAction, isCreating] = useActionState(createAction, null)
   const [deleteState, deleteFormAction, isDeleting] = useActionState(deleteAction, null)
-  const [keyCopied, setKeyCopied] = useState(false)
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null)
+
+  // Persist rawKey within session so it survives next form submission
+  const [savedRawKey, setSavedRawKey] = useState<string | null>(null)
+  const [showRawKey, setShowRawKey] = useState(false)
+  const [keyCopied, setKeyCopied] = useState(false)
 
   const rawKey = createState && 'rawKey' in createState ? createState.rawKey : null
   const createError = createState && 'error' in createState ? createState.error : null
   const deleteError = deleteState && 'error' in deleteState ? deleteState.error : null
 
+  useEffect(() => {
+    if (rawKey) {
+      setSavedRawKey(rawKey)
+      setShowRawKey(false)
+      setKeyCopied(false)
+      toast.success('API key created', { description: 'Copy and save the key — it won\'t be shown again.' })
+    }
+  }, [rawKey])
+
   function copyRawKey() {
-    if (!rawKey) return
-    void navigator.clipboard.writeText(rawKey).then(() => {
+    if (!savedRawKey) return
+    void navigator.clipboard.writeText(savedRawKey).then(() => {
       setKeyCopied(true)
       setTimeout(() => setKeyCopied(false), 2000)
     })
+  }
+
+  function dismissKey() {
+    setSavedRawKey(null)
+    setShowRawKey(false)
+    setKeyCopied(false)
   }
 
   const keyToDelete = keys.find((k) => k.id === pendingDeleteId)
@@ -37,16 +57,32 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
   return (
     <div className="space-y-5">
       {/* Raw key one-time disclosure */}
-      {rawKey && (
+      {savedRawKey && (
         <div className="border border-amber-500/30 bg-amber-500/8 p-4 space-y-3">
-          <div className="flex items-start gap-2">
-            <AlertCircle size={14} className="text-amber-400 shrink-0 mt-0.5" aria-hidden />
-            <p className="text-sm font-medium text-amber-300">Save this key — it won't be shown again.</p>
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-start gap-2">
+              <AlertCircle size={14} className="text-amber-400 shrink-0 mt-0.5" aria-hidden />
+              <p className="text-sm font-medium text-amber-300">Save this key — it won't be shown again.</p>
+            </div>
+            <button
+              onClick={dismissKey}
+              aria-label="Dismiss"
+              className="text-amber-400/60 hover:text-amber-400 transition-colors shrink-0"
+            >
+              <X size={13} />
+            </button>
           </div>
           <div className="flex items-center gap-2">
             <code className="flex-1 font-mono text-xs bg-black/40 px-3 py-2 border border-white/10 break-all select-all text-white/80">
-              {rawKey}
+              {showRawKey ? savedRawKey : '•'.repeat(Math.min(savedRawKey.length, 40))}
             </code>
+            <button
+              onClick={() => setShowRawKey((v) => !v)}
+              aria-label={showRawKey ? 'Hide key' : 'Show key'}
+              className="p-2 border border-white/20 bg-white/5 hover:border-neon-blue/40 hover:text-neon-blue text-white/50 transition-all shrink-0"
+            >
+              {showRawKey ? <EyeOff size={13} /> : <Eye size={13} />}
+            </button>
             <button
               onClick={copyRawKey}
               aria-label="Copy key"
@@ -58,7 +94,7 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
         </div>
       )}
 
-      {/* Create form — FIX 6: items-center + h-10 */}
+      {/* Create form */}
       <form action={createFormAction} className="flex items-center gap-2">
         <div className="flex-1 space-y-1.5">
           <label htmlFor="key-name" className="text-xs font-medium text-white/50 uppercase tracking-wider">
@@ -83,9 +119,14 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
           <span className="relative z-10">{isCreating ? 'Creating…' : 'Create'}</span>
         </button>
       </form>
-      {createError && <p className="text-sm text-red-400">{createError}</p>}
+      {createError && (
+        <div className="flex items-center gap-2 p-3 border border-red-500/30 bg-red-500/8 text-red-400">
+          <AlertCircle size={14} className="shrink-0" aria-hidden />
+          <p className="text-sm">{createError}</p>
+        </div>
+      )}
 
-      {/* Key list — FIX 7: masked display */}
+      {/* Key list */}
       {keys.length === 0 ? (
         <div className="flex flex-col items-center py-10 text-center gap-3">
           <Key size={28} className="text-white/20" aria-hidden />
@@ -116,7 +157,7 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
                 aria-label="Masked API key"
               />
 
-              {/* Right: copy (disabled — key shown once) + delete */}
+              {/* Right: delete */}
               <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   type="button"
@@ -140,7 +181,12 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
           ))}
         </div>
       )}
-      {deleteError && <p className="text-sm text-red-400">{deleteError}</p>}
+      {deleteError && (
+        <div className="flex items-center gap-2 p-3 border border-red-500/30 bg-red-500/8 text-red-400">
+          <AlertCircle size={14} className="shrink-0" aria-hidden />
+          <p className="text-sm">{deleteError}</p>
+        </div>
+      )}
 
       {/* Delete confirm dialog */}
       <Dialog open={!!pendingDeleteId} onOpenChange={(o) => { if (!o) setPendingDeleteId(null) }}>

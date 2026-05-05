@@ -38,16 +38,27 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
 
   const pendingRef = useRef('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, pendingText])
+
+  function resizeTextarea() {
+    const el = textareaRef.current
+    if (!el) return
+    el.style.height = 'auto'
+    el.style.height = `${Math.min(el.scrollHeight, 120)}px`
+  }
 
   const sendMessage = useCallback(
     async (text: string) => {
       if (!text.trim() || isStreaming) return
 
       setInput('')
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto'
+      }
       setError(null)
       setMessages((prev) => [...prev, { role: 'user', content: text }])
       setIsStreaming(true)
@@ -196,24 +207,28 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input — FIX 6: items-center + h-10 */}
+      {/* Input */}
       <div className="border-t border-white/10 p-4 shrink-0">
-        <form onSubmit={(e) => void handleSubmit(e)} className="flex items-center gap-2">
+        <form onSubmit={(e) => void handleSubmit(e)} className="flex items-end gap-2">
           <textarea
+            ref={textareaRef}
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => {
+              setInput(e.target.value)
+              resizeTextarea()
+            }}
             onKeyDown={handleKeyDown}
             placeholder="Ask a question… (Enter to send, Shift+Enter for new line)"
             disabled={isStreaming}
             rows={1}
-            className="flex-1 resize-none h-10 px-3 py-2 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50"
+            className="flex-1 resize-none min-h-[2.5rem] max-h-[7.5rem] px-3 py-2 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50 overflow-y-auto scrollbar-hide"
             style={{ lineHeight: '1.5rem' }}
           />
           <button
             type="submit"
             disabled={isStreaming || !input.trim()}
             aria-label="Send"
-            className="h-10 w-10 flex items-center justify-center bg-neon-blue text-black hover:bg-neon-blue/80 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shrink-0"
+            className="h-10 w-10 flex items-center justify-center bg-neon-blue text-black hover:bg-neon-blue/80 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shrink-0 mb-0"
           >
             <Send size={15} aria-hidden />
           </button>

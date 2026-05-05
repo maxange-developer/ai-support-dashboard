@@ -1,0 +1,41 @@
+{
+  "nav": {
+    "documents": "Documents",
+    "playground": "Playground",
+    "embed": "Embed",
+    "conversations": "Conversations",
+    "settings": "Settings"
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "loginSubtitle": "Access your Angel1 account",
+    "signupTitle": "Create account",
+    "signupSubtitle": "Start your free trial",
+    "continueGoogle": "Continue with Google",
+    "or": "or",
+    "email": "Email",
+    "name": "Name",
+    "password": "Password",
+    "loginSubmit": "Login",
+    "signupSubmit": "Create account",
+    "loggingIn": "Signing in…",
+    "signingUp": "Signing up…",
+    "noAccount": "Don't have an account?",
+    "register": "Sign up",
+    "alreadyAccount": "Already have an account?",
+    "loginLink": "Login",
+    "checkEmail": "Check your email",
+    "emailPlaceholder": "you@example.com",
+    "namePlaceholder": "John Doe"
+  },
+  "dashboard": { "title": "Dashboard" },
+  "documents": { "title": "Documents" },
+  "playground": { "title": "Playground" },
+  "embed": {
+    "title": "Embed Widget",
+    "snippetHint": "Paste this tag in your site's HTML, before",
+    "copySnippet": "Copy snippet"
+  },
+  "conversations": { "title": "Conversations" },
+  "settings": { "title": "Settings" }
+}

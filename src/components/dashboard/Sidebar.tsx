@@ -2,17 +2,19 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
-import { FileText, MessageSquare, Code2, MessageCircle, Settings, Zap } from 'lucide-react'
+import { FileText, MessageSquare, Code2, MessageCircle, Settings } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { href: 'documents', label: 'Documents', icon: FileText },
-  { href: 'playground', label: 'Playground', icon: MessageSquare },
-  { href: 'embed', label: 'Embed', icon: Code2 },
-  { href: 'conversations', label: 'Conversations', icon: MessageCircle },
-  { href: 'settings', label: 'Settings', icon: Settings },
-]
+  { href: 'documents', key: 'documents', icon: FileText },
+  { href: 'playground', key: 'playground', icon: MessageSquare },
+  { href: 'embed', key: 'embed', icon: Code2 },
+  { href: 'conversations', key: 'conversations', icon: MessageCircle },
+  { href: 'settings', key: 'settings', icon: Settings },
+] as const
 
 interface SidebarProps {
   orgSlug: string
@@ -22,15 +24,15 @@ interface SidebarProps {
 
 export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
   const pathname = usePathname()
+  const t = useTranslations('nav')
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
 
   return (
     <div className="flex h-full flex-col">
       {/* Logo */}
-      <div className="flex h-16 items-center gap-2 px-5 border-b border-white/10 shrink-0">
-        <Zap size={18} className="text-neon-blue shrink-0" aria-hidden />
-        <span className="font-bold text-base tracking-widest text-neon-blue neon-text">Angel1</span>
+      <div className="flex h-16 items-center px-5 border-b border-white/10 shrink-0">
+        <Image src="/images/logo-white.webp" width={88} height={28} alt="Angel1" className="object-contain" />
       </div>
 
       {/* Org name */}
@@ -41,7 +43,7 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
 
       {/* Nav */}
       <nav className="flex-1 py-2 space-y-0.5">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+        {NAV_ITEMS.map(({ href, key, icon: Icon }) => {
           const fullPath = `/app/${orgSlug}/${href}`
           const isActive = mounted && pathname.startsWith(fullPath)
           return (
@@ -57,7 +59,7 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
               )}
             >
               <Icon size={15} aria-hidden className="shrink-0" />
-              {label}
+              {t(key)}
             </Link>
           )
         })}

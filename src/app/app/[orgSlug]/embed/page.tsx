@@ -5,6 +5,7 @@ import { listApiKeys } from '@/lib/db/api-keys'
 import { createKeyAction, deleteKeyAction } from './actions'
 import ApiKeyManager from '@/components/embed/ApiKeyManager'
 import EmbedSnippet from '@/components/embed/EmbedSnippet'
+import { getTranslations } from 'next-intl/server'
 
 type MembershipRow = { org_id: string }
 type OrgRow = { id: string; slug: string }
@@ -47,12 +48,13 @@ export default async function EmbedPage({
 
   const boundCreate = createKeyAction.bind(null, orgSlug)
   const boundDelete = deleteKeyAction.bind(null, orgSlug)
+  const t = await getTranslations('embed')
 
   return (
     <div className="max-w-2xl space-y-8 animate-fade-up">
       <div>
-        <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
-          Embed Widget<span className="text-neon-pink">.</span>
+        <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
+          {t('title')}<span className="text-neon-pink">.</span>
         </h1>
         <p className="text-sm text-white/40 mt-1">
           Create an API key, copy the snippet, and paste it into your site.
@@ -73,7 +75,7 @@ export default async function EmbedPage({
           </code>{' '}
           with the key created above.
         </p>
-        <EmbedSnippet snippet={snippet} />
+        <EmbedSnippet snippet={snippet} snippetHint={t('snippetHint')} copyLabel={t('copySnippet')} />
       </section>
 
       <section className="glass rounded-lg p-6 border-2 border-white/10 space-y-4">

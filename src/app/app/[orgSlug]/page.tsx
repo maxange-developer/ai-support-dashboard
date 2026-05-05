@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getConversationStats, getCostStats, getTopQuestions } from '@/lib/db/analytics'
 import CostChart from '@/components/dashboard/CostChart'
+import { getTranslations } from 'next-intl/server'
 
 type OrgRow = { id: string; name: string }
 
@@ -26,6 +27,7 @@ export default async function OrgHomePage({
   if (!org) notFound()
 
   const admin = createAdminClient()
+  const t = await getTranslations('dashboard')
 
   const [stats, costStats, topQuestions] = await Promise.all([
     getConversationStats(admin, org.id),
@@ -39,8 +41,8 @@ export default async function OrgHomePage({
   return (
     <div className="space-y-8 animate-fade-up">
       <div>
-        <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
-          Dashboard<span className="text-neon-pink">.</span>
+        <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
+          {t('title')}<span className="text-neon-pink">.</span>
         </h1>
         <p className="text-white/40 text-sm mt-1">Overview of conversations and AI costs</p>
       </div>

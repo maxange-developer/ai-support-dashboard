@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { listConversations } from '@/lib/db/analytics'
 import { getConversationMessages } from './actions'
 import ConversationList from '@/components/conversations/ConversationList'
+import { getTranslations } from 'next-intl/server'
 
 type OrgRow = { id: string }
 
@@ -30,6 +31,7 @@ export default async function ConversationsPage({
   if (!org) notFound()
 
   const admin = createAdminClient()
+  const t = await getTranslations('conversations')
 
   let since: Date | undefined
   if (period === 'today') {
@@ -47,8 +49,8 @@ export default async function ConversationsPage({
   return (
     <div className="space-y-6 animate-fade-up">
       <div>
-        <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
-          Conversations<span className="text-neon-pink">.</span>
+        <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
+          {t('title')}<span className="text-neon-pink">.</span>
         </h1>
         <p className="text-white/40 text-sm mt-1">
           {conversations.length} conversation{conversations.length !== 1 ? 's' : ''} in the period

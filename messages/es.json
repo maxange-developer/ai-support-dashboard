@@ -1,0 +1,41 @@
+{
+  "nav": {
+    "documents": "Documentos",
+    "playground": "Playground",
+    "embed": "Embed",
+    "conversations": "Conversaciones",
+    "settings": "Ajustes"
+  },
+  "auth": {
+    "loginTitle": "Iniciar sesión",
+    "loginSubtitle": "Accede a tu cuenta Angel1",
+    "signupTitle": "Crear cuenta",
+    "signupSubtitle": "Empieza tu prueba gratuita",
+    "continueGoogle": "Continuar con Google",
+    "or": "o",
+    "email": "Correo electrónico",
+    "name": "Nombre",
+    "password": "Contraseña",
+    "loginSubmit": "Entrar",
+    "signupSubmit": "Crear cuenta",
+    "loggingIn": "Iniciando sesión…",
+    "signingUp": "Registrando…",
+    "noAccount": "¿No tienes cuenta?",
+    "register": "Regístrate",
+    "alreadyAccount": "¿Ya tienes cuenta?",
+    "loginLink": "Iniciar sesión",
+    "checkEmail": "Revisa tu correo",
+    "emailPlaceholder": "tu@ejemplo.es",
+    "namePlaceholder": "Juan García"
+  },
+  "dashboard": { "title": "Panel de control" },
+  "documents": { "title": "Documentos" },
+  "playground": { "title": "Playground" },
+  "embed": {
+    "title": "Widget embebido",
+    "snippetHint": "Pega esta etiqueta en el HTML de tu sitio, antes de",
+    "copySnippet": "Copiar código"
+  },
+  "conversations": { "title": "Conversaciones" },
+  "settings": { "title": "Ajustes" }
+}

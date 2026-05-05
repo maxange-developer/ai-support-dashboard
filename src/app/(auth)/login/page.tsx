@@ -2,6 +2,8 @@
 
 import { useActionState } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { AlertCircle } from 'lucide-react'
 import { loginAction } from './actions'
 import { createClient } from '@/lib/supabase/client'
 
@@ -9,6 +11,7 @@ type State = { error: string } | null
 
 export default function LoginPage() {
   const [state, formAction, isPending] = useActionState<State, FormData>(loginAction, null)
+  const t = useTranslations('auth')
 
   async function handleGoogleLogin() {
     const supabase = createClient()
@@ -21,10 +24,10 @@ export default function LoginPage() {
   return (
     <div className="glass rounded-lg border border-neon-blue/30 p-8 space-y-6">
       <div className="text-center space-y-1">
-        <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
-          Accedi<span className="text-neon-pink">.</span>
+        <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
+          {t('loginTitle')}<span className="text-neon-pink">.</span>
         </h1>
-        <p className="text-sm text-white/50">Entra nel tuo account Angel1</p>
+        <p className="text-sm text-white/50">{t('loginSubtitle')}</p>
       </div>
 
       <button
@@ -33,7 +36,7 @@ export default function LoginPage() {
         className="w-full flex items-center justify-center gap-2 py-2.5 border border-white/20 bg-white/5 text-sm font-medium text-white hover:bg-white/10 hover:border-neon-blue/40 transition-all duration-200"
       >
         <GoogleIcon />
-        Continua con Google
+        {t('continueGoogle')}
       </button>
 
       <div className="relative">
@@ -41,18 +44,21 @@ export default function LoginPage() {
           <span className="w-full border-t border-white/10" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-transparent px-2 text-white/30">oppure</span>
+          <span className="bg-transparent px-2 text-white/30">{t('or')}</span>
         </div>
       </div>
 
       <form action={formAction} className="space-y-4">
         {state && 'error' in state && state.error && (
-          <p className="text-sm text-red-400 text-center">{state.error}</p>
+          <div className="flex items-center gap-2 p-3 border border-red-500/30 bg-red-500/8 text-red-400">
+            <AlertCircle size={14} className="shrink-0" aria-hidden />
+            <p className="text-sm">{state.error}</p>
+          </div>
         )}
 
         <div className="space-y-1.5">
           <label htmlFor="email" className="text-xs font-medium text-white/60 uppercase tracking-wider">
-            Email
+            {t('email')}
           </label>
           <input
             id="email"
@@ -61,13 +67,13 @@ export default function LoginPage() {
             autoComplete="email"
             required
             className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
-            placeholder="tu@esempio.it"
+            placeholder={t('emailPlaceholder')}
           />
         </div>
 
         <div className="space-y-1.5">
           <label htmlFor="password" className="text-xs font-medium text-white/60 uppercase tracking-wider">
-            Password
+            {t('password')}
           </label>
           <input
             id="password"
@@ -86,14 +92,14 @@ export default function LoginPage() {
           className="w-full py-3 border-2 border-neon-blue text-white font-semibold uppercase tracking-wider text-sm overflow-hidden relative hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <span className="absolute inset-0 bg-neon-blue transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
-          <span className="relative z-10">{isPending ? 'Accesso in corso…' : 'Accedi'}</span>
+          <span className="relative z-10">{isPending ? t('loggingIn') : t('loginSubmit')}</span>
         </button>
       </form>
 
       <p className="text-center text-sm text-white/40">
-        Non hai un account?{' '}
+        {t('noAccount')}{' '}
         <Link href="/signup" className="text-neon-blue hover:text-neon-blue/70 transition-colors">
-          Registrati
+          {t('register')}
         </Link>
       </p>
     </div>
