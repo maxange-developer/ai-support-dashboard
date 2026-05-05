@@ -3,13 +3,12 @@
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLocale } from 'next-intl'
+import Image from 'next/image'
+import { cn } from '@/lib/utils'
 import { setLocale } from '@/app/actions/locale'
 
-const LOCALES = [
-  { code: 'en', label: 'EN', flag: '🇬🇧' },
-  { code: 'it', label: 'IT', flag: '🇮🇹' },
-  { code: 'es', label: 'ES', flag: '🇪🇸' },
-]
+const FLAG_MAP: Record<string, string> = { en: 'gb', it: 'it', es: 'es' }
+const LOCALES = ['en', 'it', 'es']
 
 export default function LanguageSwitcher() {
   const locale = useLocale()
@@ -24,21 +23,28 @@ export default function LanguageSwitcher() {
   }
 
   return (
-    <div className="flex items-center gap-0.5">
-      {LOCALES.map(({ code, label, flag }) => (
+    <div className="flex items-center gap-1.5">
+      {LOCALES.map((code) => (
         <button
           key={code}
           onClick={() => switchLocale(code)}
           disabled={isPending || locale === code}
-          aria-label={`Switch to ${label}`}
-          className={`flex items-center gap-1 px-2 py-1 text-xs font-medium uppercase tracking-wider transition-all ${
+          aria-label={`Switch to ${code.toUpperCase()}`}
+          className={cn(
+            'w-7 h-7 rounded-full overflow-hidden border-2 transition-all duration-200 disabled:cursor-default',
             locale === code
-              ? 'text-neon-blue border border-neon-blue/40 bg-neon-blue/8'
-              : 'text-white/40 hover:text-white/70 border border-transparent hover:border-white/20'
-          } disabled:cursor-default`}
+              ? 'border-neon-blue opacity-100'
+              : 'border-white/20 opacity-50 hover:opacity-80',
+          )}
         >
-          <span aria-hidden>{flag}</span>
-          {label}
+          <Image
+            src={`https://flagcdn.com/w40/${FLAG_MAP[code]}.png`}
+            alt={code}
+            width={28}
+            height={28}
+            className="w-full h-full object-cover"
+            unoptimized
+          />
         </button>
       ))}
     </div>

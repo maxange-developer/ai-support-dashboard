@@ -20,10 +20,14 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
   const [deleteState, deleteFormAction, isDeleting] = useActionState(deleteAction, null)
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null)
 
-  // Persist rawKey within session so it survives next form submission
+  // One-time amber disclosure box
   const [savedRawKey, setSavedRawKey] = useState<string | null>(null)
   const [showRawKey, setShowRawKey] = useState(false)
-  const [keyCopied, setKeyCopied] = useState(false)
+  const [rawKeyCopied, setRawKeyCopied] = useState(false)
+
+  // Per-key list controls
+  const [visibleKeys, setVisibleKeys] = useState<Set<string>>(new Set())
+  const [copied, setCopied] = useState<string | null>(null)
 
   const rawKey = createState && 'rawKey' in createState ? createState.rawKey : null
   const createError = createState && 'error' in createState ? createState.error : null
@@ -33,23 +37,38 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
     if (rawKey) {
       setSavedRawKey(rawKey)
       setShowRawKey(false)
-      setKeyCopied(false)
-      toast.success('API key created', { description: 'Copy and save the key — it won\'t be shown again.' })
+      setRawKeyCopied(false)
+      toast.success('API key created', { description: "Copy and save the key — it won't be shown again." })
     }
   }, [rawKey])
 
   function copyRawKey() {
     if (!savedRawKey) return
     void navigator.clipboard.writeText(savedRawKey).then(() => {
-      setKeyCopied(true)
-      setTimeout(() => setKeyCopied(false), 2000)
+      setRawKeyCopied(true)
+      setTimeout(() => setRawKeyCopied(false), 2000)
     })
   }
 
   function dismissKey() {
     setSavedRawKey(null)
     setShowRawKey(false)
-    setKeyCopied(false)
+    setRawKeyCopied(false)
+  }
+
+  function toggleVisibility(id: string) {
+    setVisibleKeys((prev) => {
+      const next = new Set(prev)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
+    })
+  }
+
+  async function handleCopy(key: ApiKeyListItem) {
+    const value = `sk-${key.id.slice(0, 8)}`
+    await navigator.clipboard.writeText(value)
+    setCopied(key.id)
+    setTimeout(() => setCopied(null), 2000)
   }
 
   const keyToDelete = keys.find((k) => k.id === pendingDeleteId)
@@ -88,7 +107,7 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
               aria-label="Copy key"
               className="p-2 border border-white/20 bg-white/5 hover:border-neon-blue/40 hover:text-neon-blue text-white/50 transition-all shrink-0"
             >
-              {keyCopied ? <Check size={13} /> : <Copy size={13} />}
+              {rawKeyCopied ? <Check size={13} /> : <Copy size={13} />}
             </button>
           </div>
         </div>
@@ -134,51 +153,65 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
         </div>
       ) : (
         <div className="space-y-2">
-          {keys.map((key) => (
-            <div
-              key={key.id}
-              className="glass rounded-lg border-2 border-white/10 hover:border-neon-blue/30 transition-colors duration-200 p-4 flex items-center justify-between gap-4"
-            >
-              {/* Left: name + date */}
-              <div className="min-w-0 shrink-0">
-                <p className="text-sm font-medium text-white truncate">{key.name ?? 'Unnamed'}</p>
-                <p className="text-xs text-white/40 mt-0.5">
-                  {key.last_used_at
-                    ? `Last used ${new Date(key.last_used_at).toLocaleDateString('en-GB')}`
-                    : `Created ${new Date(key.created_at).toLocaleDateString('en-GB')}`}
-                </p>
-              </div>
+          {keys.map((key) => {
+            const isVisible = visibleKeys.has(key.id)
+            const prefix = `sk-${key.id.slice(0, 8)}`
+            return (
+              <div
+                key={key.id}
+                className="glass rounded-lg border-2 border-white/10 hover:border-neon-blue/30 transition-colors duration-200 p-4 flex items-center justify-between gap-4"
+              >
+                {/* Left: name + date */}
+                <div className="min-w-0 shrink-0">
+                  <p className="text-sm font-medium text-white truncate">{key.name ?? 'Unnamed'}</p>
+                  <p className="text-xs text-white/40 mt-0.5">
+                    {key.last_used_at
+                      ? `Last used ${new Date(key.last_used_at).toLocaleDateString('en-GB')}`
+                      : `Created ${new Date(key.created_at).toLocaleDateString('en-GB')}`}
+                  </p>
+                </div>
 
-              {/* Centre: masked input */}
-              <input
-                readOnly
-                value={`sk-${key.id.slice(0, 4)}••••••••••••••••`}
-                className="flex-1 bg-white/5 border border-white/10 px-3 py-1.5 text-sm font-mono text-white/50 min-w-0 focus:outline-none"
-                aria-label="Masked API key"
-              />
+                {/* Centre: masked/visible input */}
+                <input
+                  readOnly
+                  type={isVisible ? 'text' : 'password'}
+                  value={prefix}
+                  className="flex-1 h-9 bg-white/5 border border-white/10 px-3 text-sm font-mono text-white/70 min-w-0 focus:outline-none select-all"
+                  aria-label="API key prefix"
+                />
 
-              {/* Right: delete */}
-              <div className="flex items-center gap-1.5 shrink-0">
-                <button
-                  type="button"
-                  disabled
-                  title="Key shown only once at creation"
-                  aria-label="Copy key (unavailable)"
-                  className="h-8 px-2.5 border border-neon-blue/20 text-neon-blue/30 text-xs flex items-center gap-1 disabled:cursor-not-allowed"
-                >
-                  <Copy size={11} aria-hidden />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPendingDeleteId(key.id)}
-                  aria-label={`Delete key ${key.name ?? ''}`}
-                  className="h-8 px-2.5 border border-red-500/30 text-red-400/70 text-xs flex items-center gap-1 hover:border-red-500/60 hover:text-red-400 hover:bg-red-500/10 transition-all"
-                >
-                  <Trash2 size={11} aria-hidden />
-                </button>
+                {/* Right: eye + copy + delete */}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => toggleVisibility(key.id)}
+                    aria-label={isVisible ? 'Hide key' : 'Show key prefix'}
+                    className="h-9 w-9 flex items-center justify-center border border-white/20 text-white/40 hover:border-neon-blue hover:text-neon-blue transition-all duration-200"
+                  >
+                    {isVisible ? <EyeOff size={14} /> : <Eye size={14} />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void handleCopy(key)}
+                    aria-label="Copy key prefix"
+                    className="h-9 px-3 flex items-center gap-1.5 border border-neon-blue/40 text-neon-blue text-xs hover:bg-neon-blue/10 transition-all duration-200"
+                  >
+                    {copied === key.id
+                      ? <><Check size={12} aria-hidden /> Copied</>
+                      : <><Copy size={12} aria-hidden /> Copy</>}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPendingDeleteId(key.id)}
+                    aria-label={`Delete key ${key.name ?? ''}`}
+                    className="h-9 w-9 flex items-center justify-center border border-red-500/30 text-red-400/70 hover:border-red-500/60 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                  >
+                    <Trash2 size={12} aria-hidden />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
       {deleteError && (
@@ -206,10 +239,7 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
               Cancel
             </button>
             {pendingDeleteId && (
-              <form
-                action={deleteFormAction}
-                onSubmit={() => setPendingDeleteId(null)}
-              >
+              <form action={deleteFormAction} onSubmit={() => setPendingDeleteId(null)}>
                 <input type="hidden" name="id" value={pendingDeleteId} />
                 <button
                   type="submit"

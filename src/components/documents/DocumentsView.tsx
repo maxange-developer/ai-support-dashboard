@@ -64,8 +64,11 @@ export default function DocumentsView({ documents, orgSlug, deleteAction }: Prop
 
   return (
     <div className="space-y-4">
-      {/* Action bar */}
-      <div className="flex items-center gap-3 justify-end">
+      {/* Action bar — invisible (not removed) during selection so layout stays stable */}
+      <div
+        className="flex items-center gap-3 justify-end"
+        style={{ visibility: selecting ? 'hidden' : 'visible' }}
+      >
         <Link
           href={`/app/${orgSlug}/documents/new`}
           className="flex items-center gap-2 h-10 px-5 border-2 border-neon-blue text-white font-semibold uppercase tracking-wider text-xs overflow-hidden relative hover:text-black motion-reduce:hover:text-white transition-all duration-300 group shrink-0"
@@ -75,89 +78,92 @@ export default function DocumentsView({ documents, orgSlug, deleteAction }: Prop
           <span className="relative z-10">New Document</span>
         </Link>
 
-        {documents.length > 0 && !selecting && (
-          <button
-            onClick={() => setSelecting(true)}
-            className="flex items-center gap-2 h-10 px-5 border-2 border-red-500 text-red-400 font-semibold uppercase tracking-wider text-xs overflow-hidden relative hover:text-black motion-reduce:hover:text-red-400 transition-all duration-300 group shrink-0"
-          >
-            <span className="absolute inset-0 bg-red-500 transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
-            <Trash2 size={13} aria-hidden className="relative z-10" />
-            <span className="relative z-10">Delete</span>
-          </button>
-        )}
+        <button
+          onClick={() => setSelecting(true)}
+          disabled={documents.length === 0}
+          className="flex items-center gap-2 h-10 px-5 border-2 border-red-500 text-red-400 font-semibold uppercase tracking-wider text-xs overflow-hidden relative hover:text-black motion-reduce:hover:text-red-400 transition-all duration-300 group shrink-0 disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          <span className="absolute inset-0 bg-red-500 transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
+          <Trash2 size={13} aria-hidden className="relative z-10" />
+          <span className="relative z-10">Delete</span>
+        </button>
       </div>
 
-      {/* Document list */}
-      {documents.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center glass rounded-lg border-2 border-white/10">
-          <FileText size={40} className="text-white/20 mb-4" aria-hidden />
-          <p className="text-sm text-white/40">No documents yet. Upload one to get started.</p>
-        </div>
-      ) : (
-        <div className={cn('space-y-2', selecting && 'pb-24')}>
-          {documents.map((doc) => {
-            const { label, cls } = STATUS_STYLES[doc.status]
-            const isSelected = selected.has(doc.id)
-            return (
-              <div
-                key={doc.id}
-                onClick={selecting ? () => toggleSelect(doc.id) : undefined}
-                className={cn(
-                  'glass rounded-lg border-2 transition-colors duration-300 flex items-center gap-4 px-4 py-3',
-                  selecting ? 'cursor-pointer' : 'hover-lift',
-                  isSelected
-                    ? 'border-neon-blue/60 bg-neon-blue/5'
-                    : selecting
-                    ? 'border-white/10 hover:border-neon-blue/30'
-                    : 'border-white/10 hover:border-neon-blue/50',
-                )}
-              >
-                {selecting && (
-                  <span className="shrink-0 text-neon-blue/70">
-                    {isSelected
-                      ? <CheckSquare size={15} aria-hidden />
-                      : <Square size={15} aria-hidden />}
+      {/* Document list + inline selection footer share the same wrapper width */}
+      <div className="flex flex-col">
+        {documents.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center glass rounded-lg border-2 border-white/10">
+            <FileText size={40} className="text-white/20 mb-4" aria-hidden />
+            <p className="text-sm text-white/40">No documents yet. Upload one to get started.</p>
+          </div>
+        ) : (
+          <div className={cn('space-y-2', selecting && 'pb-3')}>
+            {documents.map((doc) => {
+              const { label, cls } = STATUS_STYLES[doc.status]
+              const isSelected = selected.has(doc.id)
+              return (
+                <div
+                  key={doc.id}
+                  onClick={selecting ? () => toggleSelect(doc.id) : undefined}
+                  className={cn(
+                    'glass rounded-lg border-2 transition-colors duration-300 flex items-center gap-4 px-4 py-3',
+                    selecting ? 'cursor-pointer' : 'hover-lift',
+                    isSelected
+                      ? 'border-neon-blue/60 bg-neon-blue/5'
+                      : selecting
+                      ? 'border-white/10 hover:border-neon-blue/30'
+                      : 'border-white/10 hover:border-neon-blue/50',
+                  )}
+                >
+                  {selecting && (
+                    <span className="shrink-0 text-neon-blue/70">
+                      {isSelected
+                        ? <CheckSquare size={15} aria-hidden />
+                        : <Square size={15} aria-hidden />}
+                    </span>
+                  )}
+                  <FileText size={16} className="text-neon-blue/50 shrink-0" aria-hidden />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm text-white truncate">{doc.title}</p>
+                    <p className="text-xs text-white/35 mt-0.5">
+                      {SOURCE_LABEL[doc.source_type]} · {new Date(doc.created_at).toLocaleDateString('en-GB')}
+                    </p>
+                  </div>
+                  <span className={`text-xs font-medium px-2.5 py-1 shrink-0 ${cls}`}>
+                    {label}
                   </span>
-                )}
-                <FileText size={16} className="text-neon-blue/50 shrink-0" aria-hidden />
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm text-white truncate">{doc.title}</p>
-                  <p className="text-xs text-white/35 mt-0.5">
-                    {SOURCE_LABEL[doc.source_type]} · {new Date(doc.created_at).toLocaleDateString('en-GB')}
-                  </p>
                 </div>
-                <span className={`text-xs font-medium px-2.5 py-1 shrink-0 ${cls}`}>
-                  {label}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-      )}
+              )
+            })}
+          </div>
+        )}
 
-      {/* Selection footer — outside scroll, fixed */}
-      {selecting && (
-        <div className="fixed bottom-0 left-0 right-0 z-30 glass border-t border-white/10 px-6 py-4 flex items-center gap-4 md:left-60">
-          <p className="flex-1 text-sm text-white/70 font-medium">
-            {selected.size} selected
-          </p>
-          <button
-            onClick={cancelSelection}
-            className="flex items-center gap-1.5 h-9 px-4 border border-white/30 text-white/60 text-xs uppercase tracking-wider hover:text-white hover:border-white/50 transition-all"
-          >
-            <X size={12} aria-hidden />
-            Cancel
-          </button>
-          <button
-            onClick={() => setConfirmOpen(true)}
-            disabled={selected.size === 0}
-            className="flex items-center gap-1.5 h-9 px-4 bg-red-500 text-black font-semibold text-xs uppercase tracking-wider hover:bg-red-400 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-          >
-            <Trash2 size={12} aria-hidden />
-            Delete Selected
-          </button>
-        </div>
-      )}
+        {/* Selection footer — same width as list, sticky at bottom of container */}
+        {selecting && (
+          <div className="sticky bottom-0 w-full glass border border-white/10 rounded-lg px-4 py-3 flex items-center justify-between mt-3">
+            <p className="flex-1 text-sm text-white/70 font-medium">
+              {selected.size} selected
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={cancelSelection}
+                className="flex items-center gap-1.5 h-9 px-4 border border-white/30 text-white/60 text-xs uppercase tracking-wider hover:text-white hover:border-white/50 transition-all"
+              >
+                <X size={12} aria-hidden />
+                Cancel
+              </button>
+              <button
+                onClick={() => setConfirmOpen(true)}
+                disabled={selected.size === 0}
+                className="flex items-center gap-1.5 h-9 px-4 bg-red-500 text-black font-semibold text-xs uppercase tracking-wider hover:bg-red-400 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >
+                <Trash2 size={12} aria-hidden />
+                Delete Selected
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Confirm dialog */}
       <Dialog open={confirmOpen} onOpenChange={(o) => { if (!o && !isDeleting) setConfirmOpen(false) }}>

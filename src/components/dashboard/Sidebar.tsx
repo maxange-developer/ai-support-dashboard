@@ -31,8 +31,8 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
   return (
     <div className="flex h-full flex-col">
       {/* Logo */}
-      <div className="flex h-16 items-center px-5 border-b border-white/10 shrink-0">
-        <Image src="/images/logo-white.webp" width={88} height={28} alt="Angel1" className="object-contain" />
+      <div className="flex h-16 items-center px-4 border-b border-white/10 shrink-0">
+        <Image src="/images/logo-white.webp" width={56} height={22} alt="Angel1" className="object-contain" priority />
       </div>
 
       {/* Org name */}
