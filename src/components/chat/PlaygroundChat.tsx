@@ -209,7 +209,7 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
 
       {/* Input */}
       <div className="border-t border-white/10 p-4 shrink-0">
-        <form onSubmit={(e) => void handleSubmit(e)} className="flex items-end gap-2">
+        <form onSubmit={(e) => void handleSubmit(e)} className="flex items-stretch gap-2">
           <textarea
             ref={textareaRef}
             value={input}
@@ -228,9 +228,10 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
             type="submit"
             disabled={isStreaming || !input.trim()}
             aria-label="Send"
-            className="h-10 w-10 flex items-center justify-center bg-neon-blue text-black hover:bg-neon-blue/80 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shrink-0 mb-0"
+            className="h-10 w-10 flex items-center justify-center border-2 border-neon-pink text-white relative overflow-hidden hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
           >
-            <Send size={15} aria-hidden />
+            <span className="absolute inset-0 bg-neon-pink scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
+            <Send size={15} aria-hidden className="relative z-10" />
           </button>
         </form>
       </div>

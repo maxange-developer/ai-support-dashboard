@@ -114,28 +114,28 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
       )}
 
       {/* Create form */}
-      <form action={createFormAction} className="flex items-center gap-2" noValidate>
-        <div className="flex-1 space-y-1.5">
-          <label htmlFor="key-name" className="text-xs font-medium text-white/50 uppercase tracking-wider">
-            New API Key
-          </label>
+      <form action={createFormAction} className="space-y-1.5" noValidate>
+        <label htmlFor="key-name" className="text-xs font-medium text-white/50 uppercase tracking-wider">
+          New API Key
+        </label>
+        <div className="flex items-stretch gap-2">
           <input
             id="key-name"
             name="name"
             placeholder="e.g. Main website"
             disabled={isCreating}
-            className="w-full h-10 px-3 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50"
+            className="flex-1 h-10 px-3 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50"
           />
+          <button
+            type="submit"
+            disabled={isCreating}
+            className="h-10 px-4 border-2 border-neon-pink text-white text-xs font-semibold uppercase tracking-wider relative overflow-hidden hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+          >
+            <span className="absolute inset-0 bg-neon-pink scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
+            <Plus size={13} aria-hidden className="relative z-10" />
+            <span className="relative z-10">{isCreating ? 'Creating…' : 'Create'}</span>
+          </button>
         </div>
-        <button
-          type="submit"
-          disabled={isCreating}
-          className="flex items-center gap-1.5 h-10 px-5 mt-[1.375rem] border-2 border-neon-blue text-white font-semibold uppercase tracking-wider text-xs overflow-hidden relative hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
-        >
-          <span className="absolute inset-0 bg-neon-blue transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
-          <Plus size={13} aria-hidden className="relative z-10" />
-          <span className="relative z-10">{isCreating ? 'Creating…' : 'Create'}</span>
-        </button>
       </form>
       {createError && (
         <div className="flex items-center gap-2 p-3 border border-red-500/30 bg-red-500/8 text-red-400">
@@ -185,7 +185,7 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
                     type="button"
                     onClick={() => toggleVisibility(key.id)}
                     aria-label={isVisible ? 'Hide key' : 'Show key prefix'}
-                    className="h-9 w-9 flex items-center justify-center border border-white/20 text-white/40 hover:border-neon-blue hover:text-neon-blue transition-all duration-200"
+                    className="h-9 w-9 flex items-center justify-center shrink-0 border border-neon-pink/40 text-neon-pink/60 hover:border-neon-pink hover:text-neon-pink transition-all duration-200"
                   >
                     {isVisible ? <EyeOff size={14} /> : <Eye size={14} />}
                   </button>

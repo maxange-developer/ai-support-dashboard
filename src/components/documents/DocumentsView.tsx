@@ -93,10 +93,10 @@ export default function DocumentsView({ documents, orgSlug, deleteAction, upload
               disabled={documents.length === 0}
               className="h-9 px-4 border-2 border-red-500/60 text-red-400 text-xs font-semibold
                          uppercase tracking-wider hover:bg-red-500 hover:text-black
-                         transition-all duration-300 shrink-0
+                         transition-all duration-300 shrink-0 flex items-center gap-2
                          disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              Delete
+              <Trash2 size={14} aria-hidden /> Delete
             </button>
           </>
         )}

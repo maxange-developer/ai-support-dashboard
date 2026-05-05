@@ -26,10 +26,10 @@ export default function Header({ orgSlug, orgName, userEmail }: HeaderProps) {
       <MobileSidebar orgSlug={orgSlug} orgName={orgName} />
       <div className="flex-1" />
       <div className="flex items-center gap-3">
-        <LanguageSwitcher />
         <span className="hidden sm:block text-xs text-white/40 truncate max-w-[200px]">
           {userEmail}
         </span>
+        <LanguageSwitcher />
         <button
           onClick={handleLogout}
           aria-label="Logout"
