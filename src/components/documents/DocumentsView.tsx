@@ -68,39 +68,57 @@ export default function DocumentsView({ documents, orgSlug, deleteAction, upload
 
   return (
     <div className="space-y-4">
-      {/* Action bar — invisible in selection mode so layout stays stable */}
-      <div
-        className="flex items-center gap-3 justify-end"
-        style={{ visibility: selecting ? 'hidden' : 'visible' }}
-      >
-        {view === 'list' && (
-          <>
+      {/* Header / selection bar */}
+      {selecting ? (
+        <div className="flex items-center justify-between glass border border-white/10 rounded-lg px-4 py-3">
+          <span className="text-white/60 text-sm">{selected.size} selected</span>
+          <div className="flex items-center gap-3">
             <button
-              onClick={() => setView('upload')}
-              className="h-9 px-4 border-2 border-neon-blue text-white text-xs font-semibold
-                         uppercase tracking-wider relative overflow-hidden hover:text-black
-                         motion-reduce:hover:text-white transition-all duration-300 group shrink-0"
+              onClick={cancelSelection}
+              className="h-9 px-4 border border-white/30 text-white/60 text-xs font-semibold
+                         uppercase tracking-wider hover:border-white hover:text-white
+                         transition-all duration-200 flex items-center gap-2"
             >
-              <span className="relative z-10 flex items-center gap-2">
-                <Plus size={14} aria-hidden /> New Document
-              </span>
-              <span className="absolute inset-0 bg-neon-blue scale-x-0 group-hover:scale-x-100
-                               transition-transform duration-300 origin-left motion-reduce:hidden" />
+              <X size={14} aria-hidden /> Cancel
             </button>
-
             <button
-              onClick={() => setSelecting(true)}
-              disabled={documents.length === 0}
-              className="h-9 px-4 border-2 border-red-500/60 text-red-400 text-xs font-semibold
+              onClick={() => setConfirmOpen(true)}
+              disabled={selected.size === 0}
+              className="h-9 px-4 border-2 border-red-500 text-red-400 text-xs font-semibold
                          uppercase tracking-wider hover:bg-red-500 hover:text-black
-                         transition-all duration-300 shrink-0 flex items-center gap-2
-                         disabled:opacity-30 disabled:cursor-not-allowed"
+                         transition-all duration-300 flex items-center gap-2
+                         disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              <Trash2 size={14} aria-hidden /> Delete
+              <Trash2 size={14} aria-hidden /> Delete ({selected.size})
             </button>
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      ) : view === 'list' ? (
+        <div className="flex items-center gap-3 justify-end">
+          <button
+            onClick={() => setView('upload')}
+            className="h-9 px-4 border-2 border-neon-blue text-white text-xs font-semibold
+                       uppercase tracking-wider relative overflow-hidden hover:text-black
+                       motion-reduce:hover:text-white transition-all duration-300 group shrink-0"
+          >
+            <span className="relative z-10 flex items-center gap-2">
+              <Plus size={14} aria-hidden /> New Document
+            </span>
+            <span className="absolute inset-0 bg-neon-blue scale-x-0 group-hover:scale-x-100
+                             transition-transform duration-300 origin-left motion-reduce:hidden" />
+          </button>
+          <button
+            onClick={() => setSelecting(true)}
+            disabled={documents.length === 0}
+            className="h-9 px-4 border-2 border-red-500/60 text-red-400 text-xs font-semibold
+                       uppercase tracking-wider hover:bg-red-500 hover:text-black
+                       transition-all duration-300 shrink-0 flex items-center gap-2
+                       disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <Trash2 size={14} aria-hidden /> Delete
+          </button>
+        </div>
+      ) : null}
 
       {/* Body */}
       {view === 'upload' ? (
@@ -113,7 +131,7 @@ export default function DocumentsView({ documents, orgSlug, deleteAction, upload
               <p className="text-sm text-white/40">No documents yet. Upload one to get started.</p>
             </div>
           ) : (
-            <div className={cn('space-y-2', selecting && 'pb-3')}>
+            <div className="space-y-2">
               {documents.map((doc) => {
                 const { label, cls } = STATUS_STYLES[doc.status]
                 const isSelected = selected.has(doc.id)
@@ -154,31 +172,6 @@ export default function DocumentsView({ documents, orgSlug, deleteAction, upload
             </div>
           )}
 
-          {/* Selection footer — same width as list */}
-          {selecting && (
-            <div className="sticky bottom-0 w-full glass border border-white/10 rounded-lg px-4 py-3 flex items-center justify-between mt-3">
-              <p className="flex-1 text-sm text-white/70 font-medium">
-                {selected.size} selected
-              </p>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={cancelSelection}
-                  className="flex items-center gap-1.5 h-9 px-4 border border-white/30 text-white/60 text-xs uppercase tracking-wider hover:text-white hover:border-white/50 transition-all"
-                >
-                  <X size={12} aria-hidden />
-                  Cancel
-                </button>
-                <button
-                  onClick={() => setConfirmOpen(true)}
-                  disabled={selected.size === 0}
-                  className="flex items-center gap-1.5 h-9 px-4 bg-red-500 text-black font-semibold text-xs uppercase tracking-wider hover:bg-red-400 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                >
-                  <Trash2 size={12} aria-hidden />
-                  Delete Selected
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       )}
 

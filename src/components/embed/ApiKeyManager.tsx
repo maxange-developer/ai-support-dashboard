@@ -118,18 +118,18 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
         <label htmlFor="key-name" className="text-xs font-medium text-white/50 uppercase tracking-wider">
           New API Key
         </label>
-        <div className="flex items-stretch gap-2 max-w-sm">
+        <div className="flex items-center gap-2 w-full">
           <input
             id="key-name"
             name="name"
             placeholder="e.g. Main website"
             disabled={isCreating}
-            className="w-0 flex-1 min-w-0 h-10 px-3 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50"
+            className="flex-1 h-10 min-w-0 px-3 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50"
           />
           <button
             type="submit"
             disabled={isCreating}
-            className="h-10 px-4 border-2 border-neon-blue text-white text-xs font-semibold uppercase tracking-wider whitespace-nowrap relative overflow-hidden hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+            className="h-10 px-4 border-2 border-neon-blue text-white text-xs font-semibold uppercase tracking-wider whitespace-nowrap relative overflow-hidden hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed shrink-0 flex items-center gap-2"
           >
             <span className="absolute inset-0 bg-neon-blue scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
             <Plus size={13} aria-hidden className="relative z-10" />
