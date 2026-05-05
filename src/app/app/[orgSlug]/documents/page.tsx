@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getDocumentsByOrg } from '@/lib/db/documents'
-import { deleteDocumentsAction } from './actions'
+import { uploadDocument, deleteDocumentsAction } from './actions'
 import DocumentsView from '@/components/documents/DocumentsView'
 import { getTranslations } from 'next-intl/server'
 
@@ -26,6 +26,7 @@ export default async function DocumentsPage({
 
   const documents = await getDocumentsByOrg(supabase, org.id)
   const boundDelete = deleteDocumentsAction.bind(null, orgSlug, org.id)
+  const boundUpload = uploadDocument.bind(null, orgSlug)
   const t = await getTranslations('documents')
 
   return (
@@ -38,7 +39,7 @@ export default async function DocumentsPage({
           {documents.length} document{documents.length !== 1 ? 's' : ''} uploaded
         </p>
       </div>
-      <DocumentsView documents={documents} orgSlug={orgSlug} deleteAction={boundDelete} />
+      <DocumentsView documents={documents} orgSlug={orgSlug} deleteAction={boundDelete} uploadAction={boundUpload} />
     </div>
   )
 }
