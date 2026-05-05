@@ -68,50 +68,56 @@ export default function DocumentsView({ documents, orgSlug, deleteAction, upload
 
   return (
     <div className="space-y-4">
-      {/* Action bar — invisible in selection mode so layout stays stable */}
-      <div
-        className="flex items-center gap-3 justify-end"
-        style={{ visibility: selecting ? 'hidden' : 'visible' }}
-      >
-        {view === 'list' && (
-          <>
+      {/* Action bar */}
+      <div className="flex items-center justify-between">
+        {/* Left — Back button */}
+        <div className="flex items-center gap-3">
+          {view === 'upload' && (
             <button
-              onClick={() => setView('upload')}
-              className="h-9 px-4 border-2 border-neon-blue text-white text-xs font-semibold
-                         uppercase tracking-wider relative overflow-hidden hover:text-black
-                         motion-reduce:hover:text-white transition-all duration-300 group shrink-0"
+              onClick={() => setView('list')}
+              className="h-9 px-4 border border-white/30 text-white/60 text-xs uppercase
+                         tracking-wider hover:text-white hover:border-white/50 transition-all
+                         flex items-center gap-2 shrink-0"
             >
-              <span className="relative z-10 flex items-center gap-2">
-                <Plus size={14} aria-hidden /> New Document
-              </span>
-              <span className="absolute inset-0 bg-neon-blue scale-x-0 group-hover:scale-x-100
-                               transition-transform duration-300 origin-left motion-reduce:hidden" />
+              <ArrowLeft size={14} aria-hidden />
+              Back
             </button>
+          )}
+        </div>
 
-            <button
-              onClick={() => setSelecting(true)}
-              disabled={documents.length === 0}
-              className="h-9 px-4 border-2 border-red-500/60 text-red-400 text-xs font-semibold
-                         uppercase tracking-wider hover:bg-red-500 hover:text-black
-                         transition-all duration-300 shrink-0
-                         disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              Delete
-            </button>
-          </>
-        )}
+        {/* Right — New Document + Delete, invisible in selection mode so layout stays stable */}
+        <div
+          className="flex items-center gap-3"
+          style={{ visibility: selecting ? 'hidden' : 'visible' }}
+        >
+          {view === 'list' && (
+            <>
+              <button
+                onClick={() => setView('upload')}
+                className="h-9 px-4 border-2 border-neon-blue text-white text-xs font-semibold
+                           uppercase tracking-wider relative overflow-hidden hover:text-black
+                           motion-reduce:hover:text-white transition-all duration-300 group shrink-0"
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  <Plus size={14} aria-hidden /> New Document
+                </span>
+                <span className="absolute inset-0 bg-neon-blue scale-x-0 group-hover:scale-x-100
+                                 transition-transform duration-300 origin-left motion-reduce:hidden" />
+              </button>
 
-        {view === 'upload' && (
-          <button
-            onClick={() => setView('list')}
-            className="h-9 px-4 border border-white/30 text-white/60 text-xs uppercase
-                       tracking-wider hover:text-white hover:border-white/50 transition-all
-                       flex items-center gap-2 shrink-0"
-          >
-            <ArrowLeft size={14} aria-hidden />
-            Back
-          </button>
-        )}
+              <button
+                onClick={() => setSelecting(true)}
+                disabled={documents.length === 0}
+                className="h-9 px-4 border-2 border-red-500/60 text-red-400 text-xs font-semibold
+                           uppercase tracking-wider hover:bg-red-500 hover:text-black
+                           transition-all duration-300 shrink-0
+                           disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                Delete
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Body */}
