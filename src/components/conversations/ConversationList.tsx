@@ -20,6 +20,17 @@ interface Props {
   getMessages: (convId: string) => Promise<MessageRow[]>
 }
 
+function Stat({ label, value, color = 'white' }: { label: string; value: string; color?: 'white' | 'neon-blue' }) {
+  return (
+    <div className="flex items-center gap-1.5 px-3 py-1.5 glass border border-white/10 rounded">
+      <span className="text-[10px] text-white/35 uppercase tracking-wider font-medium">{label}</span>
+      <span className={`text-xs font-mono font-semibold ${color === 'neon-blue' ? 'text-neon-blue' : 'text-white/70'}`}>
+        {value}
+      </span>
+    </div>
+  )
+}
+
 export default function ConversationList({ conversations, period, orgSlug, getMessages }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
@@ -97,13 +108,29 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-xl max-h-[80vh] overflow-hidden bg-black/95 border-white/15 backdrop-blur-xl">
           <DialogHeader>
-            <DialogTitle className="text-white">
+            <DialogTitle className="text-white text-sm font-semibold">
               {selectedConv
                 ? new Date(selectedConv.startedAt).toLocaleString('en-GB')
                 : 'Conversation'}
             </DialogTitle>
           </DialogHeader>
-          <div className="overflow-y-auto max-h-[55vh] space-y-3 custom-scrollbar">
+
+          {selectedConv && (
+            <div className="flex items-center gap-3 flex-wrap">
+              <Stat label="Messages" value={String(selectedConv.messageCount)} />
+              <Stat
+                label="Tokens"
+                value={
+                  isPending
+                    ? '—'
+                    : String(messages.filter((m) => m.role === 'assistant').reduce((s, m) => s + (m.tokens_used ?? 0), 0))
+                }
+              />
+              <Stat label="Cost" value={`$${(selectedConv.costCents / 100).toFixed(4)}`} color="neon-blue" />
+            </div>
+          )}
+
+          <div className="overflow-y-auto max-h-[52vh] space-y-3 custom-scrollbar">
             {isPending ? (
               <p className="py-4 text-center text-sm text-white/35">Loading…</p>
             ) : messages.length === 0 ? (
