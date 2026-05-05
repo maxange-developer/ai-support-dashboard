@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from 'react'
 import dynamic from 'next/dynamic'
+import { AlertCircle } from 'lucide-react'
 import { createOrgAction } from './actions'
 
 const ThreeBackground = dynamic(() => import('@/components/ThreeBackground'), { ssr: false })
@@ -33,15 +34,18 @@ export default function OnboardingPage() {
       <div className="w-full max-w-md relative z-10 animate-fade-up">
         <div className="glass rounded-lg border border-neon-blue/30 p-8 space-y-6">
           <div className="text-center space-y-1">
-            <h1 className="font-bold neon-text" style={{ fontSize: 'var(--fs-page)' }}>
+            <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
               Crea organizzazione<span className="text-neon-pink">.</span>
             </h1>
             <p className="text-sm text-white/50">Potrai invitare altri membri in seguito.</p>
           </div>
 
-          <form action={formAction} className="space-y-4">
+          <form action={formAction} className="space-y-4" noValidate>
             {state && 'error' in state && state.error && (
-              <p className="text-sm text-red-400 text-center">{state.error}</p>
+              <div className="flex items-center gap-2 p-3 border border-red-500/30 bg-red-500/8 text-red-400">
+                <AlertCircle size={14} className="shrink-0" aria-hidden />
+                <p className="text-sm">{state.error}</p>
+              </div>
             )}
 
             <div className="space-y-1.5">
@@ -51,7 +55,6 @@ export default function OnboardingPage() {
               <input
                 id="name"
                 name="name"
-                required
                 onChange={handleNameChange}
                 placeholder="Acme Inc."
                 className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
@@ -65,7 +68,6 @@ export default function OnboardingPage() {
               <input
                 id="slug"
                 name="slug"
-                required
                 value={slug}
                 onChange={(e) => { setSlugEdited(true); setSlug(e.target.value) }}
                 placeholder="acme-inc"

@@ -10,7 +10,7 @@ export default function UploadForm({ action }: { action: BoundAction }) {
   const [state, formAction, isPending] = useActionState(action, null)
 
   return (
-    <form action={formAction} className="space-y-5 max-w-lg">
+    <form action={formAction} className="space-y-5 max-w-lg" noValidate>
       <div className="space-y-1.5">
         <label htmlFor="file" className="text-xs font-medium text-white/50 uppercase tracking-wider">
           File
@@ -20,7 +20,6 @@ export default function UploadForm({ action }: { action: BoundAction }) {
           name="file"
           type="file"
           accept=".pdf,.md,.txt"
-          required
           disabled={isPending}
           className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white text-sm
                      file:mr-4 file:py-1 file:px-3 file:border-0

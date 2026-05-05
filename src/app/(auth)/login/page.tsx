@@ -48,7 +48,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <form action={formAction} className="space-y-4">
+      <form action={formAction} className="space-y-4" noValidate>
         {state && 'error' in state && state.error && (
           <div className="flex items-center gap-2 p-3 border border-red-500/30 bg-red-500/8 text-red-400">
             <AlertCircle size={14} className="shrink-0" aria-hidden />
@@ -65,7 +65,6 @@ export default function LoginPage() {
             name="email"
             type="email"
             autoComplete="email"
-            required
             className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
             placeholder={t('emailPlaceholder')}
           />
@@ -80,7 +79,6 @@ export default function LoginPage() {
             name="password"
             type="password"
             autoComplete="current-password"
-            required
             className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
             placeholder="••••••••"
           />

@@ -114,7 +114,7 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
       )}
 
       {/* Create form */}
-      <form action={createFormAction} className="flex items-center gap-2">
+      <form action={createFormAction} className="flex items-center gap-2" noValidate>
         <div className="flex-1 space-y-1.5">
           <label htmlFor="key-name" className="text-xs font-medium text-white/50 uppercase tracking-wider">
             New API Key
@@ -123,7 +123,6 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
             id="key-name"
             name="name"
             placeholder="e.g. Main website"
-            required
             disabled={isCreating}
             className="w-full h-10 px-3 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50"
           />
