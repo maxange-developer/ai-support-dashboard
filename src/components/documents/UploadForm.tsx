@@ -1,12 +1,17 @@
 'use client'
 
 import { useActionState } from 'react'
-import { Upload, AlertCircle } from 'lucide-react'
+import { Upload, AlertCircle, ArrowLeft } from 'lucide-react'
 
 type State = { error: string } | null
 type BoundAction = (prev: State, formData: FormData) => Promise<State>
 
-export default function UploadForm({ action }: { action: BoundAction }) {
+interface Props {
+  action: BoundAction
+  onBack?: () => void
+}
+
+export default function UploadForm({ action, onBack }: Props) {
   const [state, formAction, isPending] = useActionState(action, null)
 
   return (
@@ -54,6 +59,21 @@ export default function UploadForm({ action }: { action: BoundAction }) {
           {isPending ? 'Uploading…' : 'Upload Document'}
         </span>
       </button>
+
+      {onBack && (
+        <button
+          type="button"
+          onClick={onBack}
+          className="w-full py-3 border border-white/20 text-white/50
+                     text-sm font-semibold uppercase tracking-wider
+                     hover:border-white hover:text-white
+                     transition-all duration-300 flex items-center
+                     justify-center gap-2"
+        >
+          <ArrowLeft size={14} aria-hidden />
+          Back
+        </button>
+      )}
     </form>
   )
 }
