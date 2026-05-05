@@ -228,9 +228,9 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
             type="submit"
             disabled={isStreaming || !input.trim()}
             aria-label="Send"
-            className="h-10 w-10 flex items-center justify-center border-2 border-neon-pink text-white relative overflow-hidden hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+            className="h-10 w-10 flex items-center justify-center border-2 border-neon-blue text-white relative overflow-hidden hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
           >
-            <span className="absolute inset-0 bg-neon-pink scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
+            <span className="absolute inset-0 bg-neon-blue scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
             <Send size={15} aria-hidden className="relative z-10" />
           </button>
         </form>
