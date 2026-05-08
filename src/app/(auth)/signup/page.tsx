@@ -1,11 +1,14 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useActionState } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { AlertCircle } from 'lucide-react'
 import { signupAction } from './actions'
 import { createClient } from '@/lib/supabase/client'
+
+const ThreeBackground = dynamic(() => import('@/components/ThreeBackground'), { ssr: false })
 
 type State = { error: string } | { pending: string } | null
 
@@ -23,110 +26,120 @@ export default function SignupPage() {
 
   if (state && 'pending' in state) {
     return (
-      <div className="glass rounded-lg border border-neon-blue/30 p-8 text-center space-y-3">
-        <div className="w-12 h-12 rounded-full border-2 border-neon-blue flex items-center justify-center mx-auto">
-          <span className="text-neon-blue text-lg">✓</span>
+      <>
+        <ThreeBackground />
+        <div className="relative z-10 min-h-screen flex items-center justify-center px-4">
+          <div className="w-full max-w-sm glass border border-neon-blue/30 p-8 text-center space-y-3">
+            <div className="w-12 h-12 border-2 border-neon-blue flex items-center justify-center mx-auto">
+              <span className="text-neon-blue text-lg">✓</span>
+            </div>
+            <p className="text-lg font-semibold text-neon-blue">{t('checkEmail')}</p>
+            <p className="text-sm text-white/50">{state.pending}</p>
+          </div>
         </div>
-        <p className="text-lg font-semibold text-neon-blue">{t('checkEmail')}</p>
-        <p className="text-sm text-white/50">{state.pending}</p>
-      </div>
+      </>
     )
   }
 
   return (
-    <div className="glass rounded-lg border border-neon-blue/30 p-8 space-y-6">
-      <div className="text-center space-y-1">
-        <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
-          {t('signupTitle')}<span className="text-neon-pink">.</span>
-        </h1>
-        <p className="text-sm text-white/50">{t('signupSubtitle')}</p>
-      </div>
-
-      <button
-        type="button"
-        onClick={handleGoogleSignup}
-        className="w-full flex items-center justify-center gap-2 py-2.5 border border-white/20 bg-white/5 text-sm font-medium text-white hover:bg-white/10 hover:border-neon-blue/40 transition-all duration-200"
-      >
-        <GoogleIcon />
-        {t('continueGoogle')}
-      </button>
-
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-white/10" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-transparent px-2 text-white/30">{t('or')}</span>
-        </div>
-      </div>
-
-      <form action={formAction} className="space-y-4" noValidate>
-        {state && 'error' in state && state.error && (
-          <div className="flex items-center gap-2 p-3 border border-red-500/30 bg-red-500/8 text-red-400">
-            <AlertCircle size={14} className="shrink-0" aria-hidden />
-            <p className="text-sm">{state.error}</p>
+    <>
+      <ThreeBackground />
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4">
+        <div className="w-full max-w-sm glass border border-neon-blue/30 p-8 space-y-6">
+          <div className="text-center space-y-1">
+            <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
+              {t('signupTitle')}<span className="text-white">.</span>
+            </h1>
+            <p className="text-sm text-white/50">{t('signupSubtitle')}</p>
           </div>
-        )}
 
-        <div className="space-y-1.5">
-          <label htmlFor="nome" className="text-xs font-medium text-white/60 uppercase tracking-wider">
-            {t('name')}
-          </label>
-          <input
-            id="nome"
-            name="nome"
-            type="text"
-            autoComplete="name"
-            className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
-            placeholder={t('namePlaceholder')}
-          />
+          <button
+            type="button"
+            onClick={handleGoogleSignup}
+            className="w-full flex items-center justify-center gap-2 py-2.5 border border-white/20 bg-white/5 text-sm font-medium text-white hover:bg-white/10 hover:border-neon-blue/40 transition-all duration-200"
+          >
+            <GoogleIcon />
+            {t('continueGoogle')}
+          </button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-white/10" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-transparent px-2 text-white/30">{t('or')}</span>
+            </div>
+          </div>
+
+          <form action={formAction} className="space-y-4" noValidate>
+            {state && 'error' in state && state.error && (
+              <div className="flex items-center gap-2 p-3 border border-red-500/30 bg-red-500/8 text-red-400">
+                <AlertCircle size={14} className="shrink-0" aria-hidden />
+                <p className="text-sm">{state.error}</p>
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <label htmlFor="nome" className="text-xs font-medium text-white/60 uppercase tracking-wider">
+                {t('name')}
+              </label>
+              <input
+                id="nome"
+                name="nome"
+                type="text"
+                autoComplete="name"
+                className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
+                placeholder={t('namePlaceholder')}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label htmlFor="email" className="text-xs font-medium text-white/60 uppercase tracking-wider">
+                {t('email')}
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
+                placeholder={t('emailPlaceholder')}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label htmlFor="password" className="text-xs font-medium text-white/60 uppercase tracking-wider">
+                {t('password')}
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="new-password"
+                className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
+                placeholder="••••••••"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isPending}
+              className="w-full py-3 border-2 border-neon-blue text-white font-semibold uppercase tracking-wider text-sm overflow-hidden relative hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span className="absolute inset-0 bg-neon-blue transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
+              <span className="relative z-10">{isPending ? t('signingUp') : t('signupSubmit')}</span>
+            </button>
+          </form>
+
+          <p className="text-center text-sm text-white/40">
+            {t('alreadyAccount')}{' '}
+            <Link href="/login" className="text-neon-blue hover:text-neon-blue/70 transition-colors">
+              {t('loginLink')}
+            </Link>
+          </p>
         </div>
-
-        <div className="space-y-1.5">
-          <label htmlFor="email" className="text-xs font-medium text-white/60 uppercase tracking-wider">
-            {t('email')}
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
-            placeholder={t('emailPlaceholder')}
-          />
-        </div>
-
-        <div className="space-y-1.5">
-          <label htmlFor="password" className="text-xs font-medium text-white/60 uppercase tracking-wider">
-            {t('password')}
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="new-password"
-            className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-neon-blue transition-colors duration-200"
-            placeholder="••••••••"
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={isPending}
-          className="w-full py-3 border-2 border-neon-blue text-white font-semibold uppercase tracking-wider text-sm overflow-hidden relative hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <span className="absolute inset-0 bg-neon-blue transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
-          <span className="relative z-10">{isPending ? t('signingUp') : t('signupSubmit')}</span>
-        </button>
-      </form>
-
-      <p className="text-center text-sm text-white/40">
-        {t('alreadyAccount')}{' '}
-        <Link href="/login" className="text-neon-blue hover:text-neon-blue/70 transition-colors">
-          {t('loginLink')}
-        </Link>
-      </p>
-    </div>
+      </div>
+    </>
   )
 }
 
