@@ -1,5 +1,6 @@
 'use server'
 
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import type { MessageRow } from '@/lib/db/analytics'
@@ -12,6 +13,21 @@ export async function getConversationMessages(
   orgSlug: string,
   convId: string,
 ): Promise<MessageRow[]> {
+  const isMockData = process.env.USE_MOCK_DATA === 'true'
+  const cookieStore = await cookies()
+  const hasBypass = cookieStore.get('mock_bypass')?.value === 'true'
+
+  if (isMockData || hasBypass) {
+    const admin = createAdminClient()
+    const { data, error } = await admin
+      .from('messages_mock')
+      .select('id, role, content, sources, tokens_used, cost_cents, created_at')
+      .eq('conversation_id', convId)
+      .order('created_at', { ascending: true })
+    if (error) return []
+    return (data as MessageRow[] | null) ?? []
+  }
+
   const supabase = await createClient()
   const {
     data: { user },
@@ -39,7 +55,6 @@ export async function getConversationMessages(
 
   const admin = createAdminClient()
 
-  // Verify the conversation belongs to this org before fetching messages
   const { data: convRows } = await admin
     .from('conversations')
     .select('id')
@@ -54,9 +69,8 @@ export async function getConversationMessages(
     .from('messages')
     .select('id, role, content, sources, tokens_used, cost_cents, created_at')
     .eq('conversation_id', convId)
-    .order('created_at')
+    .order('created_at', { ascending: true })
 
   if (error) return []
-
   return (data as MessageRow[] | null) ?? []
 }

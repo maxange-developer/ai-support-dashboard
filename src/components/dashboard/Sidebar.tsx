@@ -102,7 +102,7 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
               {isActive && (
                 <motion.div
                   layoutId="sidebar-indicator"
-                  className="absolute inset-0 bg-neon-blue/20 border-l-2 border-neon-blue"
+                  className="absolute inset-0 bg-white/10 border-l-2 border-white"
                   initial={false}
                   transition={{ type: 'spring', stiffness: 400, damping: 35 }}
                 />
