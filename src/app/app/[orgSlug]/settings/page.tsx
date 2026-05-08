@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { listApiKeys } from '@/lib/db/api-keys'
@@ -6,8 +7,14 @@ import { createKeyAction, deleteKeyAction } from '../embed/actions'
 import ApiKeyManager from '@/components/embed/ApiKeyManager'
 import { getTranslations } from 'next-intl/server'
 
-type MembershipRow = { org_id: string; role: string }
 type OrgRow = { id: string; name: string; slug: string; plan: string }
+
+const MOCK_ORG: OrgRow = {
+  id: '00000000-0000-0000-0000-000000000001',
+  name: 'Acme Corp',
+  slug: 'acme',
+  plan: 'pro',
+}
 
 const PLAN_BADGE: Record<string, { label: string; cls: string }> = {
   free: { label: 'Free', cls: 'text-white/50 border border-white/20 bg-white/5' },
@@ -21,33 +28,51 @@ export default async function SettingsPage({
   params: Promise<{ orgSlug: string }>
 }) {
   const { orgSlug } = await params
-  const supabase = await createClient()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) notFound()
+  let org: OrgRow | undefined
+  let userEmail = ''
+  let isAdmin = false
 
-  const { data: memberRows } = await supabase
-    .from('memberships')
-    .select('org_id, role')
-    .eq('user_id', user.id)
-    .returns<MembershipRow[]>()
+  const isMockAuth = process.env.USE_MOCK_AUTH === 'true'
+  const cookieStore = await cookies()
+  const hasBypass = cookieStore.get('mock_bypass')?.value === 'true'
 
-  const orgIds = memberRows?.map((m) => m.org_id) ?? []
+  if (isMockAuth || hasBypass) {
+    org = MOCK_ORG
+    userEmail = 'demo@example.com'
+    isAdmin = true
+  } else {
+    const supabase = await createClient()
 
-  const { data: orgRows } = await supabase
-    .from('organizations')
-    .select('id, name, slug, plan')
-    .eq('slug', orgSlug)
-    .in('id', orgIds)
-    .returns<OrgRow[]>()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (!user) notFound()
 
-  const org = orgRows?.[0]
+    const { data: memberRows } = await supabase
+      .from('memberships')
+      .select('org_id, role')
+      .eq('user_id', user.id)
+      .returns<{ org_id: string; role: string }[]>()
+
+    const orgIds = memberRows?.map((m) => m.org_id) ?? []
+
+    const { data: orgRows } = await supabase
+      .from('organizations')
+      .select('id, name, slug, plan')
+      .eq('slug', orgSlug)
+      .in('id', orgIds)
+      .returns<OrgRow[]>()
+
+    org = orgRows?.[0]
+    if (!org) notFound()
+
+    const membership = memberRows?.find((m) => m.org_id === org!.id)
+    isAdmin = membership?.role === 'admin'
+    userEmail = user.email ?? ''
+  }
+
   if (!org) notFound()
-
-  const membership = memberRows?.find((m) => m.org_id === org.id)
-  const isAdmin = membership?.role === 'admin'
 
   const keys = await listApiKeys(createAdminClient(), org.id)
   const boundCreate = createKeyAction.bind(null, orgSlug)
@@ -60,13 +85,13 @@ export default async function SettingsPage({
     <div className="max-w-2xl space-y-6 animate-fade-up">
       <div>
         <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
-          {t('title')}<span className="text-neon-pink">.</span>
+          {t('title')}<span className="text-white">.</span>
         </h1>
         <p className="text-white/40 text-sm mt-1">Manage your organization and API keys</p>
       </div>
 
       {/* Card 1 — Organization */}
-      <section className="glass rounded-lg p-6 border-2 border-white/10 hover:border-neon-blue/30 transition-colors duration-300 space-y-4">
+      <section className="glass p-6 border-2 border-white/10 hover:border-neon-blue/30 transition-colors duration-300 space-y-4">
         <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Organization</h2>
         <div className="space-y-3">
           <Row label="Name">
@@ -84,19 +109,19 @@ export default async function SettingsPage({
             <span className="text-sm text-white/70">{isAdmin ? 'Admin' : 'Member'}</span>
           </Row>
           <Row label="Account">
-            <span className="text-sm text-white/70">{user.email ?? '—'}</span>
+            <span className="text-sm text-white/70">{userEmail || '—'}</span>
           </Row>
         </div>
       </section>
 
       {/* Card 2 — API Keys */}
-      <section className="glass rounded-lg p-6 border-2 border-white/10 space-y-4">
+      <section className="glass p-6 border-2 border-white/10 space-y-4">
         <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">API Keys</h2>
         <ApiKeyManager keys={keys} createAction={boundCreate} deleteAction={boundDelete} />
       </section>
 
       {/* Card 3 — Danger Zone */}
-      <section className="glass rounded-lg p-6 border-2 border-red-500/30 space-y-4">
+      <section className="glass p-6 border-2 border-red-500/30 space-y-4">
         <h2 className="text-xs font-semibold text-red-400 uppercase tracking-wider mb-2">Danger Zone</h2>
         <p className="text-sm text-white/40">
           Deleting the organization is irreversible and removes all documents, conversations, and API keys.

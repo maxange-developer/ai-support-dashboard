@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { listApiKeys } from '@/lib/db/api-keys'
@@ -7,8 +8,9 @@ import ApiKeyManager from '@/components/embed/ApiKeyManager'
 import EmbedSnippet from '@/components/embed/EmbedSnippet'
 import { getTranslations } from 'next-intl/server'
 
-type MembershipRow = { org_id: string }
 type OrgRow = { id: string; slug: string }
+
+const MOCK_ORG: OrgRow = { id: '00000000-0000-0000-0000-000000000001', slug: 'acme' }
 
 export default async function EmbedPage({
   params,
@@ -16,29 +18,41 @@ export default async function EmbedPage({
   params: Promise<{ orgSlug: string }>
 }) {
   const { orgSlug } = await params
-  const supabase = await createClient()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) notFound()
+  let org: OrgRow | undefined
 
-  const { data: memberRows } = await supabase
-    .from('memberships')
-    .select('org_id')
-    .eq('user_id', user.id)
-    .returns<MembershipRow[]>()
+  const isMockAuth = process.env.USE_MOCK_AUTH === 'true'
+  const cookieStore = await cookies()
+  const hasBypass = cookieStore.get('mock_bypass')?.value === 'true'
 
-  const orgIds = memberRows?.map((m) => m.org_id) ?? []
+  if (isMockAuth || hasBypass) {
+    org = MOCK_ORG
+  } else {
+    const supabase = await createClient()
 
-  const { data: orgRows } = await supabase
-    .from('organizations')
-    .select('id, slug')
-    .eq('slug', orgSlug)
-    .in('id', orgIds)
-    .returns<OrgRow[]>()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (!user) notFound()
 
-  const org = orgRows?.[0]
+    const { data: memberRows } = await supabase
+      .from('memberships')
+      .select('org_id')
+      .eq('user_id', user.id)
+      .returns<{ org_id: string }[]>()
+
+    const orgIds = memberRows?.map((m) => m.org_id) ?? []
+
+    const { data: orgRows } = await supabase
+      .from('organizations')
+      .select('id, slug')
+      .eq('slug', orgSlug)
+      .in('id', orgIds)
+      .returns<OrgRow[]>()
+
+    org = orgRows?.[0]
+  }
+
   if (!org) notFound()
 
   const keys = await listApiKeys(createAdminClient(), org.id)
@@ -54,19 +68,19 @@ export default async function EmbedPage({
     <div className="max-w-2xl space-y-8 animate-fade-up">
       <div>
         <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
-          {t('title')}<span className="text-neon-pink">.</span>
+          {t('title')}<span className="text-white">.</span>
         </h1>
         <p className="text-sm text-white/40 mt-1">
           Create an API key, copy the snippet, and paste it into your site.
         </p>
       </div>
 
-      <section className="glass rounded-lg p-6 border-2 border-white/10 space-y-4">
+      <section className="glass p-6 border-2 border-white/10 space-y-4">
         <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider">API Keys</h2>
         <ApiKeyManager keys={keys} createAction={boundCreate} deleteAction={boundDelete} />
       </section>
 
-      <section className="glass rounded-lg p-6 border-2 border-white/10 space-y-4">
+      <section className="glass p-6 border-2 border-white/10 space-y-4">
         <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider">Embed Code</h2>
         <p className="text-sm text-white/40">
           Replace{' '}
@@ -78,7 +92,7 @@ export default async function EmbedPage({
         <EmbedSnippet snippet={snippet} snippetHint={t('snippetHint')} copyLabel={t('copySnippet')} />
       </section>
 
-      <section className="glass rounded-lg p-6 border-2 border-white/10 space-y-4">
+      <section className="glass p-6 border-2 border-white/10 space-y-4">
         <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider">Widget Preview</h2>
         <div className="border border-white/10 overflow-hidden h-[500px]">
           <iframe
