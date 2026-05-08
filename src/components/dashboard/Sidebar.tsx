@@ -1,20 +1,29 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { FileText, MessageSquare, Code2, MessageCircle, Settings } from 'lucide-react'
+import { LayoutDashboard, FileText, MessageSquare, CodeXml, MessageCircle, Settings } from 'lucide-react'
 
-const NAV_ITEMS = [
+type NavItem = {
+  href: string
+  key: string
+  icon: React.ComponentType<{ size?: number; 'aria-hidden'?: boolean; className?: string }>
+  exact?: boolean
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { href: '', key: 'dashboard', icon: LayoutDashboard, exact: true },
   { href: 'documents', key: 'documents', icon: FileText },
   { href: 'playground', key: 'playground', icon: MessageSquare },
-  { href: 'embed', key: 'embed', icon: Code2 },
+  { href: 'embed', key: 'embed', icon: CodeXml },
   { href: 'conversations', key: 'conversations', icon: MessageCircle },
   { href: 'settings', key: 'settings', icon: Settings },
-] as const
+]
 
 interface SidebarProps {
   orgSlug: string
@@ -22,17 +31,49 @@ interface SidebarProps {
   onNavigate?: () => void
 }
 
+function getFullPath(orgSlug: string, href: string) {
+  return href ? `/app/${orgSlug}/${href}` : `/app/${orgSlug}`
+}
+
+function getActiveIndex(pathname: string, orgSlug: string): number {
+  // Check exact match for dashboard first, then prefix match for others
+  for (let i = NAV_ITEMS.length - 1; i >= 0; i--) {
+    const { href, exact } = NAV_ITEMS[i]
+    const fullPath = getFullPath(orgSlug, href)
+    if (exact ? pathname === fullPath : pathname.startsWith(fullPath)) return i
+  }
+  return -1
+}
+
 export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
   const pathname = usePathname()
   const t = useTranslations('nav')
   const [mounted, setMounted] = useState(false)
+  const [beamKey, setBeamKey] = useState<string | null>(null)
+  const prevIndexRef = useRef<number>(-1)
+
   useEffect(() => setMounted(true), [])
+
+  const activeIndex = mounted ? getActiveIndex(pathname, orgSlug) : -1
+
+  function handleClick(index: number, href: string) {
+    prevIndexRef.current = activeIndex
+    setBeamKey(`${href}-${Date.now()}`)
+    onNavigate?.()
+  }
 
   return (
     <div className="flex h-full flex-col">
       {/* Logo */}
       <div className="flex h-16 items-center px-4 border-b border-white/10 shrink-0">
-        <Image src="/images/logo-white.webp" width={56} height={22} alt="Angel1" className="object-contain" priority />
+        <Image
+          src="/images/logo-a1-w.webp"
+          width={120}
+          height={48}
+          alt="Angel1"
+          className="object-contain w-auto h-auto"
+          priority
+        />
       </div>
 
       {/* Org name */}
@@ -43,23 +84,52 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
 
       {/* Nav */}
       <nav className="flex-1 py-2 space-y-0.5">
-        {NAV_ITEMS.map(({ href, key, icon: Icon }) => {
-          const fullPath = `/app/${orgSlug}/${href}`
-          const isActive = mounted && pathname.startsWith(fullPath)
+        {NAV_ITEMS.map(({ href, key, icon: Icon }, index) => {
+          const fullPath = getFullPath(orgSlug, href)
+          const isActive = mounted && activeIndex === index
+
           return (
             <Link
               key={href}
               href={fullPath}
-              onClick={onNavigate}
+              onClick={() => handleClick(index, href)}
               className={cn(
-                'flex items-center gap-3 py-2.5 text-sm uppercase tracking-wider font-medium transition-all duration-200',
-                isActive
-                  ? 'text-neon-blue opacity-100 bg-neon-blue/10 border-l-2 border-neon-blue pl-[calc(1.25rem-2px)] pr-4 rounded-r-lg'
-                  : 'text-neon-blue opacity-40 hover:opacity-70 px-5',
+                'relative flex items-center gap-3 py-2.5 px-5 text-sm uppercase tracking-wider font-medium transition-colors duration-200 overflow-hidden',
+                isActive ? 'text-white' : 'text-white/50 hover:text-white/80',
               )}
             >
-              <Icon size={15} aria-hidden className="shrink-0" />
-              {t(key)}
+              {/* Sliding background indicator */}
+              {isActive && (
+                <motion.div
+                  layoutId="sidebar-indicator"
+                  className="absolute inset-0 bg-neon-blue/20 border-l-2 border-neon-blue"
+                  initial={false}
+                  transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                />
+              )}
+
+              {/* Hover background for inactive */}
+              {!isActive && (
+                <div className="absolute inset-0 bg-white/0 hover:bg-white/5 transition-colors duration-200" />
+              )}
+
+              {/* Beam on click */}
+              <AnimatePresence>
+                {beamKey && beamKey.startsWith(href + '-') && (
+                  <motion.div
+                    key={beamKey}
+                    className="absolute inset-y-0 left-0 w-full bg-gradient-to-r from-transparent via-neon-blue/30 to-transparent pointer-events-none"
+                    initial={{ x: '-100%', opacity: 1 }}
+                    animate={{ x: '100%', opacity: 0 }}
+                    exit={{}}
+                    transition={{ duration: 0.45, ease: 'easeOut' }}
+                    onAnimationComplete={() => setBeamKey(null)}
+                  />
+                )}
+              </AnimatePresence>
+
+              <Icon size={15} aria-hidden className="relative z-10 shrink-0" />
+              <span className="relative z-10">{t(key)}</span>
             </Link>
           )
         })}
