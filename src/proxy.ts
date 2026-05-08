@@ -2,6 +2,15 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // Mock bypass — skip Supabase auth for demo mode
+  const isMockAuth = process.env.USE_MOCK_AUTH === 'true'
+  const hasBypass = request.cookies.get('mock_bypass')?.value === 'true'
+  if ((isMockAuth || hasBypass) && (pathname.startsWith('/app') || pathname === '/onboarding')) {
+    return NextResponse.next({ request })
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -29,8 +38,6 @@ export async function proxy(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-
-  const { pathname } = request.nextUrl
 
   if (!user && (pathname.startsWith('/app') || pathname === '/onboarding')) {
     const url = request.nextUrl.clone()

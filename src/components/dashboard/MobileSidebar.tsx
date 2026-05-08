@@ -15,7 +15,7 @@ export default function MobileSidebar({ orgSlug, orgName }: MobileSidebarProps) 
   return (
     <>
       <button
-        className="md:hidden p-2 rounded-lg text-white/40 hover:text-neon-blue hover:bg-neon-blue/8 transition-all duration-200"
+        className="md:hidden p-2 text-white/40 hover:text-neon-blue hover:bg-neon-blue/8 transition-all duration-200"
         onClick={() => setOpen(true)}
         aria-label="Apri menu"
       >
@@ -31,7 +31,7 @@ export default function MobileSidebar({ orgSlug, orgName }: MobileSidebarProps) 
           />
           <div className="fixed inset-y-0 left-0 z-50 w-60 glass border-r border-white/10">
             <button
-              className="absolute top-3 right-3 p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/8 transition-all"
+              className="absolute top-3 right-3 p-1.5 text-white/40 hover:text-white hover:bg-white/8 transition-all"
               onClick={() => setOpen(false)}
               aria-label="Chiudi menu"
             >

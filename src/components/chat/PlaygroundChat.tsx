@@ -143,7 +143,7 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
   const showQuickQuestions = messages.length === 0 && !isStreaming && hasDocuments
 
   return (
-    <div className="flex flex-col glass rounded-lg border-2 border-white/10 h-[calc(100vh-7rem)]">
+    <div className="flex flex-col glass border-2 border-white/10 h-[calc(100vh-7rem)]">
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0 custom-scrollbar">
         {messages.length === 0 && !isStreaming && (
@@ -152,7 +152,7 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
               <>
                 <div className="space-y-2">
                   <div className="w-10 h-10 border border-neon-blue/30 flex items-center justify-center mx-auto">
-                    <span className="text-neon-blue text-lg">✦</span>
+                    <span className="text-white text-lg">✦</span>
                   </div>
                   <p className="text-sm text-white/40">Ask a question. Answers are based on your documents.</p>
                 </div>
@@ -162,7 +162,7 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
                     <button
                       key={q}
                       onClick={() => void sendMessage(q)}
-                      className="glass border border-neon-blue/30 text-neon-blue/80 text-sm px-4 py-2 rounded-full hover:border-neon-blue hover:text-neon-blue transition-all duration-200"
+                      className="glass border border-neon-blue/30 text-white/80 text-sm px-4 py-2 rounded-full hover:border-neon-blue hover:text-white transition-all duration-200"
                     >
                       {q}
                     </button>
@@ -186,7 +186,7 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
         ))}
 
         {isStreaming && (
-          <div className="mr-8 glass border border-white/10 bg-white/2 rounded-lg px-4 py-3 text-sm">
+          <div className="mr-8 glass border border-white/10 bg-white/2 px-4 py-3 text-sm">
             {pendingText ? (
               <span className="whitespace-pre-wrap text-white/90">
                 {pendingText}
@@ -248,7 +248,7 @@ function MessageBubble({ message }: { message: Message }) {
     <div className={cn('flex', isUser ? 'justify-end' : 'justify-start')}>
       <div
         className={cn(
-          'max-w-[80%] rounded-lg px-4 py-3 text-sm',
+          'max-w-[80%] px-4 py-3 text-sm',
           isUser
             ? 'glass border border-neon-blue/30 bg-neon-blue/5 ml-8 text-white'
             : 'glass border border-white/10 bg-white/2 mr-8 text-white',
@@ -273,7 +273,7 @@ function MessageBubble({ message }: { message: Message }) {
                   <li key={i} className="flex items-center gap-2 text-xs text-white/40">
                     <FileText size={10} aria-hidden className="shrink-0 text-neon-pink/60" />
                     <span className="truncate">{src.documentTitle}</span>
-                    <span className="font-mono text-neon-blue/60 shrink-0 ml-auto">
+                    <span className="font-mono text-white/60 shrink-0 ml-auto">
                       {Math.round(src.similarity * 100)}%
                     </span>
                   </li>

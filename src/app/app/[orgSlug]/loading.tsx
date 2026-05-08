@@ -5,7 +5,7 @@ export default function DashboardLoading() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="rounded-xl border bg-card p-4 space-y-3">
+          <div key={i} className="border bg-card p-4 space-y-3">
             <div className="flex justify-between">
               <div className="h-4 w-28 bg-muted rounded" />
               <div className="h-4 w-4 bg-muted rounded" />
@@ -17,12 +17,12 @@ export default function DashboardLoading() {
 
       <div className="space-y-3">
         <div className="h-5 w-40 bg-muted rounded" />
-        <div className="h-44 rounded-md border bg-muted/30" />
+        <div className="h-44 border bg-muted/30" />
       </div>
 
       <div className="space-y-3">
         <div className="h-5 w-44 bg-muted rounded" />
-        <div className="rounded-md border divide-y">
+        <div className="border divide-y">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="flex items-center gap-3 px-4 py-2.5">
               <div className="h-4 w-4 bg-muted rounded" />

@@ -8,22 +8,33 @@ import { getTranslations } from 'next-intl/server'
 
 type OrgRow = { id: string; name: string }
 
+const MOCK_ORGS: Record<string, OrgRow> = {
+  acme: { id: '00000000-0000-0000-0000-000000000001', name: 'Acme Corp' },
+  beta: { id: '00000000-0000-0000-0000-000000000002', name: 'Beta SaaS' },
+}
+
 export default async function OrgHomePage({
   params,
 }: {
   params: Promise<{ orgSlug: string }>
 }) {
   const { orgSlug } = await params
-  const supabase = await createClient()
 
-  const { data: orgRows } = await supabase
-    .from('organizations')
-    .select('id, name')
-    .eq('slug', orgSlug)
-    .limit(1)
-    .returns<OrgRow[]>()
+  let org: OrgRow | undefined
 
-  const org = orgRows?.[0]
+  if (process.env.USE_MOCK_DATA === 'true') {
+    org = MOCK_ORGS[orgSlug]
+  } else {
+    const supabase = await createClient()
+    const { data: orgRows } = await supabase
+      .from('organizations')
+      .select('id, name')
+      .eq('slug', orgSlug)
+      .limit(1)
+      .returns<OrgRow[]>()
+    org = orgRows?.[0]
+  }
+
   if (!org) notFound()
 
   const admin = createAdminClient()
@@ -41,8 +52,8 @@ export default async function OrgHomePage({
   return (
     <div className="space-y-8 animate-fade-up">
       <div>
-        <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
-          {t('title')}<span className="text-neon-pink">.</span>
+        <h1 className="font-bold text-white" style={{ fontSize: 'var(--fs-page)' }}>
+          {t('title')}<span className="text-neon-blue">.</span>
         </h1>
         <p className="text-white/40 text-sm mt-1">Overview of conversations and AI costs</p>
       </div>
@@ -86,12 +97,12 @@ export default async function OrgHomePage({
           <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider">
             Top questions
           </h2>
-          <div className="glass rounded-lg border-2 border-white/10 divide-y divide-white/8">
+          <div className="glass border-2 border-white/10 divide-y divide-white/8">
             {topQuestions.map((q, i) => (
               <div key={i} className="flex items-center gap-3 px-4 py-3 hover:bg-white/3 transition-colors">
                 <span className="w-5 shrink-0 text-xs font-mono text-white/30 text-right">{i + 1}</span>
                 <p className="flex-1 text-sm text-white/80 truncate">{q.content}</p>
-                <span className="text-xs text-neon-blue shrink-0 font-mono">{q.count}×</span>
+                <span className="text-xs text-white shrink-0 font-mono">{q.count}×</span>
               </div>
             ))}
           </div>
@@ -99,10 +110,10 @@ export default async function OrgHomePage({
       )}
 
       {topQuestions.length === 0 && stats.total === 0 && (
-        <div className="glass rounded-lg border-2 border-white/10 p-8 text-center">
+        <div className="glass border-2 border-white/10 p-8 text-center">
           <p className="text-white/40 text-sm">
             No conversations yet. Use the{' '}
-            <a href={`/app/${orgSlug}/playground`} className="text-neon-blue hover:text-neon-blue/70 transition-colors">
+            <a href={`/app/${orgSlug}/playground`} className="text-white hover:text-white/70 transition-colors">
               playground
             </a>{' '}
             or embed the widget to get started.
@@ -125,12 +136,12 @@ function StatCard({
   icon: React.ReactNode
 }) {
   return (
-    <div className="glass rounded-lg p-6 border-2 border-white/10 hover:border-neon-blue/30 transition-colors hover-lift">
+    <div className="glass p-6 border-2 border-white/10 hover:border-neon-blue/30 transition-colors hover-lift">
       <div className="flex items-center justify-between mb-3">
         <p className="text-xs uppercase tracking-widest text-white/40 font-medium">{title}</p>
-        <span className="text-neon-blue/60">{icon}</span>
+        <span className="text-white/60">{icon}</span>
       </div>
-      <p className="text-4xl font-bold text-neon-blue">{value}</p>
+      <p className="text-4xl font-bold text-white">{value}</p>
       {sub && <p className="text-xs text-white/35 mt-1">{sub}</p>}
     </div>
   )

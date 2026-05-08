@@ -9,7 +9,7 @@ import type { DocumentListItem } from '@/lib/db/documents'
 import UploadForm from './UploadForm'
 
 const STATUS_STYLES: Record<DocumentListItem['status'], { label: string; cls: string }> = {
-  processing: { label: 'Processing…', cls: 'bg-neon-blue/10 text-neon-blue border border-neon-blue/30 animate-pulse' },
+  processing: { label: 'Processing…', cls: 'bg-neon-blue/10 text-white border border-neon-blue/30 animate-pulse' },
   ready: { label: 'Ready', cls: 'bg-neon-green/10 text-neon-green border border-neon-green/30' },
   error: { label: 'Error', cls: 'bg-red-500/10 text-red-400 border border-red-400/30' },
 }
@@ -70,7 +70,7 @@ export default function DocumentsView({ documents, orgSlug, deleteAction, upload
     <div className="space-y-4">
       {/* Header / selection bar */}
       {selecting ? (
-        <div className="flex items-center justify-between glass border border-white/10 rounded-lg px-4 py-3">
+        <div className="flex items-center justify-between glass border border-white/10  px-4 py-3">
           <span className="text-white/60 text-sm">{selected.size} selected</span>
           <div className="flex items-center gap-3">
             <button
@@ -126,7 +126,7 @@ export default function DocumentsView({ documents, orgSlug, deleteAction, upload
       ) : (
         <div className="flex flex-col">
           {documents.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-center glass rounded-lg border-2 border-white/10">
+            <div className="flex flex-col items-center justify-center py-20 text-center glass  border-2 border-white/10">
               <FileText size={40} className="text-white/20 mb-4" aria-hidden />
               <p className="text-sm text-white/40">No documents yet. Upload one to get started.</p>
             </div>
@@ -140,7 +140,7 @@ export default function DocumentsView({ documents, orgSlug, deleteAction, upload
                     key={doc.id}
                     onClick={selecting ? () => toggleSelect(doc.id) : undefined}
                     className={cn(
-                      'glass rounded-lg border-2 transition-colors duration-300 flex items-center gap-4 px-4 py-3',
+                      'glass  border-2 transition-colors duration-300 flex items-center gap-4 px-4 py-3',
                       selecting ? 'cursor-pointer' : 'hover-lift',
                       isSelected
                         ? 'border-neon-blue/60 bg-neon-blue/5'
@@ -150,13 +150,13 @@ export default function DocumentsView({ documents, orgSlug, deleteAction, upload
                     )}
                   >
                     {selecting && (
-                      <span className="shrink-0 text-neon-blue/70">
+                      <span className="shrink-0 text-white/70">
                         {isSelected
                           ? <CheckSquare size={15} aria-hidden />
                           : <Square size={15} aria-hidden />}
                       </span>
                     )}
-                    <FileText size={16} className="text-neon-blue/50 shrink-0" aria-hidden />
+                    <FileText size={16} className="text-white/50 shrink-0" aria-hidden />
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm text-white truncate">{doc.title}</p>
                       <p className="text-xs text-white/35 mt-0.5">

@@ -158,7 +158,7 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
             return (
               <div
                 key={key.id}
-                className="glass rounded-lg border-2 border-white/10 hover:border-neon-blue/30 transition-colors duration-200 p-4 flex items-center justify-between gap-4"
+                className="glass border-2 border-white/10 hover:border-neon-blue/30 transition-colors duration-200 p-4 flex items-center justify-between gap-4"
               >
                 {/* Left: name + date */}
                 <div className="min-w-0 shrink-0">
@@ -193,7 +193,7 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
                     type="button"
                     onClick={() => void handleCopy(key)}
                     aria-label="Copy key prefix"
-                    className="h-9 px-3 flex items-center gap-1.5 border border-neon-blue/40 text-neon-blue text-xs hover:bg-neon-blue/10 transition-all duration-200"
+                    className="h-9 px-3 flex items-center gap-1.5 border border-neon-blue/40 text-white text-xs hover:bg-neon-blue/10 transition-all duration-200"
                   >
                     {copied === key.id
                       ? <><Check size={12} aria-hidden /> Copied</>

@@ -32,10 +32,10 @@ export default function OnboardingPage() {
     <div className="min-h-screen flex items-center justify-center bg-black p-4">
       <ThreeBackground />
       <div className="w-full max-w-md relative z-10 animate-fade-up">
-        <div className="glass rounded-lg border border-neon-blue/30 p-8 space-y-6">
+        <div className="glass border border-neon-blue/30 p-8 space-y-6">
           <div className="text-center space-y-1">
-            <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
-              Crea organizzazione<span className="text-neon-pink">.</span>
+            <h1 className="font-bold text-white" style={{ fontSize: 'var(--fs-page)' }}>
+              Crea organizzazione<span className="text-neon-blue">.</span>
             </h1>
             <p className="text-sm text-white/50">Potrai invitare altri membri in seguito.</p>
           </div>
@@ -75,7 +75,7 @@ export default function OnboardingPage() {
               />
               {slug && (
                 <p className="text-xs text-white/35">
-                  Dashboard: <span className="font-mono text-neon-blue/70">/app/{slug}</span>
+                  Dashboard: <span className="font-mono text-white/70">/app/{slug}</span>
                 </p>
               )}
             </div>

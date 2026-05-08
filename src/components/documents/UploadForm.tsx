@@ -28,7 +28,7 @@ export default function UploadForm({ action, onBack }: Props) {
           disabled={isPending}
           className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white text-sm
                      file:mr-4 file:py-1 file:px-3 file:border-0
-                     file:bg-neon-blue/10 file:text-neon-blue
+                     file:bg-neon-blue/10 file:text-white
                      file:text-xs file:font-medium file:uppercase file:tracking-wider
                      focus:outline-none focus:border-neon-blue transition-colors duration-200
                      disabled:opacity-50 cursor-pointer"

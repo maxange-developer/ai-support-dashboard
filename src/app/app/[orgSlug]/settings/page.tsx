@@ -18,7 +18,7 @@ const MOCK_ORG: OrgRow = {
 
 const PLAN_BADGE: Record<string, { label: string; cls: string }> = {
   free: { label: 'Free', cls: 'text-white/50 border border-white/20 bg-white/5' },
-  pro: { label: 'Pro', cls: 'text-neon-blue border border-neon-blue/40 bg-neon-blue/8' },
+  pro: { label: 'Pro', cls: 'text-white border border-neon-blue/40 bg-neon-blue/8' },
   enterprise: { label: 'Enterprise', cls: 'text-neon-green border border-neon-green/40 bg-neon-green/8' },
 }
 
@@ -84,8 +84,8 @@ export default async function SettingsPage({
   return (
     <div className="max-w-2xl space-y-6 animate-fade-up">
       <div>
-        <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
-          {t('title')}<span className="text-white">.</span>
+        <h1 className="font-bold text-white" style={{ fontSize: 'var(--fs-page)' }}>
+          {t('title')}<span className="text-neon-blue">.</span>
         </h1>
         <p className="text-white/40 text-sm mt-1">Manage your organization and API keys</p>
       </div>

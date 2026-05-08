@@ -1,6 +1,9 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { SourceType } from '@/lib/ai/parsing'
 
+const DOCS_TABLE = process.env.USE_MOCK_DATA === 'true' ? 'documents_mock' : 'documents'
+const CHUNKS_TABLE = process.env.USE_MOCK_DATA === 'true' ? 'chunks_mock' : 'chunks'
+
 export interface DocumentListItem {
   id: string
   org_id: string
@@ -31,7 +34,7 @@ export async function insertDocument(
   payload: InsertDocumentPayload,
 ): Promise<string> {
   const { data, error } = await admin
-    .from('documents')
+    .from(DOCS_TABLE)
     .insert(payload)
     .select('id')
     .single()
@@ -46,7 +49,7 @@ export async function updateDocumentStatus(
   id: string,
   status: 'ready' | 'error',
 ): Promise<void> {
-  const { error } = await admin.from('documents').update({ status }).eq('id', id)
+  const { error } = await admin.from(DOCS_TABLE).update({ status }).eq('id', id)
   if (error) throw new Error(`updateDocumentStatus: ${error.message}`)
 }
 
@@ -56,7 +59,7 @@ export async function insertChunks(
   chunks: InsertChunkPayload[],
 ): Promise<void> {
   if (chunks.length === 0) return
-  const { error } = await admin.from('chunks').insert(chunks)
+  const { error } = await admin.from(CHUNKS_TABLE).insert(chunks)
   if (error) throw new Error(`insertChunks: ${error.message}`)
 }
 
@@ -65,7 +68,7 @@ export async function getDocumentsByOrg(
   orgId: string,
 ): Promise<DocumentListItem[]> {
   const { data, error } = await supabase
-    .from('documents')
+    .from(DOCS_TABLE)
     .select('id, org_id, title, source_type, status, created_at')
     .eq('org_id', orgId)
     .order('created_at', { ascending: false })
@@ -84,7 +87,7 @@ export async function deleteDocumentsFromDB(
   if (ids.length === 0) return
 
   const { error: chunksError } = await admin
-    .from('chunks')
+    .from(CHUNKS_TABLE)
     .delete()
     .in('document_id', ids)
     .eq('org_id', orgId)
@@ -92,7 +95,7 @@ export async function deleteDocumentsFromDB(
   if (chunksError) throw new Error(`deleteDocumentsFromDB chunks: ${chunksError.message}`)
 
   const { error } = await admin
-    .from('documents')
+    .from(DOCS_TABLE)
     .delete()
     .in('id', ids)
     .eq('org_id', orgId)

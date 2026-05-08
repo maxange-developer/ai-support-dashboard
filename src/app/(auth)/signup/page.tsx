@@ -31,9 +31,9 @@ export default function SignupPage() {
         <div className="relative z-10 min-h-screen flex items-center justify-center px-4">
           <div className="w-full max-w-sm glass border border-neon-blue/30 p-8 text-center space-y-3">
             <div className="w-12 h-12 border-2 border-neon-blue flex items-center justify-center mx-auto">
-              <span className="text-neon-blue text-lg">✓</span>
+              <span className="text-white text-lg">✓</span>
             </div>
-            <p className="text-lg font-semibold text-neon-blue">{t('checkEmail')}</p>
+            <p className="text-lg font-semibold text-white">{t('checkEmail')}</p>
             <p className="text-sm text-white/50">{state.pending}</p>
           </div>
         </div>
@@ -47,8 +47,8 @@ export default function SignupPage() {
       <div className="relative z-10 min-h-screen flex items-center justify-center px-4">
         <div className="w-full max-w-sm glass border border-neon-blue/30 p-8 space-y-6">
           <div className="text-center space-y-1">
-            <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
-              {t('signupTitle')}<span className="text-white">.</span>
+            <h1 className="font-bold text-white" style={{ fontSize: 'var(--fs-page)' }}>
+              {t('signupTitle')}<span className="text-neon-blue">.</span>
             </h1>
             <p className="text-sm text-white/50">{t('signupSubtitle')}</p>
           </div>
@@ -133,7 +133,7 @@ export default function SignupPage() {
 
           <p className="text-center text-sm text-white/40">
             {t('alreadyAccount')}{' '}
-            <Link href="/login" className="text-neon-blue hover:text-neon-blue/70 transition-colors">
+            <Link href="/login" className="text-white hover:text-white/70 transition-colors">
               {t('loginLink')}
             </Link>
           </p>

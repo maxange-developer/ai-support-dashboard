@@ -82,8 +82,8 @@ export default function LoginPage() {
           >
             {/* Title */}
             <div className="text-center space-y-1">
-              <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
-                AI Support<span className="text-white">.</span>
+              <h1 className="font-bold text-white" style={{ fontSize: 'var(--fs-page)' }}>
+                AI Support<span className="text-neon-blue">.</span>
               </h1>
               <p className="text-sm text-white/50">Powered by RAG technology</p>
             </div>

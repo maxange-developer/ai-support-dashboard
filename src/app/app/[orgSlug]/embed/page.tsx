@@ -67,8 +67,8 @@ export default async function EmbedPage({
   return (
     <div className="max-w-2xl space-y-8 animate-fade-up">
       <div>
-        <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
-          {t('title')}<span className="text-white">.</span>
+        <h1 className="font-bold text-white" style={{ fontSize: 'var(--fs-page)' }}>
+          {t('title')}<span className="text-neon-blue">.</span>
         </h1>
         <p className="text-sm text-white/40 mt-1">
           Create an API key, copy the snippet, and paste it into your site.
@@ -84,7 +84,7 @@ export default async function EmbedPage({
         <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider">Embed Code</h2>
         <p className="text-sm text-white/40">
           Replace{' '}
-          <code className="font-mono text-xs border border-neon-blue/30 bg-neon-blue/8 text-neon-blue px-1.5 py-0.5">
+          <code className="font-mono text-xs border border-neon-blue/30 bg-neon-blue/8 text-white px-1.5 py-0.5">
             YOUR_API_KEY
           </code>{' '}
           with the key created above.

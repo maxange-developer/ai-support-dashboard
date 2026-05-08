@@ -1,6 +1,8 @@
 import { createHash, randomUUID } from 'crypto'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
+const KEYS_TABLE = process.env.USE_MOCK_DATA === 'true' ? 'api_keys_mock' : 'api_keys'
+
 export interface ApiKeyListItem {
   id: string
   org_id: string
@@ -22,7 +24,7 @@ export async function createApiKey(
   const rawKey = randomUUID()
 
   const { data, error } = await admin
-    .from('api_keys')
+    .from(KEYS_TABLE)
     .insert({ org_id: orgId, name, key_hash: hash(rawKey) })
     .select('id')
     .single()
@@ -37,7 +39,7 @@ export async function listApiKeys(
   orgId: string,
 ): Promise<ApiKeyListItem[]> {
   const { data, error } = await admin
-    .from('api_keys')
+    .from(KEYS_TABLE)
     .select('id, org_id, name, last_used_at, created_at')
     .eq('org_id', orgId)
     .order('created_at', { ascending: false })
@@ -54,7 +56,7 @@ export async function deleteApiKey(
   orgId: string,
 ): Promise<void> {
   const { error } = await admin
-    .from('api_keys')
+    .from(KEYS_TABLE)
     .delete()
     .eq('id', id)
     .eq('org_id', orgId)
@@ -70,7 +72,7 @@ export async function validateApiKey(
   const keyHash = hash(rawKey)
 
   const { data } = await admin
-    .from('api_keys')
+    .from(KEYS_TABLE)
     .select('org_id')
     .eq('key_hash', keyHash)
     .limit(1)
@@ -81,7 +83,7 @@ export async function validateApiKey(
 
   // update last_used_at (best-effort, fire-and-forget)
   void admin
-    .from('api_keys')
+    .from(KEYS_TABLE)
     .update({ last_used_at: new Date().toISOString() })
     .eq('key_hash', keyHash)
 

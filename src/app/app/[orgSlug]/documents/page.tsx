@@ -32,8 +32,8 @@ export default async function DocumentsPage({
   return (
     <div className="space-y-6 animate-fade-up">
       <div>
-        <h1 className="font-bold text-neon-blue" style={{ fontSize: 'var(--fs-page)' }}>
-          {t('title')}<span className="text-neon-pink">.</span>
+        <h1 className="font-bold text-white" style={{ fontSize: 'var(--fs-page)' }}>
+          {t('title')}<span className="text-neon-blue">.</span>
         </h1>
         <p className="text-white/40 text-sm mt-1">
           {documents.length} document{documents.length !== 1 ? 's' : ''} uploaded

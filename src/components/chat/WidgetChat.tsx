@@ -150,7 +150,7 @@ export default function WidgetChat({
         ))}
 
         {isStreaming && (
-          <div className="max-w-[85%] glass border border-white/10 rounded-lg px-3 py-2 text-sm">
+          <div className="max-w-[85%] glass border border-white/10 px-3 py-2 text-sm">
             {pendingText ? (
               <span className="whitespace-pre-wrap leading-relaxed text-white/90">
                 {pendingText}
@@ -210,7 +210,7 @@ function WidgetMessage({ message }: { message: Message }) {
     <div className={cn('flex', isUser ? 'justify-end' : 'justify-start')}>
       <div
         className={cn(
-          'max-w-[85%] rounded-lg text-sm px-3 py-2',
+          'max-w-[85%] text-sm px-3 py-2',
           isUser
             ? 'glass border border-neon-blue/30 bg-neon-blue/5 text-white'
             : 'glass border border-white/10 bg-white/2 text-white',
@@ -234,7 +234,7 @@ function WidgetMessage({ message }: { message: Message }) {
                   <li key={i} className="flex items-center gap-1.5 text-[10px] text-white/40">
                     <FileText size={9} aria-hidden className="text-neon-pink/60" />
                     <span className="truncate">{src.documentTitle}</span>
-                    <span className="font-mono text-neon-blue/60 ml-auto shrink-0">
+                    <span className="font-mono text-white/60 ml-auto shrink-0">
                       {Math.round(src.similarity * 100)}%
                     </span>
                   </li>

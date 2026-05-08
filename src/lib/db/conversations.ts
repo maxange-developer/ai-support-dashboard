@@ -1,5 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
+const CONV_TABLE = process.env.USE_MOCK_DATA === 'true' ? 'conversations_mock' : 'conversations'
+const MSG_TABLE = process.env.USE_MOCK_DATA === 'true' ? 'messages_mock' : 'messages'
+
 // service role — bypasses RLS (no INSERT policy on conversations/messages)
 export async function createConversation(
   admin: SupabaseClient,
@@ -7,7 +10,7 @@ export async function createConversation(
   visitorId?: string,
 ): Promise<string> {
   const { data, error } = await admin
-    .from('conversations')
+    .from(CONV_TABLE)
     .insert({ org_id: orgId, visitor_id: visitorId ?? null })
     .select('id')
     .single()
@@ -30,7 +33,7 @@ export async function insertMessage(
   admin: SupabaseClient,
   { conversationId, role, content, sources, tokensUsed, costCents }: InsertMessageParams,
 ): Promise<void> {
-  const { error } = await admin.from('messages').insert({
+  const { error } = await admin.from(MSG_TABLE).insert({
     conversation_id: conversationId,
     role,
     content,

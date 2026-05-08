@@ -1,5 +1,29 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
+const USE_MOCK = process.env.USE_MOCK_DATA === 'true'
+
+const MOCK_CONV_STATS: ConversationStats = { total: 42, today: 5, week: 18 }
+const MOCK_COST_STATS: CostStats = {
+  totalCents: 1240,
+  avgPerConvCents: 30,
+  daily: [
+    { day: new Date(Date.now() - 6 * 86400000).toISOString().slice(0, 10), tokensUsed: 4200, costCents: 168 },
+    { day: new Date(Date.now() - 5 * 86400000).toISOString().slice(0, 10), tokensUsed: 3800, costCents: 152 },
+    { day: new Date(Date.now() - 4 * 86400000).toISOString().slice(0, 10), tokensUsed: 5100, costCents: 204 },
+    { day: new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10), tokensUsed: 2900, costCents: 116 },
+    { day: new Date(Date.now() - 2 * 86400000).toISOString().slice(0, 10), tokensUsed: 6300, costCents: 252 },
+    { day: new Date(Date.now() - 1 * 86400000).toISOString().slice(0, 10), tokensUsed: 4700, costCents: 188 },
+    { day: new Date(Date.now()).toISOString().slice(0, 10), tokensUsed: 4000, costCents: 160 },
+  ],
+}
+const MOCK_TOP_QUESTIONS: TopQuestion[] = [
+  { content: 'Come funziona il rimborso?', count: 12 },
+  { content: 'Come integro la vostra API?', count: 9 },
+  { content: 'Supportate SSO con Google?', count: 7 },
+  { content: 'Posso esportare i dati?', count: 5 },
+  { content: 'Qual è il piano gratuito?', count: 4 },
+]
+
 export interface ConversationStats {
   total: number
   today: number
@@ -47,6 +71,7 @@ export async function getConversationStats(
   admin: SupabaseClient,
   orgId: string,
 ): Promise<ConversationStats> {
+  if (USE_MOCK) return MOCK_CONV_STATS
   const todayStart = new Date()
   todayStart.setHours(0, 0, 0, 0)
   const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
@@ -76,6 +101,7 @@ export async function getTopQuestions(
   orgId: string,
   limit = 10,
 ): Promise<TopQuestion[]> {
+  if (USE_MOCK) return MOCK_TOP_QUESTIONS.slice(0, limit)
   type Row = { content: string; count: string }
   const { data, error } = await admin.rpc('top_questions', {
     p_org_id: orgId,
@@ -92,6 +118,7 @@ export async function getCostStats(
   admin: SupabaseClient,
   orgId: string,
 ): Promise<CostStats> {
+  if (USE_MOCK) return MOCK_COST_STATS
   type Row = { day: string; tokens_used: string; cost_cents: string }
   const [rpcResult, { count }] = await Promise.all([
     admin.rpc('daily_cost', { p_org_id: orgId }),
@@ -120,6 +147,7 @@ export async function getAvgResponseTime(
   admin: SupabaseClient,
   orgId: string,
 ): Promise<number> {
+  if (USE_MOCK) return 420
   const { data, error } = await admin.rpc('avg_response_time_ms', { p_org_id: orgId })
   if (error) throw new Error(`getAvgResponseTime: ${error.message}`)
   return Number(data ?? 0)
@@ -130,6 +158,13 @@ export async function listConversations(
   orgId: string,
   since?: Date,
 ): Promise<ConversationListItem[]> {
+  if (USE_MOCK) return [
+    { id: '00000000-0000-0000-0002-000000000001', visitorId: 'vis_abc123', startedAt: new Date(Date.now() - 3600000).toISOString(), messageCount: 2, costCents: 4 },
+    { id: '00000000-0000-0000-0002-000000000002', visitorId: 'vis_def456', startedAt: new Date(Date.now() - 10800000).toISOString(), messageCount: 2, costCents: 4 },
+    { id: '00000000-0000-0000-0002-000000000003', visitorId: 'vis_ghi789', startedAt: new Date(Date.now() - 86400000).toISOString(), messageCount: 3, costCents: 6 },
+    { id: '00000000-0000-0000-0002-000000000004', visitorId: null, startedAt: new Date(Date.now() - 172800000).toISOString(), messageCount: 1, costCents: 2 },
+    { id: '00000000-0000-0000-0002-000000000005', visitorId: 'vis_jkl012', startedAt: new Date(Date.now() - 259200000).toISOString(), messageCount: 4, costCents: 8 },
+  ].filter(c => !since || new Date(c.startedAt) >= since)
   type Row = {
     id: string
     visitor_id: string | null

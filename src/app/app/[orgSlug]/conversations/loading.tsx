@@ -5,11 +5,11 @@ export default function ConversationsLoading() {
 
       <div className="flex gap-2">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-7 w-20 bg-muted rounded-md" />
+          <div key={i} className="h-7 w-20 bg-muted" />
         ))}
       </div>
 
-      <div className="rounded-md border divide-y">
+      <div className="border divide-y">
         {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className="flex items-center gap-4 px-4 py-3">
             <div className="flex-1 space-y-1.5">

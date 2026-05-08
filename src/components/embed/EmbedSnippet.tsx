@@ -21,7 +21,7 @@ export default function EmbedSnippet({ snippet, snippetHint, copyLabel }: EmbedS
 
   return (
     <div className="space-y-2">
-      <div className="relative bg-white/5 border border-neon-blue/30 rounded-lg">
+      <div className="relative bg-white/5 border border-neon-blue/30">
         <pre className="overflow-x-auto p-4 pr-12 text-sm font-mono leading-relaxed text-neon-green">
           <code>{snippet}</code>
         </pre>
@@ -36,7 +36,7 @@ export default function EmbedSnippet({ snippet, snippetHint, copyLabel }: EmbedS
       {snippetHint && (
         <p className="text-xs text-white/35">
           {snippetHint}{' '}
-          <code className="font-mono text-neon-blue/60">&lt;/body&gt;</code>.
+          <code className="font-mono text-white/60">&lt;/body&gt;</code>.
         </p>
       )}
     </div>

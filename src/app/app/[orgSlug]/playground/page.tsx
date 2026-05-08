@@ -34,8 +34,8 @@ export default async function PlaygroundPage({
 
   return (
     <div className="h-full flex flex-col gap-4">
-      <h1 className="font-bold text-neon-blue shrink-0" style={{ fontSize: 'var(--fs-page)' }}>
-        {t('title')}<span className="text-neon-pink">.</span>
+      <h1 className="font-bold text-white shrink-0" style={{ fontSize: 'var(--fs-page)' }}>
+        {t('title')}<span className="text-neon-blue">.</span>
       </h1>
       <PlaygroundChat orgSlug={orgSlug} hasDocuments={hasDocuments} />
     </div>
