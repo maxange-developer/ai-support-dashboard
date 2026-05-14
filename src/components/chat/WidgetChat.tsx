@@ -106,6 +106,7 @@ export default function WidgetChat({
                 ...prev,
                 { role: 'assistant', content: pendingRef.current, sources: data.sources ?? [] },
               ])
+              setIsStreaming(false)
               pendingRef.current = ''
               setPendingText('')
               if (data.conversationId) setConversationId(data.conversationId)

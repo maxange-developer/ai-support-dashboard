@@ -105,6 +105,9 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
                 ...prev,
                 { role: 'assistant', content: pendingRef.current, sources: data.sources ?? [] },
               ])
+              // clear streaming state here so there's no empty-bubble flash
+              // between 'done' arriving and the stream physically closing
+              setIsStreaming(false)
               pendingRef.current = ''
               setPendingText('')
               if (data.conversationId) setConversationId(data.conversationId)
