@@ -1,42 +1,287 @@
 {
+  "common": {
+    "appName": "Lore",
+    "appTagline": "Soporte al cliente basado en conocimiento",
+    "save": "Guardar",
+    "cancel": "Anular",
+    "delete": "Eliminar",
+    "create": "Crear",
+    "back": "Atrás",
+    "loading": "Cargando…",
+    "retry": "Reintentar",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "show": "Mostrar",
+    "hide": "Ocultar",
+    "demoMode": "Demostración"
+  },
   "nav": {
-    "dashboard": "Dashboard",
-    "documents": "Documentos",
+    "dashboard": "Tablero",
+    "documents": "Base de conocimiento",
     "playground": "Playground",
-    "embed": "Embed",
-    "conversations": "Conversaciones",
-    "settings": "Ajustes"
+    "embed": "Incrustar widget",
+    "conversations": "Chats",
+    "settings": "Configuraciones",
+    "organization": "Espacio de trabajo",
+    "appLabel": "Lore",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "logout": "Cerrar sesión"
   },
   "auth": {
-    "loginTitle": "Iniciar sesión",
-    "loginSubtitle": "Accede a tu cuenta Angel1",
-    "signupTitle": "Crear cuenta",
-    "signupSubtitle": "Empieza tu prueba gratuita",
+    "loginTitle": "Lore",
+    "loginTagline": "Soporte al cliente, basado en tus propios documentos.",
+    "signupTitle": "Crea tu cuenta",
+    "signupSubtitle": "Comienza tu prueba de 14 días — sin tarjeta de crédito.",
+    "enterDemo": "Entrar a la demostración",
+    "demoHint": "Explora con datos de muestra — no se necesita cuenta",
     "continueGoogle": "Continuar con Google",
+    "googleDemoNotice": "El inicio de sesión con Google está deshabilitado en esta demostración. Usa \"Entrar a la demostración\" para explorar.",
     "or": "o",
+    "signInEmail": "Iniciar sesión con correo electrónico",
     "email": "Correo electrónico",
-    "name": "Nombre",
+    "emailPlaceholder": "tú@empresa.com",
     "password": "Contraseña",
-    "loginSubmit": "Entrar",
+    "name": "Nombre completo",
+    "namePlaceholder": "Jane Doe",
+    "loginSubmit": "Iniciar sesión",
     "signupSubmit": "Crear cuenta",
     "loggingIn": "Iniciando sesión…",
-    "signingUp": "Registrando…",
-    "noAccount": "¿No tienes cuenta?",
-    "register": "Regístrate",
-    "alreadyAccount": "¿Ya tienes cuenta?",
+    "signingUp": "Creando cuenta…",
+    "loginInvalid": "Correo electrónico o contraseña incorrectos.",
+    "loginGeneric": "Error al iniciar sesión. Por favor, intenta de nuevo.",
+    "noAccount": "¿Nuevo aquí?",
+    "register": "Crear una cuenta",
+    "alreadyAccount": "¿Ya tienes una cuenta?",
     "loginLink": "Iniciar sesión",
-    "checkEmail": "Revisa tu correo",
-    "emailPlaceholder": "tu@ejemplo.es",
-    "namePlaceholder": "Juan García"
+    "checkEmail": "Revisa tu bandeja de entrada",
+    "confirmationSent": "Enviamos un enlace de confirmación a tu correo electrónico. Haz clic en él para terminar de crear tu cuenta.",
+    "missingToken": "El enlace de confirmación es inválido o ha expirado. Intenta iniciar sesión de nuevo.",
+    "invalidToken": "No pudimos confirmar tu cuenta. Por favor, solicita un nuevo correo de confirmación.",
+    "missingCode": "Falta el código de autenticación. Por favor, inicia sesión de nuevo.",
+    "authCallbackError": "Error al iniciar sesión. Por favor, intenta de nuevo."
   },
-  "dashboard": { "title": "Panel de control" },
-  "documents": { "title": "Documentos" },
-  "playground": { "title": "Playground" },
+  "onboarding": {
+    "title": "Crea tu espacio de trabajo",
+    "subtitle": "Puedes invitar a compañeros más tarde.",
+    "orgName": "Nombre del espacio de trabajo",
+    "orgNamePlaceholder": "Acme Inc.",
+    "slug": "URL slug",
+    "slugPlaceholder": "acme-inc",
+    "slugHelper": "Tu tablero:",
+    "submit": "Crear espacio de trabajo",
+    "submitting": "Creando…",
+    "errorSlugTaken": "Ese slug ya está en uso — prueba con otro.",
+    "errorCreate": "No se pudo crear el espacio de trabajo. Por favor, intenta de nuevo.",
+    "errorMembership": "No se pudo añadirte al espacio de trabajo. Por favor, intenta de nuevo.",
+    "errorUnauth": "Por favor, inicia sesión primero."
+  },
+  "dashboard": {
+    "title": "Tablero",
+    "subtitle": "Conversaciones, costos y lo que realmente preguntan tus visitantes.",
+    "stats": {
+      "totalChats": "Total de chats",
+      "todayChats": "Hoy",
+      "todayChatsSub": "{count} en los últimos 7 días",
+      "totalCost": "Costo total",
+      "avgCost": "Promedio por chat"
+    },
+    "costChartTitle": "Gastos — últimos 7 días",
+    "costChartEmpty": "Sin datos en los últimos 7 días",
+    "costTooltip": "Costo",
+    "topQuestionsTitle": "Lo que la gente pregunta",
+    "emptyState": "Aún no hay chats. Abre el <playgroundLink>playground</playgroundLink> o incrusta el widget en tu sitio para comenzar a recopilar datos."
+  },
+  "documents": {
+    "title": "Base de conocimiento",
+    "subtitleSingular": "{count} documento",
+    "subtitlePlural": "{count} documentos",
+    "newDocument": "Agregar documento",
+    "selectMode": "Seleccionar",
+    "selected": "{count} seleccionados",
+    "deleteSelected": "Eliminar ({count})",
+    "emptyState": "Aún no hay nada en la base de conocimiento. Sube un PDF, Markdown o archivo de texto para comenzar a responder preguntas.",
+    "status": {
+      "processing": "Procesando…",
+      "ready": "Listo",
+      "error": "Fallido"
+    },
+    "source": {
+      "pdf": "PDF",
+      "markdown": "Markdown",
+      "manual": "Texto"
+    },
+    "deleteDialog": {
+      "titleSingular": "¿Eliminar este documento?",
+      "titlePlural": "¿Eliminar {count} documentos?",
+      "body": "Esto no se puede deshacer. Todos los fragmentos y embeddings serán eliminados de la base de conocimiento.",
+      "confirm": "Eliminar",
+      "confirming": "Eliminando…",
+      "cancel": "Anular",
+      "error": "No se pudo eliminar. Por favor, intenta de nuevo."
+    },
+    "upload": {
+      "title": "Agregar un documento",
+      "fileLabel": "Archivo",
+      "fileHint": "PDF, Markdown o texto plano · 10 MB máx",
+      "submit": "Subir",
+      "submitting": "Subiendo…",
+      "errorMissing": "Por favor, selecciona un archivo.",
+      "errorTooLarge": "El archivo es demasiado grande. El máximo es 10 MB.",
+      "errorUnsupported": "Formato no soportado. Usa PDF, .md o .txt.",
+      "errorUpload": "Error al subir: {message}",
+      "errorParse": "No se pudo leer el archivo.",
+      "errorSave": "No se pudo guardar el documento.",
+      "errorEmbed": "No se pudieron generar embeddings.",
+      "errorUnauth": "Por favor, inicia sesión primero.",
+      "errorNoOrg": "Espacio de trabajo no encontrado."
+    }
+  },
+  "playground": {
+    "title": "Playground",
+    "subtitle": "Pregunta cualquier cosa — las respuestas provienen de tu base de conocimiento.",
+    "emptyTitle": "Haz una pregunta",
+    "emptySubtitle": "Las respuestas están basadas en tus documentos.",
+    "emptyNoDocsTitle": "Aún no hay base de conocimiento",
+    "emptyNoDocsSubtitle": "Sube documentos para comenzar a usar el playground.",
+    "inputPlaceholder": "Haz una pregunta…  (Enter para enviar · Shift+Enter para nueva línea)",
+    "send": "Enviar",
+    "sourcesSingular": "{count} fuente",
+    "sourcesPlural": "{count} fuentes",
+    "errorGeneric": "No se pudo generar una respuesta.",
+    "errorNetwork": "Error de red. Por favor, intenta de nuevo.",
+    "errorStream": "Conexión interrumpida.",
+    "quickQuestions": {
+      "q1": "¿En qué puedes ayudarme?",
+      "q2": "Resume los temas principales",
+      "q3": "¿Cuáles son las políticas clave?",
+      "q4": "¿Cómo empiezo?"
+    }
+  },
+  "widget": {
+    "headerTitle": "Soporte",
+    "online": "En línea",
+    "emptyState": "Hola. ¿Cómo puedo ayudar?",
+    "inputPlaceholder": "Escribe un mensaje…",
+    "send": "Enviar",
+    "sourcesSingular": "{count} fuente",
+    "sourcesPlural": "{count} fuentes",
+    "openChat": "Abrir chat",
+    "closeChat": "Cerrar chat",
+    "errorGeneric": "No se pudo contactar al soporte. Por favor, intenta de nuevo."
+  },
   "embed": {
-    "title": "Widget embebido",
-    "snippetHint": "Pega esta etiqueta en el HTML de tu sitio, antes de",
-    "copySnippet": "Copiar código"
+    "title": "Incrustar el widget",
+    "subtitle": "Crea una clave API, copia el snippet y pégalo en tu sitio.",
+    "apiKeysTitle": "Claves API",
+    "snippetTitle": "Instalar snippet",
+    "snippetIntro": "Pega esta etiqueta en el HTML de tu sitio, justo antes de",
+    "snippetReplace": "Reemplaza",
+    "snippetReplaceSuffix": "con la clave que creaste arriba.",
+    "snippetEnd": "(fin de la etiqueta body)",
+    "copySnippet": "Copiar snippet",
+    "previewTitle": "Vista previa del widget",
+    "previewHint": "Esto es exactamente lo que verán tus visitantes — intenta hacerle una pregunta.",
+    "demoNotice": "Este snippet funciona con el conjunto de datos de demostración. En un despliegue real, reemplaza el host con tu propio dominio."
   },
-  "conversations": { "title": "Conversaciones" },
-  "settings": { "title": "Ajustes" }
+  "apiKeys": {
+    "title": "Claves API",
+    "newKey": "Nueva clave API",
+    "newKeyPlaceholder": "p. ej. Sitio web principal",
+    "create": "Crear",
+    "creating": "Creando…",
+    "errorRequired": "El nombre es obligatorio.",
+    "errorCreate": "No se pudo crear la clave. Por favor, intenta de nuevo.",
+    "errorDelete": "No se pudo eliminar la clave.",
+    "errorUnauth": "No autorizado.",
+    "errorMissingId": "Falta el id de la clave.",
+    "savedKeyWarning": "Guarda esta clave ahora — no se mostrará de nuevo.",
+    "showKey": "Mostrar clave",
+    "hideKey": "Ocultar clave",
+    "copyKey": "Copiar clave",
+    "dismiss": "Descartar",
+    "emptyState": "Aún no hay claves API. Crea una para incrustar el widget en tu sitio.",
+    "lastUsed": "Último uso {date}",
+    "createdOn": "Creado {date}",
+    "unnamed": "Sin nombre",
+    "copyPrefix": "Copiar prefijo de clave",
+    "showPrefix": "Mostrar prefijo de clave",
+    "hidePrefix": "Ocultar prefijo de clave",
+    "deleteDialog": {
+      "title": "¿Eliminar esta clave API?",
+      "body": "La clave {name} dejará de funcionar inmediatamente. Cualquier widget incrustado que la use fallará en conectarse.",
+      "confirm": "Eliminar clave",
+      "confirming": "Eliminando…"
+    }
+  },
+  "conversations": {
+    "title": "Chats",
+    "subtitleSingular": "{count} chat en este período",
+    "subtitlePlural": "{count} chats en este período",
+    "emptyState": "No hay chats en este período.",
+    "periods": {
+      "today": "Hoy",
+      "7d": "Últimos 7 días",
+      "30d": "Últimos 30 días",
+      "all": "Todo el tiempo"
+    },
+    "table": {
+      "visitor": "Visitante",
+      "date": "Iniciado",
+      "messages": "Msgs",
+      "cost": "Costo"
+    },
+    "visitorAnonymous": "Anónimo",
+    "visitorWithId": "Visitante {id}",
+    "modal": {
+      "title": "Chat del {date}",
+      "stats": {
+        "messages": "Mensajes",
+        "tokens": "Tokens",
+        "cost": "Costo"
+      },
+      "loading": "Cargando mensajes…",
+      "empty": "No hay mensajes."
+    }
+  },
+  "settings": {
+    "title": "Configuraciones",
+    "subtitle": "Gestiona tu espacio de trabajo y claves API.",
+    "organization": {
+      "title": "Espacio de trabajo",
+      "name": "Nombre",
+      "slug": "Slug",
+      "plan": "Plan",
+      "role": "Tu rol",
+      "account": "Conectado como"
+    },
+    "plans": {
+      "free": "Gratis",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    },
+    "roles": {
+      "admin": "Admin",
+      "member": "Miembro"
+    },
+    "dangerZone": {
+      "title": "Zona de peligro",
+      "body": "Eliminar el espacio de trabajo es permanente. Todo — documentos, chats, claves — se irá con él.",
+      "deleteButton": "Eliminar espacio de trabajo",
+      "disabledHint": "Deshabilitado en la demostración"
+    }
+  },
+  "errors": {
+    "boundary": "Algo salió mal.",
+    "boundaryHint": "Lo hemos registrado. Intenta de nuevo en un momento.",
+    "retry": "Intenta de nuevo",
+    "notFound": "No pudimos encontrar lo que estabas buscando.",
+    "goHome": "Ir al tablero",
+    "unauthorized": "Necesitas estar conectado.",
+    "rateLimit": "Demasiadas solicitudes. Por favor, espera un momento."
+  },
+  "demoBanner": {
+    "label": "Demostración",
+    "tooltip": "Estás explorando con datos de muestra. Acciones como eliminar y subir funcionan en una copia de sandbox."
+  }
 }

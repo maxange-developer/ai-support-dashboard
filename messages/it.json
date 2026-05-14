@@ -1,42 +1,287 @@
 {
+  "common": {
+    "appName": "Lore",
+    "appTagline": "Supporto clienti basato sulla conoscenza",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "create": "Crea",
+    "back": "Indietro",
+    "loading": "Caricamento…",
+    "retry": "Riprova",
+    "copy": "Copia",
+    "copied": "Copiato",
+    "show": "Mostra",
+    "hide": "Nascondi",
+    "demoMode": "Demo"
+  },
   "nav": {
     "dashboard": "Dashboard",
-    "documents": "Documenti",
+    "documents": "Base di conoscenza",
     "playground": "Playground",
-    "embed": "Embed",
-    "conversations": "Conversazioni",
-    "settings": "Impostazioni"
+    "embed": "Incorpora widget",
+    "conversations": "Chat",
+    "settings": "Impostazioni",
+    "organization": "Workspace",
+    "appLabel": "Lore",
+    "openMenu": "Apri menu",
+    "closeMenu": "Chiudi menu",
+    "logout": "Disconnetti"
   },
   "auth": {
-    "loginTitle": "Accedi",
-    "loginSubtitle": "Entra nel tuo account Angel1",
-    "signupTitle": "Crea account",
-    "signupSubtitle": "Inizia il tuo periodo di prova gratuito",
+    "loginTitle": "Lore",
+    "loginTagline": "Supporto clienti, basato sui tuoi documenti.",
+    "signupTitle": "Crea il tuo account",
+    "signupSubtitle": "Inizia la tua prova di 14 giorni — senza carta di credito.",
+    "enterDemo": "Entra in demo",
+    "demoHint": "Esplora con dati di esempio — nessun account necessario",
     "continueGoogle": "Continua con Google",
-    "or": "oppure",
+    "googleDemoNotice": "Il login con Google è disabilitato in questa demo. Usa \"Entra in demo\" per esplorare.",
+    "or": "o",
+    "signInEmail": "Accedi con email",
     "email": "Email",
-    "name": "Nome",
+    "emailPlaceholder": "tu@azienda.com",
     "password": "Password",
+    "name": "Nome completo",
+    "namePlaceholder": "Giovanni Rossi",
     "loginSubmit": "Accedi",
     "signupSubmit": "Crea account",
     "loggingIn": "Accesso in corso…",
-    "signingUp": "Registrazione…",
-    "noAccount": "Non hai un account?",
-    "register": "Registrati",
+    "signingUp": "Creazione account…",
+    "loginInvalid": "Email o password errati.",
+    "loginGeneric": "Accesso fallito. Riprova.",
+    "noAccount": "Sei nuovo qui?",
+    "register": "Crea un account",
     "alreadyAccount": "Hai già un account?",
     "loginLink": "Accedi",
-    "checkEmail": "Controlla la tua email",
-    "emailPlaceholder": "tu@esempio.it",
-    "namePlaceholder": "Mario Rossi"
+    "checkEmail": "Controlla la tua casella di posta",
+    "confirmationSent": "Abbiamo inviato un link di conferma alla tua email. Cliccalo per completare la creazione del tuo account.",
+    "missingToken": "Il link di conferma è invalido o scaduto. Riprova ad accedere.",
+    "invalidToken": "Non siamo riusciti a confermare il tuo account. Richiedi una nuova email di conferma.",
+    "missingCode": "Codice di autenticazione mancante. Accedi di nuovo.",
+    "authCallbackError": "Accesso fallito. Riprova."
   },
-  "dashboard": { "title": "Dashboard" },
-  "documents": { "title": "Documenti" },
-  "playground": { "title": "Playground" },
+  "onboarding": {
+    "title": "Crea il tuo workspace",
+    "subtitle": "Puoi invitare i membri del team in seguito.",
+    "orgName": "Nome del workspace",
+    "orgNamePlaceholder": "Acme Inc.",
+    "slug": "URL slug",
+    "slugPlaceholder": "acme-inc",
+    "slugHelper": "Il tuo dashboard:",
+    "submit": "Crea workspace",
+    "submitting": "Creazione…",
+    "errorSlugTaken": "Quello slug è già in uso — prova un altro.",
+    "errorCreate": "Impossibile creare il workspace. Riprova.",
+    "errorMembership": "Impossibile aggiungerti al workspace. Riprova.",
+    "errorUnauth": "Accedi prima."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Conversazioni, costi e cosa chiedono realmente i tuoi visitatori.",
+    "stats": {
+      "totalChats": "Chat totali",
+      "todayChats": "Oggi",
+      "todayChatsSub": "{count} negli ultimi 7 giorni",
+      "totalCost": "Costo totale",
+      "avgCost": "Costo medio per chat"
+    },
+    "costChartTitle": "Spesa — ultimi 7 giorni",
+    "costChartEmpty": "Nessun dato negli ultimi 7 giorni",
+    "costTooltip": "Costo",
+    "topQuestionsTitle": "Cosa chiedono le persone",
+    "emptyState": "Nessuna chat ancora. Apri il <playgroundLink>playground</playgroundLink> o incorpora il widget sul tuo sito per iniziare a raccogliere dati."
+  },
+  "documents": {
+    "title": "Base di conoscenza",
+    "subtitleSingular": "{count} documento",
+    "subtitlePlural": "{count} documenti",
+    "newDocument": "Aggiungi documento",
+    "selectMode": "Seleziona",
+    "selected": "{count} selezionati",
+    "deleteSelected": "Elimina ({count})",
+    "emptyState": "Niente nella base di conoscenza ancora. Carica un PDF, Markdown o file di testo per iniziare a rispondere alle domande.",
+    "status": {
+      "processing": "Elaborazione…",
+      "ready": "Pronto",
+      "error": "Fallito"
+    },
+    "source": {
+      "pdf": "PDF",
+      "markdown": "Markdown",
+      "manual": "Testo"
+    },
+    "deleteDialog": {
+      "titleSingular": "Eliminare questo documento?",
+      "titlePlural": "Eliminare {count} documenti?",
+      "body": "Questa operazione non può essere annullata. Tutti i chunk e gli embedding saranno rimossi dalla base di conoscenza.",
+      "confirm": "Elimina",
+      "confirming": "Eliminazione…",
+      "cancel": "Annulla",
+      "error": "Impossibile eliminare. Riprova."
+    },
+    "upload": {
+      "title": "Aggiungi un documento",
+      "fileLabel": "File",
+      "fileHint": "PDF, Markdown o testo semplice · massimo 10 MB",
+      "submit": "Carica",
+      "submitting": "Caricamento…",
+      "errorMissing": "Seleziona un file.",
+      "errorTooLarge": "Il file è troppo grande. Massimo 10 MB.",
+      "errorUnsupported": "Formato non supportato. Usa PDF, .md o .txt.",
+      "errorUpload": "Caricamento fallito: {message}",
+      "errorParse": "Impossibile leggere il file.",
+      "errorSave": "Impossibile salvare il documento.",
+      "errorEmbed": "Impossibile generare gli embedding.",
+      "errorUnauth": "Accedi prima.",
+      "errorNoOrg": "Workspace non trovato."
+    }
+  },
+  "playground": {
+    "title": "Playground",
+    "subtitle": "Chiedi qualsiasi cosa — le risposte provengono dalla tua base di conoscenza.",
+    "emptyTitle": "Fai una domanda",
+    "emptySubtitle": "Le risposte sono basate sui tuoi documenti.",
+    "emptyNoDocsTitle": "Nessuna base di conoscenza ancora",
+    "emptyNoDocsSubtitle": "Carica documenti per iniziare a usare il playground.",
+    "inputPlaceholder": "Fai una domanda…  (Invio per inviare · Shift+Invio per nuova riga)",
+    "send": "Invia",
+    "sourcesSingular": "{count} fonte",
+    "sourcesPlural": "{count} fonti",
+    "errorGeneric": "Impossibile generare una risposta.",
+    "errorNetwork": "Errore di rete. Riprova.",
+    "errorStream": "Connessione interrotta.",
+    "quickQuestions": {
+      "q1": "In cosa puoi aiutarmi?",
+      "q2": "Riassumi i temi principali",
+      "q3": "Quali sono le politiche chiave?",
+      "q4": "Come posso iniziare?"
+    }
+  },
+  "widget": {
+    "headerTitle": "Supporto",
+    "online": "Online",
+    "emptyState": "Ciao. Come posso aiutarti?",
+    "inputPlaceholder": "Scrivi un messaggio…",
+    "send": "Invia",
+    "sourcesSingular": "{count} fonte",
+    "sourcesPlural": "{count} fonti",
+    "openChat": "Apri chat",
+    "closeChat": "Chiudi chat",
+    "errorGeneric": "Impossibile contattare il supporto. Riprova."
+  },
   "embed": {
-    "title": "Widget Embed",
-    "snippetHint": "Incolla questo tag nell'HTML del tuo sito, prima di",
-    "copySnippet": "Copia snippet"
+    "title": "Incorpora il widget",
+    "subtitle": "Crea una chiave API, copia lo snippet e incollalo nel tuo sito.",
+    "apiKeysTitle": "Chiavi API",
+    "snippetTitle": "Installa snippet",
+    "snippetIntro": "Incolla questo tag nell'HTML del tuo sito, subito prima di",
+    "snippetReplace": "Sostituisci",
+    "snippetReplaceSuffix": "con la chiave che hai creato sopra.",
+    "snippetEnd": "(fine tag body)",
+    "copySnippet": "Copia snippet",
+    "previewTitle": "Anteprima widget",
+    "previewHint": "Questo è esattamente ciò che vedranno i tuoi visitatori — prova a fargli una domanda.",
+    "demoNotice": "Questo snippet funziona con il dataset demo. In un'implementazione reale, sostituisci l'host con il tuo dominio."
   },
-  "conversations": { "title": "Conversazioni" },
-  "settings": { "title": "Impostazioni" }
+  "apiKeys": {
+    "title": "Chiavi API",
+    "newKey": "Nuova chiave API",
+    "newKeyPlaceholder": "es. Sito principale",
+    "create": "Crea",
+    "creating": "Creazione…",
+    "errorRequired": "Il nome è obbligatorio.",
+    "errorCreate": "Impossibile creare la chiave. Riprova.",
+    "errorDelete": "Impossibile eliminare la chiave.",
+    "errorUnauth": "Non autorizzato.",
+    "errorMissingId": "ID chiave mancante.",
+    "savedKeyWarning": "Salva questa chiave ora — non verrà mostrata di nuovo.",
+    "showKey": "Mostra chiave",
+    "hideKey": "Nascondi chiave",
+    "copyKey": "Copia chiave",
+    "dismiss": "Ignora",
+    "emptyState": "Nessuna chiave API ancora. Crea una per incorporare il widget nel tuo sito.",
+    "lastUsed": "Ultimo utilizzo {date}",
+    "createdOn": "Creato {date}",
+    "unnamed": "Senza nome",
+    "copyPrefix": "Copia prefisso chiave",
+    "showPrefix": "Mostra prefisso chiave",
+    "hidePrefix": "Nascondi prefisso chiave",
+    "deleteDialog": {
+      "title": "Eliminare questa chiave API?",
+      "body": "La chiave {name} smetterà di funzionare immediatamente. Qualsiasi widget incorporato che la utilizza non riuscirà a connettersi.",
+      "confirm": "Elimina chiave",
+      "confirming": "Eliminazione…"
+    }
+  },
+  "conversations": {
+    "title": "Chat",
+    "subtitleSingular": "{count} chat in questo periodo",
+    "subtitlePlural": "{count} chat in questo periodo",
+    "emptyState": "Nessuna chat in questo periodo.",
+    "periods": {
+      "today": "Oggi",
+      "7d": "Ultimi 7 giorni",
+      "30d": "Ultimi 30 giorni",
+      "all": "Tutto il tempo"
+    },
+    "table": {
+      "visitor": "Visitatore",
+      "date": "Iniziato",
+      "messages": "Messaggi",
+      "cost": "Costo"
+    },
+    "visitorAnonymous": "Anonimo",
+    "visitorWithId": "Visitatore {id}",
+    "modal": {
+      "title": "Chat del {date}",
+      "stats": {
+        "messages": "Messaggi",
+        "tokens": "Token",
+        "cost": "Costo"
+      },
+      "loading": "Caricamento messaggi…",
+      "empty": "Nessun messaggio."
+    }
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "subtitle": "Gestisci il tuo workspace e le chiavi API.",
+    "organization": {
+      "title": "Workspace",
+      "name": "Nome",
+      "slug": "Slug",
+      "plan": "Piano",
+      "role": "Il tuo ruolo",
+      "account": "Connesso come"
+    },
+    "plans": {
+      "free": "Gratuito",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    },
+    "roles": {
+      "admin": "Admin",
+      "member": "Membro"
+    },
+    "dangerZone": {
+      "title": "Zona pericolosa",
+      "body": "Eliminare il workspace è permanente. Tutto — documenti, chat, chiavi — andrà perso.",
+      "deleteButton": "Elimina workspace",
+      "disabledHint": "Disabilitato in demo"
+    }
+  },
+  "errors": {
+    "boundary": "Qualcosa è andato storto.",
+    "boundaryHint": "Lo abbiamo registrato. Riprova tra un momento.",
+    "retry": "Riprova",
+    "notFound": "Non siamo riusciti a trovare ciò che cercavi.",
+    "goHome": "Vai al dashboard",
+    "unauthorized": "Devi essere connesso.",
+    "rateLimit": "Troppe richieste. Attendi un momento."
+  },
+  "demoBanner": {
+    "label": "Demo",
+    "tooltip": "Stai esplorando con dati di esempio. Azioni come eliminare e caricare funzionano su una copia sandbox."
+  }
 }

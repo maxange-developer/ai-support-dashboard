@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "demo:seed": "tsx scripts/seed-mock.ts"
+    "demo:seed": "tsx scripts/seed-mock.ts",
+    "translate:i18n": "tsx scripts/translate-i18n.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",

@@ -1,42 +1,312 @@
 {
+  "common": {
+    "appName": "Lore",
+    "appTagline": "Knowledge-grounded customer support",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "create": "Create",
+    "back": "Back",
+    "loading": "Loading…",
+    "retry": "Retry",
+    "copy": "Copy",
+    "copied": "Copied",
+    "show": "Show",
+    "hide": "Hide",
+    "demoMode": "Demo"
+  },
+
   "nav": {
     "dashboard": "Dashboard",
-    "documents": "Documents",
+    "documents": "Knowledge base",
     "playground": "Playground",
-    "embed": "Embed",
-    "conversations": "Conversations",
-    "settings": "Settings"
+    "embed": "Embed widget",
+    "conversations": "Chats",
+    "settings": "Settings",
+    "organization": "Workspace",
+    "appLabel": "Lore",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "logout": "Sign out"
   },
+
   "auth": {
-    "loginTitle": "Login",
-    "loginSubtitle": "Access your Angel1 account",
-    "signupTitle": "Create account",
-    "signupSubtitle": "Start your free trial",
+    "loginTitle": "Lore",
+    "loginTagline": "Customer support, grounded in your own docs.",
+    "signupTitle": "Create your account",
+    "signupSubtitle": "Start your 14-day trial — no credit card.",
+
+    "enterDemo": "Enter demo",
+    "demoHint": "Explore with sample data — no account needed",
     "continueGoogle": "Continue with Google",
+    "googleDemoNotice": "Google sign-in is disabled in this demo. Use \"Enter demo\" to explore.",
     "or": "or",
+    "signInEmail": "Sign in with email",
+
     "email": "Email",
-    "name": "Name",
+    "emailPlaceholder": "you@company.com",
     "password": "Password",
-    "loginSubmit": "Login",
+    "name": "Full name",
+    "namePlaceholder": "Jane Doe",
+
+    "loginSubmit": "Sign in",
     "signupSubmit": "Create account",
     "loggingIn": "Signing in…",
-    "signingUp": "Signing up…",
-    "noAccount": "Don't have an account?",
-    "register": "Sign up",
+    "signingUp": "Creating account…",
+    "loginInvalid": "Wrong email or password.",
+    "loginGeneric": "Sign in failed. Please try again.",
+
+    "noAccount": "New here?",
+    "register": "Create an account",
     "alreadyAccount": "Already have an account?",
-    "loginLink": "Login",
-    "checkEmail": "Check your email",
-    "emailPlaceholder": "you@example.com",
-    "namePlaceholder": "John Doe"
+    "loginLink": "Sign in",
+
+    "checkEmail": "Check your inbox",
+    "confirmationSent": "We sent a confirmation link to your email. Click it to finish creating your account.",
+    "missingToken": "Confirmation link is invalid or expired. Try signing in again.",
+    "invalidToken": "We couldn't confirm your account. Please request a new confirmation email.",
+    "missingCode": "Authentication code missing. Please sign in again.",
+    "authCallbackError": "Sign-in failed. Please try again."
   },
-  "dashboard": { "title": "Dashboard" },
-  "documents": { "title": "Documents" },
-  "playground": { "title": "Playground" },
+
+  "onboarding": {
+    "title": "Create your workspace",
+    "subtitle": "You can invite teammates later.",
+    "orgName": "Workspace name",
+    "orgNamePlaceholder": "Acme Inc.",
+    "slug": "URL slug",
+    "slugPlaceholder": "acme-inc",
+    "slugHelper": "Your dashboard:",
+    "submit": "Create workspace",
+    "submitting": "Creating…",
+    "errorSlugTaken": "That slug is taken — try another.",
+    "errorCreate": "Couldn't create the workspace. Please try again.",
+    "errorMembership": "Couldn't add you to the workspace. Please try again.",
+    "errorUnauth": "Please sign in first."
+  },
+
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Conversations, costs, and what your visitors actually ask.",
+    "stats": {
+      "totalChats": "Total chats",
+      "todayChats": "Today",
+      "todayChatsSub": "{count} in the last 7 days",
+      "totalCost": "Total cost",
+      "avgCost": "Avg per chat"
+    },
+    "costChartTitle": "Spend — last 7 days",
+    "costChartEmpty": "No data in the last 7 days",
+    "costTooltip": "Cost",
+    "topQuestionsTitle": "What people ask",
+    "emptyState": "No chats yet. Open the <playgroundLink>playground</playgroundLink> or embed the widget on your site to start collecting data."
+  },
+
+  "documents": {
+    "title": "Knowledge base",
+    "subtitleSingular": "{count} document",
+    "subtitlePlural": "{count} documents",
+    "newDocument": "Add document",
+    "selectMode": "Select",
+    "selected": "{count} selected",
+    "deleteSelected": "Delete ({count})",
+    "emptyState": "Nothing in the knowledge base yet. Upload a PDF, Markdown, or text file to start answering questions.",
+
+    "status": {
+      "processing": "Processing…",
+      "ready": "Ready",
+      "error": "Failed"
+    },
+
+    "source": {
+      "pdf": "PDF",
+      "markdown": "Markdown",
+      "manual": "Text"
+    },
+
+    "deleteDialog": {
+      "titleSingular": "Delete this document?",
+      "titlePlural": "Delete {count} documents?",
+      "body": "This can't be undone. All chunks and embeddings will be removed from the knowledge base.",
+      "confirm": "Delete",
+      "confirming": "Deleting…",
+      "cancel": "Cancel",
+      "error": "Couldn't delete. Please try again."
+    },
+
+    "upload": {
+      "title": "Add a document",
+      "fileLabel": "File",
+      "fileHint": "PDF, Markdown, or plain text · 10 MB max",
+      "submit": "Upload",
+      "submitting": "Uploading…",
+      "errorMissing": "Please select a file.",
+      "errorTooLarge": "File is too large. Maximum is 10 MB.",
+      "errorUnsupported": "Unsupported format. Use PDF, .md, or .txt.",
+      "errorUpload": "Upload failed: {message}",
+      "errorParse": "Couldn't read the file.",
+      "errorSave": "Couldn't save the document.",
+      "errorEmbed": "Couldn't generate embeddings.",
+      "errorUnauth": "Please sign in first.",
+      "errorNoOrg": "Workspace not found."
+    }
+  },
+
+  "playground": {
+    "title": "Playground",
+    "subtitle": "Ask anything — answers come from your knowledge base.",
+    "emptyTitle": "Ask a question",
+    "emptySubtitle": "Answers are grounded in your documents.",
+    "emptyNoDocsTitle": "No knowledge base yet",
+    "emptyNoDocsSubtitle": "Upload documents to start using the playground.",
+    "inputPlaceholder": "Ask a question…  (Enter to send · Shift+Enter for new line)",
+    "send": "Send",
+    "sourcesSingular": "{count} source",
+    "sourcesPlural": "{count} sources",
+    "errorGeneric": "Couldn't generate a response.",
+    "errorNetwork": "Network error. Please try again.",
+    "errorStream": "Connection interrupted.",
+    "quickQuestions": {
+      "q1": "What can you help me with?",
+      "q2": "Summarize the main topics",
+      "q3": "What are the key policies?",
+      "q4": "How do I get started?"
+    }
+  },
+
+  "widget": {
+    "headerTitle": "Support",
+    "online": "Online",
+    "emptyState": "Hi there. How can I help?",
+    "inputPlaceholder": "Type a message…",
+    "send": "Send",
+    "sourcesSingular": "{count} source",
+    "sourcesPlural": "{count} sources",
+    "openChat": "Open chat",
+    "closeChat": "Close chat",
+    "errorGeneric": "Couldn't reach support. Please try again."
+  },
+
   "embed": {
-    "title": "Embed Widget",
-    "snippetHint": "Paste this tag in your site's HTML, before",
-    "copySnippet": "Copy snippet"
+    "title": "Embed the widget",
+    "subtitle": "Create an API key, copy the snippet, and paste it into your site.",
+    "apiKeysTitle": "API keys",
+    "snippetTitle": "Install snippet",
+    "snippetIntro": "Paste this tag in your site's HTML, right before",
+    "snippetReplace": "Replace",
+    "snippetReplaceSuffix": "with the key you created above.",
+    "snippetEnd": "(end body tag)",
+    "copySnippet": "Copy snippet",
+    "previewTitle": "Widget preview",
+    "previewHint": "This is exactly what your visitors will see — try asking it a question.",
+    "demoNotice": "This snippet works against the demo dataset. In a real deployment, replace the host with your own domain."
   },
-  "conversations": { "title": "Conversations" },
-  "settings": { "title": "Settings" }
+
+  "apiKeys": {
+    "title": "API keys",
+    "newKey": "New API key",
+    "newKeyPlaceholder": "e.g. Main website",
+    "create": "Create",
+    "creating": "Creating…",
+    "errorRequired": "Name is required.",
+    "errorCreate": "Couldn't create the key. Please try again.",
+    "errorDelete": "Couldn't delete the key.",
+    "errorUnauth": "Not authorized.",
+    "errorMissingId": "Missing key id.",
+
+    "savedKeyWarning": "Save this key now — it won't be shown again.",
+    "showKey": "Show key",
+    "hideKey": "Hide key",
+    "copyKey": "Copy key",
+    "dismiss": "Dismiss",
+
+    "emptyState": "No API keys yet. Create one to embed the widget on your site.",
+    "lastUsed": "Last used {date}",
+    "createdOn": "Created {date}",
+    "unnamed": "Unnamed",
+    "copyPrefix": "Copy key prefix",
+    "showPrefix": "Show key prefix",
+    "hidePrefix": "Hide key prefix",
+
+    "deleteDialog": {
+      "title": "Delete this API key?",
+      "body": "The key {name} will stop working immediately. Any embedded widgets using it will fail to connect.",
+      "confirm": "Delete key",
+      "confirming": "Deleting…"
+    }
+  },
+
+  "conversations": {
+    "title": "Chats",
+    "subtitleSingular": "{count} chat in this period",
+    "subtitlePlural": "{count} chats in this period",
+    "emptyState": "No chats in this period.",
+    "periods": {
+      "today": "Today",
+      "7d": "Last 7 days",
+      "30d": "Last 30 days",
+      "all": "All time"
+    },
+    "table": {
+      "visitor": "Visitor",
+      "date": "Started",
+      "messages": "Msgs",
+      "cost": "Cost"
+    },
+    "visitorAnonymous": "Anonymous",
+    "visitorWithId": "Visitor {id}",
+    "modal": {
+      "title": "Chat from {date}",
+      "stats": {
+        "messages": "Messages",
+        "tokens": "Tokens",
+        "cost": "Cost"
+      },
+      "loading": "Loading messages…",
+      "empty": "No messages."
+    }
+  },
+
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your workspace and API keys.",
+    "organization": {
+      "title": "Workspace",
+      "name": "Name",
+      "slug": "Slug",
+      "plan": "Plan",
+      "role": "Your role",
+      "account": "Signed in as"
+    },
+    "plans": {
+      "free": "Free",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    },
+    "roles": {
+      "admin": "Admin",
+      "member": "Member"
+    },
+    "dangerZone": {
+      "title": "Danger zone",
+      "body": "Deleting the workspace is permanent. Everything — documents, chats, keys — goes with it.",
+      "deleteButton": "Delete workspace",
+      "disabledHint": "Disabled in demo"
+    }
+  },
+
+  "errors": {
+    "boundary": "Something broke.",
+    "boundaryHint": "We've logged it. Try again in a moment.",
+    "retry": "Try again",
+    "notFound": "We couldn't find what you were looking for.",
+    "goHome": "Go to dashboard",
+    "unauthorized": "You need to be signed in.",
+    "rateLimit": "Too many requests. Please wait a moment."
+  },
+
+  "demoBanner": {
+    "label": "Demo",
+    "tooltip": "You're exploring with sample data. Actions like delete and upload work on a sandbox copy."
+  }
 }
