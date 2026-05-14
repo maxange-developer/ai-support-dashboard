@@ -52,7 +52,7 @@ export default function LoginPage() {
 
   function handleDemo() {
     document.cookie = 'mock_bypass=true; path=/; max-age=86400'
-    window.location.href = '/app/acme'
+    window.location.href = '/app/stratos'
   }
 
   return (

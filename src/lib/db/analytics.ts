@@ -17,11 +17,13 @@ const MOCK_COST_STATS: CostStats = {
   ],
 }
 const MOCK_TOP_QUESTIONS: TopQuestion[] = [
-  { content: 'How does the refund policy work?', count: 12 },
-  { content: 'How do I integrate your API?', count: 9 },
-  { content: 'Do you support Google SSO?', count: 7 },
-  { content: 'Can I export my data?', count: 5 },
-  { content: "What's included in the free plan?", count: 4 },
+  { content: 'How do I track custom events?', count: 14 },
+  { content: "What's the difference between Pro and Enterprise?", count: 11 },
+  { content: 'How does your refund policy work?', count: 9 },
+  { content: 'Is SSO available on Pro plan?', count: 7 },
+  { content: 'Can I export raw event data?', count: 6 },
+  { content: 'Do you support GDPR data deletion requests?', count: 5 },
+  { content: 'How long does ingestion take after sending?', count: 4 },
 ]
 
 export interface ConversationStats {
@@ -159,11 +161,24 @@ export async function listConversations(
   since?: Date,
 ): Promise<ConversationListItem[]> {
   if (USE_MOCK) return [
-    { id: '00000000-0000-0000-0002-000000000001', visitorId: 'vis_abc123', startedAt: new Date(Date.now() - 3600000).toISOString(), messageCount: 2, costCents: 4 },
-    { id: '00000000-0000-0000-0002-000000000002', visitorId: 'vis_def456', startedAt: new Date(Date.now() - 10800000).toISOString(), messageCount: 2, costCents: 4 },
-    { id: '00000000-0000-0000-0002-000000000003', visitorId: 'vis_ghi789', startedAt: new Date(Date.now() - 86400000).toISOString(), messageCount: 3, costCents: 6 },
-    { id: '00000000-0000-0000-0002-000000000004', visitorId: null, startedAt: new Date(Date.now() - 172800000).toISOString(), messageCount: 1, costCents: 2 },
-    { id: '00000000-0000-0000-0002-000000000005', visitorId: 'vis_jkl012', startedAt: new Date(Date.now() - 259200000).toISOString(), messageCount: 4, costCents: 8 },
+    { id: '00000000-0000-0000-0002-000000000001', visitorId: 'visitor-2a91', startedAt: new Date(Date.now() - 2 * 3600000).toISOString(), messageCount: 4, costCents: 3 },
+    { id: '00000000-0000-0000-0002-000000000002', visitorId: 'visitor-7c43', startedAt: new Date(Date.now() - 4 * 3600000).toISOString(), messageCount: 2, costCents: 2 },
+    { id: '00000000-0000-0000-0002-000000000003', visitorId: 'visitor-94e1', startedAt: new Date(Date.now() - 6 * 3600000).toISOString(), messageCount: 2, costCents: 1 },
+    { id: '00000000-0000-0000-0002-000000000004', visitorId: 'visitor-1f0d', startedAt: new Date(Date.now() - 8 * 3600000).toISOString(), messageCount: 4, costCents: 3 },
+    { id: '00000000-0000-0000-0002-000000000005', visitorId: 'visitor-6b29', startedAt: new Date(Date.now() - 12 * 3600000).toISOString(), messageCount: 2, costCents: 1 },
+    { id: '00000000-0000-0000-0002-000000000006', visitorId: 'visitor-ae84', startedAt: new Date(Date.now() - (86400000 + 2 * 3600000)).toISOString(), messageCount: 2, costCents: 1 },
+    { id: '00000000-0000-0000-0002-000000000007', visitorId: 'visitor-3d52', startedAt: new Date(Date.now() - (86400000 + 5 * 3600000)).toISOString(), messageCount: 4, costCents: 4 },
+    { id: '00000000-0000-0000-0002-000000000008', visitorId: 'visitor-c712', startedAt: new Date(Date.now() - (86400000 + 9 * 3600000)).toISOString(), messageCount: 2, costCents: 2 },
+    { id: '00000000-0000-0000-0002-000000000009', visitorId: 'visitor-820f', startedAt: new Date(Date.now() - (86400000 + 14 * 3600000)).toISOString(), messageCount: 2, costCents: 2 },
+    { id: '00000000-0000-0000-0002-000000000010', visitorId: 'visitor-5e3a', startedAt: new Date(Date.now() - (86400000 + 18 * 3600000)).toISOString(), messageCount: 4, costCents: 3 },
+    { id: '00000000-0000-0000-0002-000000000011', visitorId: 'visitor-0b76', startedAt: new Date(Date.now() - (2 * 86400000 + 3 * 3600000)).toISOString(), messageCount: 2, costCents: 2 },
+    { id: '00000000-0000-0000-0002-000000000012', visitorId: 'visitor-fa18', startedAt: new Date(Date.now() - (2 * 86400000 + 11 * 3600000)).toISOString(), messageCount: 6, costCents: 4 },
+    { id: '00000000-0000-0000-0002-000000000013', visitorId: 'visitor-7e02', startedAt: new Date(Date.now() - (3 * 86400000 + 4 * 3600000)).toISOString(), messageCount: 2, costCents: 1 },
+    { id: '00000000-0000-0000-0002-000000000014', visitorId: 'visitor-19bc', startedAt: new Date(Date.now() - (3 * 86400000 + 16 * 3600000)).toISOString(), messageCount: 2, costCents: 1 },
+    { id: '00000000-0000-0000-0002-000000000015', visitorId: 'visitor-d6a3', startedAt: new Date(Date.now() - (4 * 86400000 + 7 * 3600000)).toISOString(), messageCount: 2, costCents: 2 },
+    { id: '00000000-0000-0000-0002-000000000016', visitorId: 'visitor-83ef', startedAt: new Date(Date.now() - (5 * 86400000 + 9 * 3600000)).toISOString(), messageCount: 2, costCents: 2 },
+    { id: '00000000-0000-0000-0002-000000000017', visitorId: 'visitor-2d4b', startedAt: new Date(Date.now() - (6 * 86400000 + 2 * 3600000)).toISOString(), messageCount: 2, costCents: 2 },
+    { id: '00000000-0000-0000-0002-000000000018', visitorId: 'visitor-bf91', startedAt: new Date(Date.now() - (6 * 86400000 + 15 * 3600000)).toISOString(), messageCount: 4, costCents: 4 },
   ].filter(c => !since || new Date(c.startedAt) >= since)
   type Row = {
     id: string

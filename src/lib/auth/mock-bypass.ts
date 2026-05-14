@@ -23,13 +23,13 @@ export interface DemoOrg {
 
 export const DEMO_ORG: DemoOrg = {
   id: '00000000-0000-0000-0000-000000000001',
-  name: 'Acme Corp',
-  slug: 'acme',
+  name: 'Stratos',
+  slug: 'stratos',
   plan: 'pro',
 }
 
 export const DEMO_ORGS_BY_SLUG: Record<string, DemoOrg> = {
-  acme: DEMO_ORG,
+  stratos: DEMO_ORG,
   beta: {
     id: '00000000-0000-0000-0000-000000000002',
     name: 'Beta SaaS',
