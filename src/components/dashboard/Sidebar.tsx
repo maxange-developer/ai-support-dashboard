@@ -67,7 +67,7 @@ export function SidebarNav({ orgSlug, orgName, workspaces, onNavigate }: Sidebar
   return (
     <div className="flex h-full flex-col">
       {/* Logo */}
-      <div className="flex h-16 items-center px-4 border-b border-white/10 shrink-0">
+      <div className="flex h-16 items-center justify-center px-4 border-b border-white/10 shrink-0">
         <Image
           src="/images/logo-a1-w.webp"
           width={120}
