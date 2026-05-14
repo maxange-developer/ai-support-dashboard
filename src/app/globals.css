@@ -192,16 +192,6 @@
   }
 }
 
-/* Slow rotation that preserves the 45° diamond orientation (45° → 405°) */
-@keyframes spin-slow {
-  from {
-    transform: rotate(45deg);
-  }
-  to {
-    transform: rotate(405deg);
-  }
-}
-
 @layer utilities {
   .animate-fade-up {
     animation: fadeUp 0.5s ease-out both;
