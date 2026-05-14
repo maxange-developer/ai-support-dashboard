@@ -15,8 +15,8 @@ export const MOCK_ORG_1 = {
 
 export const MOCK_ORG_2 = {
   id: '00000000-0000-0000-0000-000000000002',
-  name: 'Beta SaaS',
-  slug: 'beta',
+  name: 'Nimbus Labs',
+  slug: 'nimbus',
   plan: 'free',
 }
 
@@ -537,6 +537,223 @@ If you're consistently rate-limited at 80% of the documented limit, contact supp
 Email support@stratos.example with the \`request_id\` from a failed call and the workspace slug. Pro replies within 24 business hours; Enterprise within 1 hour during business hours.
 `,
   },
+
+  // ─── Nimbus Labs internal docs (HR / onboarding) ─────────────────────────
+  {
+    id: '00000000-0000-0000-0001-000000000011',
+    org_id: MOCK_ORG_2.id,
+    title: 'Welcome to Nimbus — your first week',
+    source_type: 'markdown' as const,
+    status: 'ready' as const,
+    content: `# Welcome to Nimbus — your first week
+
+We're 8 people: 3 engineers, 1 designer, 2 sales, 1 ops, 1 founder. Most of us work async, but everyone overlaps roughly 10:00–14:00 UTC.
+
+## Day 1 — accounts & access
+
+Ops will have already created your Google Workspace, Slack, GitHub, and 1Password accounts before you start. If anything's missing, ping #ops on Slack. AWS, Linear, and the staging environment are provisioned via Okta SSO — they show up in your dashboard once your 1Password vault is set up.
+
+## Day 2-3 — read these
+
+- This document
+- *Engineering practices and code review*
+- *Tools, accounts, and access requests*
+- The current quarter's OKRs (link in #general pinned)
+
+Skim them; don't memorize. Bookmark them.
+
+## Week 1 — shipping something small
+
+We try to get every new hire a merged PR by end of week 1. Your manager picks a small, well-scoped first issue ("a friendly hello world") on Day 2. Don't optimize it for impact — optimize for getting through the full loop: branch, PR, review, merge, deploy.
+
+## Standups and rituals
+
+- **Monday standup** — 09:30 UTC, 20 min. Async written update by 09:00 if you can't make it.
+- **Friday all-hands** — 16:00 UTC, 45 min. Reviewing the week, demos, OKR check-in.
+- **Tuesday & Thursday** — no recurring meetings. Protected deep-work days.
+
+We're async-first: prefer a thread over a meeting, prefer a doc over a thread, prefer code over a doc.
+
+## People
+
+Your buddy will reach out on Day 1. Their job is to answer the dumb questions you don't want to ask in #general for two weeks. After that, the dumb-questions channel is #ask-anything (no judgment, lots of GIFs).
+`,
+  },
+  {
+    id: '00000000-0000-0000-0001-000000000012',
+    org_id: MOCK_ORG_2.id,
+    title: 'Engineering practices and code review',
+    source_type: 'markdown' as const,
+    status: 'ready' as const,
+    content: `# Engineering practices and code review
+
+We're 3 engineers right now. That means our practices are deliberately lightweight — we'll tighten the screws when there's a real reason, not before.
+
+## Branching
+
+\`main\` is always deployable. Feature branches off \`main\`, PR back into \`main\`, squash-merge. No release branches, no long-lived dev branches.
+
+## Pull requests
+
+- Keep PRs under ~400 lines of diff. Bigger than that, split.
+- Title in present tense, imperative: "add X", "fix Y", "remove Z".
+- Body: what + why. The "what" is usually obvious from the diff; spend the prose on the "why".
+- Self-review the diff before requesting review. You'll find typos.
+
+## Reviews
+
+- One approval required to merge.
+- Reviewers respond within one business day. If you can't, drop a thread saying so.
+- We use "nit:" prefix for non-blocking suggestions. Don't block a PR on style; raise it as a separate cleanup.
+
+## CI
+
+Every PR runs lint + typecheck + unit tests. E2E runs on \`main\` post-merge and nightly.
+
+## Deploys
+
+Auto-deploy to staging on merge to \`main\`. Production deploys are manual via a Slack \`/deploy\` slash command. We deploy 2-5 times a day in practice.
+
+## Incidents
+
+If prod is broken, post in #incidents with a one-line summary. We don't have a formal on-call rotation yet (too small) — whoever is around picks it up and writes a brief post-incident note within 24 hours.
+
+## What we don't do (yet)
+
+- No micro-services. One monorepo, one app.
+- No formal RFC process. Big technical decisions get a doc in #engineering and 24h of comments.
+- No mandatory pairing. Pair when it helps; don't when it doesn't.
+- No code coverage targets. Tests are written when they pay rent.
+`,
+  },
+  {
+    id: '00000000-0000-0000-0001-000000000013',
+    org_id: MOCK_ORG_2.id,
+    title: 'Time off, holidays, and remote work',
+    source_type: 'markdown' as const,
+    status: 'ready' as const,
+    content: `# Time off, holidays, and remote work
+
+We're a remote-first team across three time zones. Time off is generous in practice; the framework is light.
+
+## PTO
+
+Unlimited PTO with a 15-day minimum. We track minimum, not maximum — if you're under 15 days by November, ops will nudge you to plan something.
+
+Put planned time off in the team Google Calendar at least 2 weeks ahead. Same-day sick leave: a quick Slack message in #team, no doctor's note needed.
+
+## Public holidays
+
+We observe the public holidays of the country you live in (you tell ops on hiring). No floating holidays, no swapping — your local calendar is your calendar.
+
+## Working from elsewhere
+
+You can work from any country for up to 90 days a year without telling anyone, as long as you can keep the overlap hours and your work doesn't suffer. Beyond 90 days: tell ops 30 days ahead so we can sanity-check tax implications.
+
+## Parental leave
+
+16 weeks fully paid for primary caregivers, 8 weeks fully paid for non-primary, regardless of country. We don't differentiate by gender or biological vs adoptive.
+
+## Mental health days
+
+Treat them like sick days — no questions, no notes. We'd rather you take a Friday now than a month off later.
+
+## Sabbatical
+
+After 4 years: 1 paid month off. Plan it 6 months ahead with your manager. Currently nobody has hit that threshold (we're 2 years old) but the policy is in writing.
+
+## What we don't track
+
+- We don't track hours. We track outcomes.
+- We don't require you to be online during specific hours, beyond the 10:00–14:00 UTC overlap.
+- We don't require a webcam in meetings.
+`,
+  },
+  {
+    id: '00000000-0000-0000-0001-000000000014',
+    org_id: MOCK_ORG_2.id,
+    title: 'Company OKRs and quarterly planning',
+    source_type: 'markdown' as const,
+    status: 'ready' as const,
+    content: `# Company OKRs and quarterly planning
+
+We run on quarterly OKRs. The current quarter's are pinned in #general; the previous three quarters are in the *Archive* folder of the team drive.
+
+## Format
+
+3-5 company objectives per quarter. Each objective gets 2-4 key results. Key results are measurable — a number with a target, not a verb. "Improve onboarding" is not a KR; "Day-7 activation rate ≥ 40%" is.
+
+We borrow heavily from Christina Wodtke's framework. Read *Radical Focus* if you have time.
+
+## Cadence
+
+- **Last week of Q-1** — Draft OKRs in a shared doc. Anyone can comment.
+- **First Monday of new Q** — Final OKRs locked in the all-hands.
+- **Weekly Friday all-hands** — 5-minute KR check-in. Confidence score 1-5 per KR.
+- **Mid-quarter** — Optional re-scoping if KRs are clearly stale.
+- **Last Friday of Q** — Retro. What hit, what didn't, what we learned.
+
+## Personal OKRs
+
+Individual OKRs are optional. If you have them, share them with your manager and one peer. Don't tie them to performance reviews — that ruins the incentive.
+
+## What OKRs aren't
+
+- Not a task list. Tasks belong in Linear.
+- Not a performance management tool. We use them as a coordination mechanism.
+- Not a promise. A 70% completion rate on KRs across the company is healthy. 100% means the targets were too soft.
+
+## Quiet quarters
+
+If we're in heads-down mode (e.g. last quarter, shipping v1), we skip OKRs entirely and use a single "shipping promise" instead. The framework serves us; we don't serve it.
+`,
+  },
+  {
+    id: '00000000-0000-0000-0001-000000000015',
+    org_id: MOCK_ORG_2.id,
+    title: 'Tools, accounts, and access requests',
+    source_type: 'markdown' as const,
+    status: 'ready' as const,
+    content: `# Tools, accounts, and access requests
+
+We try to keep the tool stack small. If you find yourself signing up for a new SaaS, post in #ops first — odds are we already pay for something that does the job.
+
+## Default stack
+
+- **Slack** — async comms, default. Channels over DMs.
+- **Linear** — issue tracker. One workspace, projects per quarter.
+- **GitHub** — code. One org, one main repo, a few small ones.
+- **Notion** — long-form docs, meeting notes. Not for product specs (those live in Linear).
+- **Google Workspace** — email, calendar, drive.
+- **1Password** — shared passwords. Vault is "Nimbus / Team".
+- **Vercel** — hosting.
+- **Supabase** — database + auth.
+
+## SSO and access
+
+All major tools sit behind Okta SSO. You don't have separate logins for AWS, Vercel, Supabase, GitHub, Linear — Okta does the federation.
+
+If a new tool shows up that doesn't support SSO, we use 1Password as a fallback and aim to migrate within 30 days.
+
+## Requesting access
+
+For SSO tools: post in #ops with what you need. Reply in under a business day for non-prod, sometimes same-day.
+
+For production secrets (Supabase service role, payment provider keys, etc): \`#ops\` plus a one-line reason. Two-person approval. The actual secret is shared via the team 1Password vault, never via Slack.
+
+## Hardware
+
+You get a $2,500 one-time hardware stipend on joining (laptop + monitor + chair, your call) and $500/year after that for upgrades or replacements.
+
+## Software stipend
+
+$500/year for software you use for work — JetBrains license, IDE plugins, productivity SaaS. Submit receipts in Pleo.
+
+## Offboarding
+
+When someone leaves, ops revokes Okta access on the last day. That kills everything downstream automatically. We rotate any shared secrets in 1Password the same week.
+`,
+  },
 ]
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -748,6 +965,82 @@ export const MOCK_CONVERSATIONS = [
       { role: 'assistant' as const, content: 'Every webhook payload is signed with HMAC-SHA256 using your webhook secret. Compute the expected signature over the raw body and compare against the x-stratos-signature header using a constant-time comparison (timingSafeEqual in Node). [5]', tokens_used: 134, cost_cents: 2 },
       { role: 'user' as const, content: 'What if my endpoint is temporarily down?', tokens_used: null, cost_cents: null },
       { role: 'assistant' as const, content: 'Webhooks retry with exponential backoff for up to 24 hours (11 attempts) on any non-2xx response. After the final retry, the delivery is logged as failed and visible in Settings → Webhooks → Delivery log. [5]', tokens_used: 116, cost_cents: 2 },
+    ],
+  },
+
+  // ─── Nimbus Labs internal queries (employees, not customers) ─────────────
+  {
+    id: '00000000-0000-0000-0002-000000000101',
+    org_id: MOCK_ORG_2.id,
+    visitor_id: 'employee-a01',
+    started_at: ISO(3 * HOUR),
+    messages: [
+      { role: 'user' as const, content: "Where do I submit my expense report?", tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: "Receipts go in Pleo for both software stipends ($500/year) and the one-time hardware stipend. For anything outside those buckets, post in #ops with the receipt — finance batches reimbursements every other Friday. [5]", tokens_used: 96, cost_cents: 1 },
+    ],
+  },
+  {
+    id: '00000000-0000-0000-0002-000000000102',
+    org_id: MOCK_ORG_2.id,
+    visitor_id: 'employee-c14',
+    started_at: ISO(9 * HOUR),
+    messages: [
+      { role: 'user' as const, content: "Can I work from a different country for 2 weeks?", tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: "Yes — up to 90 days a year from any country without telling anyone, as long as you keep the 10:00–14:00 UTC overlap and your work doesn't suffer. Past 90 days, ping ops 30 days ahead so we can check tax implications. [3]", tokens_used: 108, cost_cents: 1 },
+      { role: 'user' as const, content: "Do I need to use a VPN for production access?", tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: "No VPN needed — production access is gated through Okta SSO with WebAuthn, which works from anywhere. Just don't share your laptop screen on hotel WiFi while you have secrets open. [5]", tokens_used: 86, cost_cents: 1 },
+    ],
+  },
+  {
+    id: '00000000-0000-0000-0002-000000000103',
+    org_id: MOCK_ORG_2.id,
+    visitor_id: 'employee-7b3',
+    started_at: ISO(DAY + 4 * HOUR),
+    messages: [
+      { role: 'user' as const, content: "What's our policy on side projects?", tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: "Side projects are fine and encouraged, with two guardrails: (1) it can't compete with Nimbus directly, (2) it can't use Nimbus IP or infrastructure. Open-source contributions on your own time are always OK and don't need approval. If in doubt, ask your manager — almost everything is OK in practice.", tokens_used: 102, cost_cents: 1 },
+    ],
+  },
+  {
+    id: '00000000-0000-0000-0002-000000000104',
+    org_id: MOCK_ORG_2.id,
+    visitor_id: 'employee-f42',
+    started_at: ISO(DAY + 11 * HOUR),
+    messages: [
+      { role: 'user' as const, content: "How do I get access to the staging environment?", tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: "Staging is provisioned via Okta SSO — once your account is set up, the staging app shows up in your Okta dashboard automatically (usually within an hour of onboarding). If you don't see it after Day 1, ping #ops. [5]", tokens_used: 92, cost_cents: 1 },
+    ],
+  },
+  {
+    id: '00000000-0000-0000-0002-000000000105',
+    org_id: MOCK_ORG_2.id,
+    visitor_id: 'employee-9c0',
+    started_at: ISO(2 * DAY + 6 * HOUR),
+    messages: [
+      { role: 'user' as const, content: "Is there a learning budget?", tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: "The $500/year software stipend covers books, courses, and IDE plugins — submit receipts in Pleo. Conferences and longer training programs are a separate ask: post in #ops with what + why + cost and we approve case-by-case. [5]", tokens_used: 88, cost_cents: 1 },
+    ],
+  },
+  {
+    id: '00000000-0000-0000-0002-000000000106',
+    org_id: MOCK_ORG_2.id,
+    visitor_id: 'employee-d83',
+    started_at: ISO(4 * DAY + 8 * HOUR),
+    messages: [
+      { role: 'user' as const, content: "When are our quarterly OKRs reviewed?", tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: "Weekly Friday all-hands have a 5-minute KR check-in with confidence scores 1-5 per key result. Full retro is the last Friday of the quarter. Drafts for the next quarter's OKRs are due the last week of the current quarter. [4]", tokens_used: 110, cost_cents: 1 },
+      { role: 'user' as const, content: "Are individual OKRs required?", tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: "No — individual OKRs are optional. If you have them, share with your manager and one peer, but don't tie them to performance reviews. They're a coordination tool, not a performance management tool. [4]", tokens_used: 82, cost_cents: 1 },
+    ],
+  },
+  {
+    id: '00000000-0000-0000-0002-000000000107',
+    org_id: MOCK_ORG_2.id,
+    visitor_id: 'employee-e51',
+    started_at: ISO(5 * DAY + 13 * HOUR),
+    messages: [
+      { role: 'user' as const, content: "How much PTO am I supposed to take?", tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: "Unlimited in policy, 15-day minimum in practice. Ops nudges you in November if you're under that threshold. Put planned time off in the team Google Calendar 2 weeks ahead; same-day sick leave is just a Slack message in #team. [3]", tokens_used: 98, cost_cents: 1 },
     ],
   },
 ]

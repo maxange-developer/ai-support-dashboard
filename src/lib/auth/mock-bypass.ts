@@ -30,10 +30,10 @@ export const DEMO_ORG: DemoOrg = {
 
 export const DEMO_ORGS_BY_SLUG: Record<string, DemoOrg> = {
   stratos: DEMO_ORG,
-  beta: {
+  nimbus: {
     id: '00000000-0000-0000-0000-000000000002',
-    name: 'Beta SaaS',
-    slug: 'beta',
+    name: 'Nimbus Labs',
+    slug: 'nimbus',
     plan: 'free',
   },
 }

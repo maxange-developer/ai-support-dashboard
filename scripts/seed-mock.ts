@@ -167,8 +167,8 @@ async function main() {
   console.log(`   Conversations: ${convCount}/${MOCK_CONVERSATIONS.length} (${msgCount} messages)`)
   console.log(`   API Keys:      ${keyCount}/${MOCK_API_KEYS.length}`)
   console.log(`   Test user:     ${TEST_EMAIL} / ${TEST_PASSWORD}`)
-  console.log('\nTest login: /login → /app/stratos')
-  console.log('Playground:  /app/stratos/playground')
+  console.log('\nTest login: /login')
+  console.log('Workspaces: /app/stratos · /app/nimbus')
   console.log('Use USE_MOCK_AI=true in .env.local to bypass real AI calls.\n')
 }
 
