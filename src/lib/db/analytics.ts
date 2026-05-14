@@ -1,30 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { MOCK_CONVERSATIONS } from '@/lib/mock'
 
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true'
-
-const MOCK_CONV_STATS: ConversationStats = { total: 42, today: 5, week: 18 }
-const MOCK_COST_STATS: CostStats = {
-  totalCents: 1240,
-  avgPerConvCents: 30,
-  daily: [
-    { day: new Date(Date.now() - 6 * 86400000).toISOString().slice(0, 10), tokensUsed: 4200, costCents: 168 },
-    { day: new Date(Date.now() - 5 * 86400000).toISOString().slice(0, 10), tokensUsed: 3800, costCents: 152 },
-    { day: new Date(Date.now() - 4 * 86400000).toISOString().slice(0, 10), tokensUsed: 5100, costCents: 204 },
-    { day: new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10), tokensUsed: 2900, costCents: 116 },
-    { day: new Date(Date.now() - 2 * 86400000).toISOString().slice(0, 10), tokensUsed: 6300, costCents: 252 },
-    { day: new Date(Date.now() - 1 * 86400000).toISOString().slice(0, 10), tokensUsed: 4700, costCents: 188 },
-    { day: new Date(Date.now()).toISOString().slice(0, 10), tokensUsed: 4000, costCents: 160 },
-  ],
-}
-const MOCK_TOP_QUESTIONS: TopQuestion[] = [
-  { content: 'How do I track custom events?', count: 14 },
-  { content: "What's the difference between Pro and Enterprise?", count: 11 },
-  { content: 'How does your refund policy work?', count: 9 },
-  { content: 'Is SSO available on Pro plan?', count: 7 },
-  { content: 'Can I export raw event data?', count: 6 },
-  { content: 'Do you support GDPR data deletion requests?', count: 5 },
-  { content: 'How long does ingestion take after sending?', count: 4 },
-]
 
 export interface ConversationStats {
   total: number
@@ -69,11 +46,28 @@ export interface MessageRow {
 
 // All functions use service role — conversations/messages have RLS with no SELECT policy
 
+// Filter MOCK_CONVERSATIONS by org once per call; downstream mock paths derive
+// stats from this slice so that switching workspaces shows org-specific data.
+function mockConvsForOrg(orgId: string) {
+  return MOCK_CONVERSATIONS.filter((c) => c.org_id === orgId)
+}
+
 export async function getConversationStats(
   admin: SupabaseClient,
   orgId: string,
 ): Promise<ConversationStats> {
-  if (USE_MOCK) return MOCK_CONV_STATS
+  if (USE_MOCK) {
+    const convs = mockConvsForOrg(orgId)
+    const now = Date.now()
+    const todayStart = new Date()
+    todayStart.setHours(0, 0, 0, 0)
+    const weekStart = now - 7 * 24 * 60 * 60 * 1000
+    return {
+      total: convs.length,
+      today: convs.filter((c) => new Date(c.started_at).getTime() >= todayStart.getTime()).length,
+      week: convs.filter((c) => new Date(c.started_at).getTime() >= weekStart).length,
+    }
+  }
   const todayStart = new Date()
   todayStart.setHours(0, 0, 0, 0)
   const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
@@ -103,7 +97,21 @@ export async function getTopQuestions(
   orgId: string,
   limit = 10,
 ): Promise<TopQuestion[]> {
-  if (USE_MOCK) return MOCK_TOP_QUESTIONS.slice(0, limit)
+  if (USE_MOCK) {
+    // Derive top questions from this org's conversations: count duplicate user
+    // messages, sort desc. Mirrors what the real top_questions RPC does.
+    const counts = new Map<string, number>()
+    for (const conv of mockConvsForOrg(orgId)) {
+      for (const msg of conv.messages) {
+        if (msg.role !== 'user') continue
+        counts.set(msg.content, (counts.get(msg.content) ?? 0) + 1)
+      }
+    }
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, limit)
+      .map(([content, count]) => ({ content, count }))
+  }
   type Row = { content: string; count: string }
   const { data, error } = await admin.rpc('top_questions', {
     p_org_id: orgId,
@@ -120,7 +128,31 @@ export async function getCostStats(
   admin: SupabaseClient,
   orgId: string,
 ): Promise<CostStats> {
-  if (USE_MOCK) return MOCK_COST_STATS
+  if (USE_MOCK) {
+    // Bucket each conversation's messages by day, sum tokens + cents.
+    type Bucket = { tokensUsed: number; costCents: number }
+    const byDay = new Map<string, Bucket>()
+    const convs = mockConvsForOrg(orgId)
+    for (const conv of convs) {
+      const day = conv.started_at.slice(0, 10)
+      const bucket = byDay.get(day) ?? { tokensUsed: 0, costCents: 0 }
+      for (const msg of conv.messages) {
+        bucket.tokensUsed += msg.tokens_used ?? 0
+        bucket.costCents += msg.cost_cents ?? 0
+      }
+      byDay.set(day, bucket)
+    }
+    // Fill the last 7 days so the chart always renders a continuous line.
+    const daily: DailyCost[] = []
+    for (let i = 6; i >= 0; i--) {
+      const day = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10)
+      const bucket = byDay.get(day) ?? { tokensUsed: 0, costCents: 0 }
+      daily.push({ day, tokensUsed: bucket.tokensUsed, costCents: bucket.costCents })
+    }
+    const totalCents = daily.reduce((acc, d) => acc + d.costCents, 0)
+    const avgPerConvCents = convs.length > 0 ? totalCents / convs.length : 0
+    return { totalCents, avgPerConvCents, daily }
+  }
   type Row = { day: string; tokens_used: string; cost_cents: string }
   const [rpcResult, { count }] = await Promise.all([
     admin.rpc('daily_cost', { p_org_id: orgId }),
@@ -160,26 +192,18 @@ export async function listConversations(
   orgId: string,
   since?: Date,
 ): Promise<ConversationListItem[]> {
-  if (USE_MOCK) return [
-    { id: '00000000-0000-0000-0002-000000000001', visitorId: 'visitor-2a91', startedAt: new Date(Date.now() - 2 * 3600000).toISOString(), messageCount: 4, costCents: 3 },
-    { id: '00000000-0000-0000-0002-000000000002', visitorId: 'visitor-7c43', startedAt: new Date(Date.now() - 4 * 3600000).toISOString(), messageCount: 2, costCents: 2 },
-    { id: '00000000-0000-0000-0002-000000000003', visitorId: 'visitor-94e1', startedAt: new Date(Date.now() - 6 * 3600000).toISOString(), messageCount: 2, costCents: 1 },
-    { id: '00000000-0000-0000-0002-000000000004', visitorId: 'visitor-1f0d', startedAt: new Date(Date.now() - 8 * 3600000).toISOString(), messageCount: 4, costCents: 3 },
-    { id: '00000000-0000-0000-0002-000000000005', visitorId: 'visitor-6b29', startedAt: new Date(Date.now() - 12 * 3600000).toISOString(), messageCount: 2, costCents: 1 },
-    { id: '00000000-0000-0000-0002-000000000006', visitorId: 'visitor-ae84', startedAt: new Date(Date.now() - (86400000 + 2 * 3600000)).toISOString(), messageCount: 2, costCents: 1 },
-    { id: '00000000-0000-0000-0002-000000000007', visitorId: 'visitor-3d52', startedAt: new Date(Date.now() - (86400000 + 5 * 3600000)).toISOString(), messageCount: 4, costCents: 4 },
-    { id: '00000000-0000-0000-0002-000000000008', visitorId: 'visitor-c712', startedAt: new Date(Date.now() - (86400000 + 9 * 3600000)).toISOString(), messageCount: 2, costCents: 2 },
-    { id: '00000000-0000-0000-0002-000000000009', visitorId: 'visitor-820f', startedAt: new Date(Date.now() - (86400000 + 14 * 3600000)).toISOString(), messageCount: 2, costCents: 2 },
-    { id: '00000000-0000-0000-0002-000000000010', visitorId: 'visitor-5e3a', startedAt: new Date(Date.now() - (86400000 + 18 * 3600000)).toISOString(), messageCount: 4, costCents: 3 },
-    { id: '00000000-0000-0000-0002-000000000011', visitorId: 'visitor-0b76', startedAt: new Date(Date.now() - (2 * 86400000 + 3 * 3600000)).toISOString(), messageCount: 2, costCents: 2 },
-    { id: '00000000-0000-0000-0002-000000000012', visitorId: 'visitor-fa18', startedAt: new Date(Date.now() - (2 * 86400000 + 11 * 3600000)).toISOString(), messageCount: 6, costCents: 4 },
-    { id: '00000000-0000-0000-0002-000000000013', visitorId: 'visitor-7e02', startedAt: new Date(Date.now() - (3 * 86400000 + 4 * 3600000)).toISOString(), messageCount: 2, costCents: 1 },
-    { id: '00000000-0000-0000-0002-000000000014', visitorId: 'visitor-19bc', startedAt: new Date(Date.now() - (3 * 86400000 + 16 * 3600000)).toISOString(), messageCount: 2, costCents: 1 },
-    { id: '00000000-0000-0000-0002-000000000015', visitorId: 'visitor-d6a3', startedAt: new Date(Date.now() - (4 * 86400000 + 7 * 3600000)).toISOString(), messageCount: 2, costCents: 2 },
-    { id: '00000000-0000-0000-0002-000000000016', visitorId: 'visitor-83ef', startedAt: new Date(Date.now() - (5 * 86400000 + 9 * 3600000)).toISOString(), messageCount: 2, costCents: 2 },
-    { id: '00000000-0000-0000-0002-000000000017', visitorId: 'visitor-2d4b', startedAt: new Date(Date.now() - (6 * 86400000 + 2 * 3600000)).toISOString(), messageCount: 2, costCents: 2 },
-    { id: '00000000-0000-0000-0002-000000000018', visitorId: 'visitor-bf91', startedAt: new Date(Date.now() - (6 * 86400000 + 15 * 3600000)).toISOString(), messageCount: 4, costCents: 4 },
-  ].filter(c => !since || new Date(c.startedAt) >= since)
+  if (USE_MOCK) {
+    return mockConvsForOrg(orgId)
+      .map((c) => ({
+        id: c.id,
+        visitorId: c.visitor_id,
+        startedAt: c.started_at,
+        messageCount: c.messages.length,
+        costCents: c.messages.reduce((acc, m) => acc + (m.cost_cents ?? 0), 0),
+      }))
+      .filter((c) => !since || new Date(c.startedAt) >= since)
+      .sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime())
+  }
   type Row = {
     id: string
     visitor_id: string | null

@@ -184,7 +184,7 @@ export async function POST(request: NextRequest) {
       try {
         const chatGenerator =
           process.env.USE_MOCK_AI === 'true'
-            ? mockChatResponse(message)
+            ? mockChatResponse(message, orgName)
             : streamChat(chatMessages, chunks, orgName)
 
         for await (const event of chatGenerator) {
