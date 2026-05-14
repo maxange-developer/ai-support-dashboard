@@ -184,7 +184,7 @@ export default function WidgetChat({
           placeholder={t('inputPlaceholder')}
           disabled={isStreaming}
           rows={1}
-          className="flex-1 resize-none min-h-[2.5rem] max-h-24 px-3 py-2 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50 overflow-y-auto scrollbar-hide"
+          className="flex-1 resize-none min-h-[3rem] max-h-24 px-3 py-2 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50 overflow-y-auto scrollbar-hide"
           style={{ lineHeight: '1.5rem' }}
         />
         <button
@@ -192,7 +192,7 @@ export default function WidgetChat({
           onClick={() => void handleSubmit()}
           disabled={isStreaming || !input.trim()}
           aria-label={t('send')}
-          className="h-10 w-10 flex items-center justify-center border-2 border-neon-blue text-white relative overflow-hidden hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+          className="h-12 w-12 flex items-center justify-center border-2 border-neon-blue text-white relative overflow-hidden hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
         >
           <span className="absolute inset-0 bg-neon-blue transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
           <Send size={14} aria-hidden className="relative z-10" />

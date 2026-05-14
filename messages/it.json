@@ -121,6 +121,8 @@
       "cancel": "Annulla",
       "error": "Impossibile eliminare. Riprova."
     },
+    "toastDeleted": "Documenti eliminati",
+
     "upload": {
       "title": "Aggiungi un documento",
       "fileLabel": "File",
@@ -135,7 +137,8 @@
       "errorSave": "Impossibile salvare il documento.",
       "errorEmbed": "Impossibile generare gli embedding.",
       "errorUnauth": "Prima devi accedere.",
-      "errorNoOrg": "Workspace non trovato."
+      "errorNoOrg": "Workspace non trovato.",
+      "toastSuccess": "Documento caricato"
     }
   },
   "playground": {
@@ -194,6 +197,8 @@
     "errorRequired": "Il nome è obbligatorio.",
     "errorCreate": "Impossibile creare la chiave. Riprova.",
     "errorDelete": "Impossibile eliminare la chiave.",
+    "toastCreated": "Chiave API creata",
+    "toastDeleted": "Chiave API eliminata",
     "errorUnauth": "Non autorizzato.",
     "errorMissingId": "ID chiave mancante.",
     "savedKeyWarning": "Salva questa chiave ora — non verrà mostrata di nuovo.",

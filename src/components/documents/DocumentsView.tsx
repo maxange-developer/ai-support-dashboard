@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
+import { toast } from 'sonner'
 import { FileText, Plus, Trash2, X, CheckSquare, Square, AlertCircle } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
@@ -15,7 +16,7 @@ const STATUS_CLS: Record<DocumentListItem['status'], string> = {
   error: 'bg-red-500/10 text-red-400 border border-red-400/30',
 }
 
-type UploadState = { errorCode: string } | null
+type UploadState = { success: true } | { errorCode: string } | null
 
 interface Props {
   documents: DocumentListItem[]
@@ -28,6 +29,7 @@ export default function DocumentsView({ documents, deleteAction, uploadAction }:
   const router = useRouter()
   const t = useTranslations('documents')
   const tCommon = useTranslations('common')
+  const locale = useLocale()
   const [view, setView] = useState<'list' | 'upload'>('list')
   const [selecting, setSelecting] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
@@ -59,6 +61,7 @@ export default function DocumentsView({ documents, deleteAction, uploadAction }:
     } else {
       setConfirmOpen(false)
       cancelSelection()
+      toast.success(t('toastDeleted'))
       router.refresh()
     }
   }
@@ -146,7 +149,7 @@ export default function DocumentsView({ documents, deleteAction, uploadAction }:
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm text-white truncate">{doc.title}</p>
                       <p className="text-xs text-white/35 mt-0.5">
-                        {sourceLabel} · {new Date(doc.created_at).toLocaleDateString('en-GB')}
+                        {sourceLabel} · {new Date(doc.created_at).toLocaleDateString(locale)}
                       </p>
                     </div>
                     <span className={`text-xs font-medium px-2.5 py-1 shrink-0 ${cls}`}>

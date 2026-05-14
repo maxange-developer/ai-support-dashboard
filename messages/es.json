@@ -121,6 +121,8 @@
       "cancel": "Anular",
       "error": "No se pudo eliminar. Por favor, intenta de nuevo."
     },
+    "toastDeleted": "Documentos eliminados",
+
     "upload": {
       "title": "Agregar un documento",
       "fileLabel": "Archivo",
@@ -135,7 +137,8 @@
       "errorSave": "No se pudo guardar el documento.",
       "errorEmbed": "No se pudieron generar embeddings.",
       "errorUnauth": "Por favor, inicia sesión primero.",
-      "errorNoOrg": "Espacio de trabajo no encontrado."
+      "errorNoOrg": "Espacio de trabajo no encontrado.",
+      "toastSuccess": "Documento cargado"
     }
   },
   "playground": {
@@ -194,6 +197,8 @@
     "errorRequired": "El nombre es obligatorio.",
     "errorCreate": "No se pudo crear la clave. Por favor, intenta de nuevo.",
     "errorDelete": "No se pudo eliminar la clave.",
+    "toastCreated": "Clave API creada",
+    "toastDeleted": "Clave API eliminada",
     "errorUnauth": "No autorizado.",
     "errorMissingId": "Falta el id de la clave.",
     "savedKeyWarning": "Guarda esta clave ahora — no se mostrará de nuevo.",

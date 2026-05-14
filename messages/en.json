@@ -134,6 +134,7 @@
       "cancel": "Cancel",
       "error": "Couldn't delete. Please try again."
     },
+    "toastDeleted": "Documents deleted",
 
     "upload": {
       "title": "Add a document",
@@ -149,7 +150,8 @@
       "errorSave": "Couldn't save the document.",
       "errorEmbed": "Couldn't generate embeddings.",
       "errorUnauth": "Please sign in first.",
-      "errorNoOrg": "Workspace not found."
+      "errorNoOrg": "Workspace not found.",
+      "toastSuccess": "Document uploaded"
     }
   },
 
@@ -212,6 +214,8 @@
     "errorRequired": "Name is required.",
     "errorCreate": "Couldn't create the key. Please try again.",
     "errorDelete": "Couldn't delete the key.",
+    "toastCreated": "API key created",
+    "toastDeleted": "API key deleted",
     "errorUnauth": "Not authorized.",
     "errorMissingId": "Missing key id.",
 

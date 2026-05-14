@@ -1,10 +1,11 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import { Upload, AlertCircle, ArrowLeft } from 'lucide-react'
 
-type State = { errorCode: string } | null
+type State = { success: true } | { errorCode: string } | null
 type BoundAction = (prev: State, formData: FormData) => Promise<State>
 
 interface Props {
@@ -16,6 +17,13 @@ export default function UploadForm({ action, onBack }: Props) {
   const t = useTranslations('documents.upload')
   const tCommon = useTranslations('common')
   const [state, formAction, isPending] = useActionState(action, null)
+
+  useEffect(() => {
+    if (state && 'success' in state) {
+      toast.success(t('toastSuccess'))
+      onBack?.()
+    }
+  }, [state, t, onBack])
 
   return (
     <form action={formAction} className="space-y-5 max-w-lg" noValidate>
@@ -34,7 +42,7 @@ export default function UploadForm({ action, onBack }: Props) {
         <p className="text-xs text-white/35">{t('fileHint')}</p>
       </div>
 
-      {state?.errorCode && (
+      {state && 'errorCode' in state && (
         <div className="flex items-center gap-2 p-3 border border-red-500/30 bg-red-500/8 text-red-400">
           <AlertCircle size={14} className="shrink-0" aria-hidden />
           <p className="text-sm">{t(state.errorCode as 'errorMissing')}</p>

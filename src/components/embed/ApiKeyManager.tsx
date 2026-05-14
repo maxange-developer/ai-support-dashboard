@@ -1,14 +1,14 @@
 'use client'
 
 import { useState, useActionState, useEffect } from 'react'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { Plus, Key, AlertCircle, Copy, Check, Trash2, Eye, EyeOff, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import type { ApiKeyListItem } from '@/lib/db/api-keys'
 
 type CreateState = { rawKey: string } | { errorCode: string } | null
-type DeleteState = { errorCode: string } | null
+type DeleteState = { success: true } | { errorCode: string } | null
 
 interface ApiKeyManagerProps {
   keys: ApiKeyListItem[]
@@ -19,6 +19,7 @@ interface ApiKeyManagerProps {
 export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiKeyManagerProps) {
   const t = useTranslations('apiKeys')
   const tCommon = useTranslations('common')
+  const locale = useLocale()
   const [createState, createFormAction, isCreating] = useActionState(createAction, null)
   const [deleteState, deleteFormAction, isDeleting] = useActionState(deleteAction, null)
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null)
@@ -39,9 +40,15 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
       setSavedRawKey(rawKey)
       setShowRawKey(false)
       setRawKeyCopied(false)
-      toast.success(t('savedKeyWarning'))
+      toast.success(t('toastCreated'))
     }
   }, [rawKey, t])
+
+  useEffect(() => {
+    if (deleteState && 'success' in deleteState) {
+      toast.success(t('toastDeleted'))
+    }
+  }, [deleteState, t])
 
   function copyRawKey() {
     if (!savedRawKey) return
@@ -145,8 +152,8 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
           {keys.map((key) => {
             const prefix = `sk-${key.id.slice(0, 8)}`
             const dateStr = key.last_used_at
-              ? t('lastUsed', { date: new Date(key.last_used_at).toLocaleDateString('en-GB') })
-              : t('createdOn', { date: new Date(key.created_at).toLocaleDateString('en-GB') })
+              ? t('lastUsed', { date: new Date(key.last_used_at).toLocaleDateString(locale) })
+              : t('createdOn', { date: new Date(key.created_at).toLocaleDateString(locale) })
             return (
               <div
                 key={key.id}

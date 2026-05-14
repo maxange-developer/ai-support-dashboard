@@ -9,7 +9,7 @@ import { logger } from '@/lib/logger'
 import { isMockMode } from '@/lib/auth/mock-bypass'
 
 type CreateState = { rawKey: string } | { errorCode: string } | null
-type DeleteState = { errorCode: string } | null
+type DeleteState = { success: true } | { errorCode: string } | null
 
 type MembershipRow = { org_id: string }
 type OrgRow = { id: string }
@@ -76,7 +76,7 @@ export async function deleteKeyAction(
 
   if (await isMockMode()) {
     revalidatePath(`/app/${orgSlug}/embed`)
-    return null
+    return { success: true }
   }
 
   const orgId = await resolveOrgId(orgSlug)
@@ -85,7 +85,7 @@ export async function deleteKeyAction(
   try {
     await deleteApiKey(createAdminClient(), id, orgId)
     revalidatePath(`/app/${orgSlug}/embed`)
-    return null
+    return { success: true }
   } catch (err) {
     logger.error('deleteApiKey failed', err)
     return { errorCode: 'errorDelete' }

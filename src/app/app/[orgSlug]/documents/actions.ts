@@ -12,7 +12,7 @@ import { insertDocument, updateDocumentStatus, insertChunks, deleteDocumentsFrom
 import { logger } from '@/lib/logger'
 import { isMockMode } from '@/lib/auth/mock-bypass'
 
-type State = { errorCode: string } | null
+type State = { success: true } | { errorCode: string } | null
 type MembershipRow = { org_id: string }
 type OrgRow = { id: string }
 
@@ -26,10 +26,11 @@ export async function uploadDocument(
   if (validationError) return validationError
   const validFile = file as File
 
-  // Mock mode: pretend the upload succeeded and bounce to the list.
+  // Mock mode: pretend the upload succeeded; return success so the
+  // client can show a toast and navigate back without a real redirect.
   if (await isMockMode()) {
     revalidatePath(`/app/${orgSlug}/documents`)
-    redirect(`/app/${orgSlug}/documents`)
+    return { success: true }
   }
 
   const supabase = await createClient()
