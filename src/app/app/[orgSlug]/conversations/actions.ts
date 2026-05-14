@@ -4,6 +4,7 @@ import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import type { MessageRow } from '@/lib/db/analytics'
+import { MOCK_CONVERSATIONS } from '@/lib/mock'
 
 type MembershipRow = { org_id: string }
 type OrgRow = { id: string }
@@ -18,14 +19,22 @@ export async function getConversationMessages(
   const hasBypass = cookieStore.get('mock_bypass')?.value === 'true'
 
   if (isMockData || hasBypass) {
-    const admin = createAdminClient()
-    const { data, error } = await admin
-      .from('messages_mock')
-      .select('id, role, content, sources, tokens_used, cost_cents, created_at')
-      .eq('conversation_id', convId)
-      .order('created_at', { ascending: true })
-    if (error) return []
-    return (data as MessageRow[] | null) ?? []
+    // bypass DB — read directly from the canonical mock module so the modal
+    // never lags behind src/lib/mock/index.ts (the _mock shadow tables can
+    // drift from the seed source).
+    const conv = MOCK_CONVERSATIONS.find((c) => c.id === convId)
+    if (!conv) return []
+    const baseTime = new Date(conv.started_at).getTime()
+    return conv.messages.map((m, i) => ({
+      id: `${conv.id}-msg-${i}`,
+      role: m.role,
+      content: m.content,
+      sources: null,
+      tokens_used: m.tokens_used,
+      cost_cents: m.cost_cents,
+      // space messages ~10s apart so the timeline reads naturally
+      created_at: new Date(baseTime + i * 10000).toISOString(),
+    }))
   }
 
   const supabase = await createClient()

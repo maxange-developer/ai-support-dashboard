@@ -1,7 +1,12 @@
 import { createHash, randomUUID } from 'crypto'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { MOCK_API_KEYS } from '@/lib/mock'
 
-const KEYS_TABLE = process.env.USE_MOCK_DATA === 'true' ? 'api_keys_mock' : 'api_keys'
+const USE_MOCK = process.env.USE_MOCK_DATA === 'true'
+const KEYS_TABLE = USE_MOCK ? 'api_keys_mock' : 'api_keys'
+
+const DAY_MS = 24 * 60 * 60 * 1000
+const HOUR_MS = 60 * 60 * 1000
 
 export interface ApiKeyListItem {
   id: string
@@ -38,6 +43,21 @@ export async function listApiKeys(
   admin: SupabaseClient,
   orgId: string,
 ): Promise<ApiKeyListItem[]> {
+  if (USE_MOCK) {
+    // bypass DB — _mock shadow tables can drift from the canonical mock module
+    return MOCK_API_KEYS
+      .filter((k) => k.org_id === orgId)
+      .map((k, i) => ({
+        id: k.id,
+        org_id: k.org_id,
+        name: k.name,
+        // first key (production): created 30d ago, last used 2h ago
+        // second key (staging): created 7d ago, never used
+        created_at: new Date(Date.now() - (i === 0 ? 30 : 7) * DAY_MS).toISOString(),
+        last_used_at: i === 0 ? new Date(Date.now() - 2 * HOUR_MS).toISOString() : null,
+      }))
+  }
+
   const { data, error } = await admin
     .from(KEYS_TABLE)
     .select('id, org_id, name, last_used_at, created_at')
