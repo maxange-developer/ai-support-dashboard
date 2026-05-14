@@ -8,6 +8,7 @@ import { useTranslations } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { LayoutDashboard, FileText, MessageSquare, CodeXml, MessageCircle, Settings } from 'lucide-react'
+import { WorkspaceSwitcher, type WorkspaceOption } from './WorkspaceSwitcher'
 
 type NavItem = {
   href: string
@@ -28,6 +29,7 @@ const NAV_ITEMS: NavItem[] = [
 interface SidebarProps {
   orgSlug: string
   orgName: string
+  workspaces?: WorkspaceOption[]
   onNavigate?: () => void
 }
 
@@ -45,7 +47,7 @@ function getActiveIndex(pathname: string, orgSlug: string): number {
   return -1
 }
 
-export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
+export function SidebarNav({ orgSlug, orgName, workspaces, onNavigate }: SidebarProps) {
   const pathname = usePathname()
   const t = useTranslations('nav')
   const [mounted, setMounted] = useState(false)
@@ -76,10 +78,16 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
         />
       </div>
 
-      {/* Org name */}
-      <div className="px-5 pt-4 pb-2">
-        <p className="text-xs text-white/40 uppercase tracking-widest font-medium">{t('organization')}</p>
-        <p className="text-sm text-white/80 font-medium mt-0.5 truncate">{orgName}</p>
+      {/* Workspace switcher (or static name when only one workspace is available) */}
+      <div className="px-3 pt-3 pb-3 border-b border-white/5">
+        {workspaces && workspaces.length > 1 ? (
+          <WorkspaceSwitcher workspaces={workspaces} currentSlug={orgSlug} />
+        ) : (
+          <div className="px-2">
+            <p className="text-xs text-white/40 uppercase tracking-widest font-medium">{t('organization')}</p>
+            <p className="text-sm text-white/80 font-medium mt-0.5 truncate">{orgName}</p>
+          </div>
+        )}
       </div>
 
       {/* Nav */}
@@ -143,10 +151,10 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
   )
 }
 
-export default function Sidebar({ orgSlug, orgName }: SidebarProps) {
+export default function Sidebar({ orgSlug, orgName, workspaces }: SidebarProps) {
   return (
     <aside className="hidden md:flex w-60 flex-col glass border-r border-white/10 shrink-0">
-      <SidebarNav orgSlug={orgSlug} orgName={orgName} />
+      <SidebarNav orgSlug={orgSlug} orgName={orgName} workspaces={workspaces} />
     </aside>
   )
 }

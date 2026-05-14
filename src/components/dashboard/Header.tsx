@@ -5,15 +5,17 @@ import { useTranslations } from 'next-intl'
 import { LogOut } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import MobileSidebar from './MobileSidebar'
+import type { WorkspaceOption } from './WorkspaceSwitcher'
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher'
 
 interface HeaderProps {
   orgSlug: string
   orgName: string
   userEmail: string
+  workspaces?: WorkspaceOption[]
 }
 
-export default function Header({ orgSlug, orgName, userEmail }: HeaderProps) {
+export default function Header({ orgSlug, orgName, userEmail, workspaces }: HeaderProps) {
   const router = useRouter()
   const t = useTranslations('nav')
 
@@ -25,7 +27,7 @@ export default function Header({ orgSlug, orgName, userEmail }: HeaderProps) {
 
   return (
     <header className="glass border-b border-white/10 px-6 py-4 flex items-center justify-between shrink-0">
-      <MobileSidebar orgSlug={orgSlug} orgName={orgName} />
+      <MobileSidebar orgSlug={orgSlug} orgName={orgName} workspaces={workspaces} />
       <div className="flex-1" />
       <div className="flex items-center gap-3">
         <span className="hidden sm:block text-xs text-white/40 truncate max-w-[200px]">

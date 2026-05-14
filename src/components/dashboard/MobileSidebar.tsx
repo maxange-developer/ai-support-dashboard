@@ -4,13 +4,15 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Menu, X } from 'lucide-react'
 import { SidebarNav } from './Sidebar'
+import type { WorkspaceOption } from './WorkspaceSwitcher'
 
 interface MobileSidebarProps {
   orgSlug: string
   orgName: string
+  workspaces?: WorkspaceOption[]
 }
 
-export default function MobileSidebar({ orgSlug, orgName }: MobileSidebarProps) {
+export default function MobileSidebar({ orgSlug, orgName, workspaces }: MobileSidebarProps) {
   const [open, setOpen] = useState(false)
   const t = useTranslations('nav')
 
@@ -42,6 +44,7 @@ export default function MobileSidebar({ orgSlug, orgName }: MobileSidebarProps) 
             <SidebarNav
               orgSlug={orgSlug}
               orgName={orgName}
+              workspaces={workspaces}
               onNavigate={() => setOpen(false)}
             />
           </div>
