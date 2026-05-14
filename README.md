@@ -1,11 +1,11 @@
 # AI Support Dashboard
 
-Multi-tenant AI customer-support platform. Operators upload PDF/Markdown docs; visitors get instant answers via a chat widget powered by RAG (pgvector similarity search + Claude). Includes a full dashboard with analytics, conversation history, and embeddable widget with API-key auth.
+Multi-tenant AI customer-support platform. Operators upload PDF/Markdown docs; visitors get instant answers via a chat widget powered by RAG (pgvector similarity search + OpenAI gpt-4o-mini). Includes a full dashboard with analytics, conversation history, and embeddable widget with API-key auth.
 
 ![Next.js](https://img.shields.io/badge/Next.js_16-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue?logo=typescript)
 ![Supabase](https://img.shields.io/badge/Supabase-pgvector-3ECF8E?logo=supabase)
-![Anthropic](https://img.shields.io/badge/Claude_Sonnet_4.6-anthropic-orange)
+![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o--mini-412991?logo=openai)
 ![OpenAI](https://img.shields.io/badge/OpenAI_Embeddings-412991?logo=openai)
 ![Tailwind](https://img.shields.io/badge/Tailwind_CSS_v4-06B6D4?logo=tailwindcss)
 ![Vercel](https://img.shields.io/badge/Deploy-Vercel-black?logo=vercel)
@@ -28,7 +28,7 @@ pnpm install
 ```bash
 cp .env.example .env.local
 # Fill in: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY,
-#          SUPABASE_SERVICE_ROLE_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY,
+#          SUPABASE_SERVICE_ROLE_KEY, OPENAI_API_KEY,
 #          NEXT_PUBLIC_APP_URL
 ```
 
@@ -64,7 +64,7 @@ Creates org `acme-demo` with 20 FAQ docs and 5 sample conversations.
 |-------|--------|-----|
 | Framework | Next.js 16 App Router | Server Components + streaming |
 | Database | Supabase + pgvector | Auth, RLS, vector search in one |
-| LLM | Claude Sonnet 4.6 | Best quality/cost for support use-case |
+| LLM | OpenAI gpt-4o-mini | Fast streaming, low cost, function calling for citations |
 | Embeddings | OpenAI text-embedding-3-small | 1536 dims, fast, cheap |
 | UI | Tailwind v4 + Base UI | Unstyled primitives, full control |
 | Charts | Recharts | Works with React 19 |
