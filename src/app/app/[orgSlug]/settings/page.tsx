@@ -22,6 +22,7 @@ export default async function SettingsPage({
 }) {
   const { orgSlug } = await params
   const t = await getTranslations('settings')
+  const tApi = await getTranslations('apiKeys')
 
   let org: OrgRow | undefined
   let userEmail = ''
@@ -105,7 +106,7 @@ export default async function SettingsPage({
       </section>
 
       <section className="glass p-6 border-2 border-white/10 space-y-4">
-        <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">{t('apiKeys.title')}</h2>
+        <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">{tApi('title')}</h2>
         <ApiKeyManager keys={keys} createAction={boundCreate} deleteAction={boundDelete} />
       </section>
 
