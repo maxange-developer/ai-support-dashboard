@@ -10,7 +10,7 @@
 import { cookies } from 'next/headers'
 
 export const DEMO_USER_ID = '00000000-0000-0000-0000-0000000000aa'
-export const DEMO_USER_EMAIL = 'demo@example.com'
+export const DEMO_USER_EMAIL = 'demo@lore.app'
 
 export type DemoPlan = 'free' | 'pro' | 'enterprise'
 
