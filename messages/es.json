@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "Lore",
-    "appTagline": "Soporte al cliente basado en conocimiento",
+    "appTagline": "Soporte al cliente basado en el conocimiento",
     "save": "Guardar",
     "cancel": "Anular",
     "delete": "Eliminar",
@@ -73,7 +73,7 @@
     "submitting": "Creando…",
     "errorSlugTaken": "Ese slug ya está en uso — prueba con otro.",
     "errorCreate": "No se pudo crear el espacio de trabajo. Por favor, intenta de nuevo.",
-    "errorMembership": "No se pudo añadirte al espacio de trabajo. Por favor, intenta de nuevo.",
+    "errorMembership": "No se pudo agregarte al espacio de trabajo. Por favor, intenta de nuevo.",
     "errorUnauth": "Por favor, inicia sesión primero."
   },
   "dashboard": {
@@ -154,7 +154,7 @@
     "quickQuestions": {
       "q1": "¿En qué puedes ayudarme?",
       "q2": "Resume los temas principales",
-      "q3": "¿Cuáles son las políticas clave?",
+      "q3": "¿Cuál es la política de reembolsos?",
       "q4": "¿Cómo empiezo?"
     }
   },
@@ -209,7 +209,7 @@
     "hidePrefix": "Ocultar prefijo de clave",
     "deleteDialog": {
       "title": "¿Eliminar esta clave API?",
-      "body": "La clave {name} dejará de funcionar inmediatamente. Cualquier widget incrustado que la use fallará en conectarse.",
+      "body": "La clave {name} dejará de funcionar inmediatamente. Cualquier widget incrustado que la use fallará al conectarse.",
       "confirm": "Eliminar clave",
       "confirming": "Eliminando…"
     }

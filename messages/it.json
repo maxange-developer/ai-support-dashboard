@@ -26,17 +26,17 @@
     "appLabel": "Lore",
     "openMenu": "Apri menu",
     "closeMenu": "Chiudi menu",
-    "logout": "Disconnetti"
+    "logout": "Esci"
   },
   "auth": {
     "loginTitle": "Lore",
     "loginTagline": "Supporto clienti, basato sui tuoi documenti.",
     "signupTitle": "Crea il tuo account",
     "signupSubtitle": "Inizia la tua prova di 14 giorni — senza carta di credito.",
-    "enterDemo": "Entra in demo",
+    "enterDemo": "Entra nella demo",
     "demoHint": "Esplora con dati di esempio — nessun account necessario",
     "continueGoogle": "Continua con Google",
-    "googleDemoNotice": "Il login con Google è disabilitato in questa demo. Usa \"Entra in demo\" per esplorare.",
+    "googleDemoNotice": "Il login con Google è disabilitato in questa demo. Usa \"Entra nella demo\" per esplorare.",
     "or": "o",
     "signInEmail": "Accedi con email",
     "email": "Email",
@@ -48,7 +48,7 @@
     "signupSubmit": "Crea account",
     "loggingIn": "Accesso in corso…",
     "signingUp": "Creazione account…",
-    "loginInvalid": "Email o password errati.",
+    "loginInvalid": "Email o password non corretti.",
     "loginGeneric": "Accesso fallito. Riprova.",
     "noAccount": "Sei nuovo qui?",
     "register": "Crea un account",
@@ -68,17 +68,17 @@
     "orgNamePlaceholder": "Acme Inc.",
     "slug": "URL slug",
     "slugPlaceholder": "acme-inc",
-    "slugHelper": "Il tuo dashboard:",
+    "slugHelper": "La tua dashboard:",
     "submit": "Crea workspace",
     "submitting": "Creazione…",
     "errorSlugTaken": "Quello slug è già in uso — prova un altro.",
     "errorCreate": "Impossibile creare il workspace. Riprova.",
     "errorMembership": "Impossibile aggiungerti al workspace. Riprova.",
-    "errorUnauth": "Accedi prima."
+    "errorUnauth": "Prima devi accedere."
   },
   "dashboard": {
     "title": "Dashboard",
-    "subtitle": "Conversazioni, costi e cosa chiedono realmente i tuoi visitatori.",
+    "subtitle": "Conversazioni, costi e cosa chiedono davvero i tuoi visitatori.",
     "stats": {
       "totalChats": "Chat totali",
       "todayChats": "Oggi",
@@ -100,7 +100,7 @@
     "selectMode": "Seleziona",
     "selected": "{count} selezionati",
     "deleteSelected": "Elimina ({count})",
-    "emptyState": "Niente nella base di conoscenza ancora. Carica un PDF, Markdown o file di testo per iniziare a rispondere alle domande.",
+    "emptyState": "La base di conoscenza è ancora vuota. Carica un PDF, Markdown o file di testo per iniziare a rispondere alle domande.",
     "status": {
       "processing": "Elaborazione…",
       "ready": "Pronto",
@@ -133,7 +133,7 @@
       "errorParse": "Impossibile leggere il file.",
       "errorSave": "Impossibile salvare il documento.",
       "errorEmbed": "Impossibile generare gli embedding.",
-      "errorUnauth": "Accedi prima.",
+      "errorUnauth": "Prima devi accedere.",
       "errorNoOrg": "Workspace non trovato."
     }
   },
@@ -154,7 +154,7 @@
     "quickQuestions": {
       "q1": "In cosa puoi aiutarmi?",
       "q2": "Riassumi i temi principali",
-      "q3": "Quali sono le politiche chiave?",
+      "q3": "Qual è la politica di rimborso?",
       "q4": "Come posso iniziare?"
     }
   },
@@ -181,8 +181,8 @@
     "snippetEnd": "(fine tag body)",
     "copySnippet": "Copia snippet",
     "previewTitle": "Anteprima widget",
-    "previewHint": "Questo è esattamente ciò che vedranno i tuoi visitatori — prova a fargli una domanda.",
-    "demoNotice": "Questo snippet funziona con il dataset demo. In un'implementazione reale, sostituisci l'host con il tuo dominio."
+    "previewHint": "Questo è esattamente ciò che vedranno i tuoi visitatori — prova a fare una domanda.",
+    "demoNotice": "Questo snippet funziona con il dataset di demo. In un'implementazione reale, sostituisci l'host con il tuo dominio."
   },
   "apiKeys": {
     "title": "Chiavi API",
@@ -200,7 +200,7 @@
     "hideKey": "Nascondi chiave",
     "copyKey": "Copia chiave",
     "dismiss": "Ignora",
-    "emptyState": "Nessuna chiave API ancora. Crea una per incorporare il widget nel tuo sito.",
+    "emptyState": "Nessuna chiave API ancora. Creane una per incorporare il widget nel tuo sito.",
     "lastUsed": "Ultimo utilizzo {date}",
     "createdOn": "Creato {date}",
     "unnamed": "Senza nome",
@@ -253,7 +253,7 @@
       "slug": "Slug",
       "plan": "Piano",
       "role": "Il tuo ruolo",
-      "account": "Connesso come"
+      "account": "Accesso come"
     },
     "plans": {
       "free": "Gratuito",
@@ -268,7 +268,7 @@
       "title": "Zona pericolosa",
       "body": "Eliminare il workspace è permanente. Tutto — documenti, chat, chiavi — andrà perso.",
       "deleteButton": "Elimina workspace",
-      "disabledHint": "Disabilitato in demo"
+      "disabledHint": "Disabilitato nella demo"
     }
   },
   "errors": {
@@ -276,7 +276,7 @@
     "boundaryHint": "Lo abbiamo registrato. Riprova tra un momento.",
     "retry": "Riprova",
     "notFound": "Non siamo riusciti a trovare ciò che cercavi.",
-    "goHome": "Vai al dashboard",
+    "goHome": "Vai alla dashboard",
     "unauthorized": "Devi essere connesso.",
     "rateLimit": "Troppe richieste. Attendi un momento."
   },
