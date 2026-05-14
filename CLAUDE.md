@@ -1,17 +1,24 @@
 # Project: ai-support-dashboard
 
 ## Stack
-- next@16 · App Router · typescript strict · tailwindcss@4 · shadcn/ui
+- next@16 · App Router · typescript strict · tailwindcss@4 · shadcn/ui (Base UI primitives)
 - supabase: auth + db + pgvector + storage
-- anthropic SDK · claude-sonnet-4-6
-- openai SDK (embeddings: text-embedding-3-small)
-- unpdf (PDF parsing) · zod · lucide-react
+- openai SDK · gpt-4o-mini (chat) · text-embedding-3-small (embeddings)
+- next-intl (i18n) · framer-motion · three.js (login background)
+- unpdf (PDF parsing) · zod · lucide-react · recharts
 - vitest (unit) · playwright (e2e) · deploy: vercel
 
 ## Context
 AI-powered customer support dashboard. Operators upload docs (PDF/Markdown),
 chat widget answers visitor questions via RAG (pgvector similarity search +
-Claude). Multi-tenant via organizations table + Supabase RLS.
+gpt-4o-mini). Multi-tenant via organizations table + Supabase RLS.
+
+## Mock mode
+Three server-side flags switch the app to a fully offline demo:
+- USE_MOCK_AUTH=true: skips Supabase Auth via mock_bypass cookie (set on /login)
+- USE_MOCK_DATA=true: reads from <table>_mock shadow tables instead of <table>
+- USE_MOCK_AI=true: bypasses embedding + similarity search in /api/chat,
+  streams responses from src/lib/mock/ai-responses.ts
 
 ## Structure
 - src/app/ — App Router routes · src/components/ — UI (shadcn-style)
@@ -24,7 +31,7 @@ Claude). Multi-tenant via organizations table + Supabase RLS.
 ## Commands
 ```bash
 pnpm dev · pnpm build · pnpm test · pnpm test:e2e
-pnpm db:push · pnpm db:seed · gh pr create
+pnpm demo:seed · gh pr create
 ```
 
 ## Rules
@@ -32,7 +39,7 @@ pnpm db:push · pnpm db:seed · gh pr create
 2. Server Actions over Route Handlers for mutations
 3. Never expose stack traces or internals to client
 4. Supabase RLS by default — service role: inline comment required
-5. SDK first (Anthropic/OpenAI) — raw fetch only as fallback
+5. SDK first (OpenAI) — raw fetch only as fallback
 6. DB access from Server Components/Actions only — never Client Components
 7. New env var → .env.example updated immediately
 8. Return `{ success, data, error }` from Server Actions
