@@ -183,6 +183,7 @@
     "headerTitle": "Support",
     "online": "Online",
     "emptyState": "Hi there. How can I help?",
+    "emptyHint": "Powered by Lore · grounded in your docs",
     "inputPlaceholder": "Type a message…",
     "send": "Send",
     "sourcesSingular": "{count} source",

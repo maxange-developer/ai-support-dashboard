@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 import { Send, ChevronDown, ChevronUp, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { TypingIndicator } from './TypingIndicator'
 
 interface Source {
   documentId: string
@@ -196,11 +197,7 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
                 <span className="inline-block w-0.5 h-4 bg-neon-blue ml-0.5 animate-pulse align-middle" />
               </span>
             ) : (
-              <div className="flex items-center gap-1.5 py-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-neon-blue animate-pulse" style={{ animationDelay: '0ms' }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-neon-blue animate-pulse" style={{ animationDelay: '200ms' }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-neon-blue animate-pulse" style={{ animationDelay: '400ms' }} />
-              </div>
+              <TypingIndicator />
             )}
           </div>
         )}

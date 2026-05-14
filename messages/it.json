@@ -168,6 +168,7 @@
     "headerTitle": "Supporto",
     "online": "Online",
     "emptyState": "Ciao. Come posso aiutarti?",
+    "emptyHint": "Powered by Lore · basato sui tuoi documenti",
     "inputPlaceholder": "Scrivi un messaggio…",
     "send": "Invia",
     "sourcesSingular": "{count} fonte",
