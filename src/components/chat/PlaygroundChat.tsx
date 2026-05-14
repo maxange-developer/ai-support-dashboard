@@ -153,33 +153,32 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
       <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0 custom-scrollbar">
         {messages.length === 0 && !isStreaming && (
           <div className="flex flex-col items-center justify-center h-full text-center gap-6">
-            {hasDocuments ? (
-              <>
-                <div className="flex flex-col items-center gap-3">
-                  <NeonDiamond />
+            <div className="flex flex-col items-center gap-3">
+              <NeonDiamond />
+              {hasDocuments ? (
+                <>
                   <p className="text-base font-medium text-white/90 mt-1">{t('emptyTitle')}</p>
                   <p className="text-sm text-white/50 max-w-sm mx-auto -mt-1">{t('emptySubtitle')}</p>
-                </div>
-                <div className="flex flex-wrap justify-center gap-2 max-w-lg">
-                  {quickQuestions.map((q) => (
-                    <button
-                      key={q}
-                      onClick={() => void sendMessage(q)}
-                      className="glass border border-neon-blue/30 text-white/80 text-sm px-4 py-2 rounded-full hover:border-neon-blue hover:text-white transition-all duration-200"
-                    >
-                      {q}
-                    </button>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <>
-                <FileText size={36} className="text-white/30" aria-hidden />
-                <div className="space-y-1">
+                </>
+              ) : (
+                <>
                   <p className="text-base font-medium text-white/80">{t('emptyNoDocsTitle')}</p>
                   <p className="text-sm text-white/50 max-w-sm mx-auto mt-2">{t('emptyNoDocsSubtitle')}</p>
-                </div>
-              </>
+                </>
+              )}
+            </div>
+            {hasDocuments && (
+              <div className="flex flex-wrap justify-center gap-2 max-w-lg">
+                {quickQuestions.map((q) => (
+                  <button
+                    key={q}
+                    onClick={() => void sendMessage(q)}
+                    className="glass border border-neon-blue/30 text-white/80 text-sm px-4 py-2 rounded-full hover:border-neon-blue hover:text-white transition-all duration-200"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
             )}
           </div>
         )}
