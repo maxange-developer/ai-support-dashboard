@@ -5,10 +5,17 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getConversationStats, getCostStats, getTopQuestions } from '@/lib/db/analytics'
 import CostChart from '@/components/dashboard/CostChart'
+import { PlanBadge } from '@/components/dashboard/PlanBadge'
 import { getTranslations } from 'next-intl/server'
 import { getDemoOrg } from '@/lib/auth/mock-bypass'
 
-type OrgRow = { id: string; name: string }
+type Plan = 'free' | 'pro' | 'enterprise'
+type OrgRow = { id: string; name: string; plan: string | null }
+
+function coercePlan(p: string | null | undefined): Plan {
+  if (p === 'pro' || p === 'enterprise') return p
+  return 'free'
+}
 
 export default async function OrgHomePage({
   params,
@@ -25,7 +32,7 @@ export default async function OrgHomePage({
     const supabase = await createClient()
     const { data: orgRows } = await supabase
       .from('organizations')
-      .select('id, name')
+      .select('id, name, plan')
       .eq('slug', orgSlug)
       .limit(1)
       .returns<OrgRow[]>()
@@ -48,11 +55,14 @@ export default async function OrgHomePage({
 
   return (
     <div className="space-y-8 animate-fade-up">
-      <div>
-        <h1 className="text-3xl font-semibold tracking-tight text-white">
-          {t('title')}<span className="text-neon-blue">.</span>
-        </h1>
-        <p className="text-sm text-white/60 mt-1">{t('subtitle')}</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight text-white">
+            {t('title')}<span className="text-neon-blue">.</span>
+          </h1>
+          <p className="text-sm text-white/60 mt-1">{t('subtitle')}</p>
+        </div>
+        <PlanBadge plan={coercePlan(org.plan)} />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
