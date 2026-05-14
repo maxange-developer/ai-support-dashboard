@@ -55,8 +55,8 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
             className={cn(
               'px-4 py-1.5 text-xs font-semibold uppercase tracking-wider border transition-all duration-200',
               period === key
-                ? 'bg-neon-blue/10 text-white border-neon-blue/40'
-                : 'bg-transparent text-white/40 border-white/15 hover:text-white hover:border-white/30',
+                ? 'bg-white/10 text-white border-white/20'
+                : 'bg-transparent text-white/40 border-transparent hover:text-white/70',
             )}
           >
             {t(`periods.${key}`)}
@@ -65,8 +65,8 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
       </div>
 
       {conversations.length === 0 ? (
-        <div className="glass border-2 border-white/10 py-16 text-center">
-          <p className="text-sm text-white/35">{t('emptyState')}</p>
+        <div className="rounded-lg border border-white/10 bg-white/[0.02] p-12 text-center">
+          <p className="text-sm text-white/50 max-w-sm mx-auto">{t('emptyState')}</p>
         </div>
       ) : (
         <div className="glass border-2 border-white/10 overflow-hidden">

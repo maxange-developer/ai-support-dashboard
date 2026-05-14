@@ -55,10 +55,10 @@ export default async function ConversationsPage({
   return (
     <div className="space-y-6 animate-fade-up">
       <div>
-        <h1 className="font-bold text-white" style={{ fontSize: 'var(--fs-page)' }}>
+        <h1 className="text-2xl font-semibold tracking-tight text-white">
           {t('title')}<span className="text-neon-blue">.</span>
         </h1>
-        <p className="text-white/40 text-sm mt-1">
+        <p className="text-sm text-white/60 mt-1">
           {conversations.length === 1
             ? t('subtitleSingular', { count: conversations.length })
             : t('subtitlePlural', { count: conversations.length })}

@@ -49,10 +49,10 @@ export default async function OrgHomePage({
   return (
     <div className="space-y-8 animate-fade-up">
       <div>
-        <h1 className="font-bold text-white" style={{ fontSize: 'var(--fs-page)' }}>
+        <h1 className="text-3xl font-semibold tracking-tight text-white">
           {t('title')}<span className="text-neon-blue">.</span>
         </h1>
-        <p className="text-white/40 text-sm mt-1">{t('subtitle')}</p>
+        <p className="text-sm text-white/60 mt-1">{t('subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -137,7 +137,7 @@ function StatCard({
         <p className="text-xs uppercase tracking-widest text-white/40 font-medium">{title}</p>
         <span className="text-white/60">{icon}</span>
       </div>
-      <p className="text-4xl font-bold text-white">{value}</p>
+      <p className="text-3xl font-semibold tracking-tight text-white">{value}</p>
       {sub && <p className="text-xs text-white/35 mt-1">{sub}</p>}
     </div>
   )

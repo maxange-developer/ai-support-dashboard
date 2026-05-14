@@ -95,14 +95,14 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
               onClick={() => handleClick(index, href)}
               className={cn(
                 'relative flex items-center gap-3 py-2.5 px-5 text-sm uppercase tracking-wider font-medium transition-colors duration-200 overflow-hidden',
-                isActive ? 'text-white' : 'text-white/50 hover:text-white/80',
+                isActive ? 'text-white' : 'text-white/60 hover:text-white',
               )}
             >
-              {/* Sliding background indicator */}
+              {/* Sliding background indicator — neon cyan accent line */}
               {isActive && (
                 <motion.div
                   layoutId="sidebar-indicator"
-                  className="absolute inset-0 bg-white/10 border-l-2 border-white"
+                  className="absolute inset-0 bg-white/5 border-l-2 border-cyan-400"
                   initial={false}
                   transition={{ type: 'spring', stiffness: 400, damping: 35 }}
                 />
@@ -110,7 +110,7 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
 
               {/* Hover background for inactive */}
               {!isActive && (
-                <div className="absolute inset-0 bg-white/0 hover:bg-white/5 transition-colors duration-200" />
+                <div className="absolute inset-0 bg-white/0 hover:bg-white/[0.03] transition-colors duration-200" />
               )}
 
               {/* Beam on click */}

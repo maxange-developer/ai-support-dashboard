@@ -136,9 +136,9 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
       )}
 
       {keys.length === 0 ? (
-        <div className="flex flex-col items-center py-10 text-center gap-3">
-          <Key size={28} className="text-white/20" aria-hidden />
-          <p className="text-sm text-white/35">{t('emptyState')}</p>
+        <div className="rounded-lg border border-white/10 bg-white/[0.02] p-12 text-center">
+          <Key size={28} className="text-white/30 mx-auto mb-4" aria-hidden />
+          <p className="text-sm text-white/50 max-w-sm mx-auto">{t('emptyState')}</p>
         </div>
       ) : (
         <div className="space-y-2">

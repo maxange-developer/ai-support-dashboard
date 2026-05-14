@@ -75,10 +75,10 @@ export default async function SettingsPage({
   return (
     <div className="max-w-2xl space-y-6 animate-fade-up">
       <div>
-        <h1 className="font-bold text-white" style={{ fontSize: 'var(--fs-page)' }}>
+        <h1 className="text-2xl font-semibold tracking-tight text-white">
           {t('title')}<span className="text-neon-blue">.</span>
         </h1>
-        <p className="text-white/40 text-sm mt-1">{t('subtitle')}</p>
+        <p className="text-sm text-white/60 mt-1">{t('subtitle')}</p>
       </div>
 
       <section className="glass p-6 border-2 border-white/10 hover:border-neon-blue/30 transition-colors duration-300 space-y-4">

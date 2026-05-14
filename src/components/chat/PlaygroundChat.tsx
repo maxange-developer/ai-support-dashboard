@@ -153,8 +153,8 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
                   <div className="w-10 h-10 border border-neon-blue/30 flex items-center justify-center mx-auto">
                     <span className="text-white text-lg">✦</span>
                   </div>
-                  <p className="font-medium text-sm text-white/60">{t('emptyTitle')}</p>
-                  <p className="text-sm text-white/40">{t('emptySubtitle')}</p>
+                  <p className="text-base font-medium text-white/80">{t('emptyTitle')}</p>
+                  <p className="text-sm text-white/50 max-w-sm mx-auto mt-2">{t('emptySubtitle')}</p>
                 </div>
                 <div className="flex flex-wrap justify-center gap-2 max-w-lg">
                   {quickQuestions.map((q) => (
@@ -170,10 +170,10 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
               </>
             ) : (
               <>
-                <FileText size={36} className="text-white/20" aria-hidden />
+                <FileText size={36} className="text-white/30" aria-hidden />
                 <div className="space-y-1">
-                  <p className="font-medium text-sm text-white/60">{t('emptyNoDocsTitle')}</p>
-                  <p className="text-sm text-white/35">{t('emptyNoDocsSubtitle')}</p>
+                  <p className="text-base font-medium text-white/80">{t('emptyNoDocsTitle')}</p>
+                  <p className="text-sm text-white/50 max-w-sm mx-auto mt-2">{t('emptyNoDocsSubtitle')}</p>
                 </div>
               </>
             )}

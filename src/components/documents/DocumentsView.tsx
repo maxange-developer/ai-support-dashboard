@@ -110,9 +110,9 @@ export default function DocumentsView({ documents, deleteAction, uploadAction }:
       ) : (
         <div className="flex flex-col">
           {documents.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-center glass  border-2 border-white/10">
-              <FileText size={40} className="text-white/20 mb-4" aria-hidden />
-              <p className="text-sm text-white/40">{t('emptyState')}</p>
+            <div className="rounded-lg border border-white/10 bg-white/[0.02] p-12 text-center">
+              <FileText size={36} className="text-white/30 mx-auto mb-4" aria-hidden />
+              <p className="text-sm text-white/50 max-w-sm mx-auto">{t('emptyState')}</p>
             </div>
           ) : (
             <div className="space-y-2">
