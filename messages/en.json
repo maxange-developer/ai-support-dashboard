@@ -151,7 +151,9 @@
       "errorEmbed": "Couldn't generate embeddings.",
       "errorUnauth": "Please sign in first.",
       "errorNoOrg": "Workspace not found.",
-      "toastSuccess": "Document uploaded"
+      "toastSuccess": "Document uploaded",
+      "chooseFile": "Choose file",
+      "noFileSelected": "No file selected"
     }
   },
 

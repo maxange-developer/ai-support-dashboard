@@ -138,7 +138,9 @@
       "errorEmbed": "No se pudieron generar embeddings.",
       "errorUnauth": "Por favor, inicia sesión primero.",
       "errorNoOrg": "Espacio de trabajo no encontrado.",
-      "toastSuccess": "Documento cargado"
+      "toastSuccess": "Documento cargado",
+      "chooseFile": "Elegir archivo",
+      "noFileSelected": "Ningún archivo seleccionado"
     }
   },
   "playground": {

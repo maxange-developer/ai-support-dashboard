@@ -1,9 +1,9 @@
 'use client'
 
-import { useActionState, useEffect, useState } from 'react'
+import { useActionState, useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
-import { Upload, AlertCircle, ArrowLeft } from 'lucide-react'
+import { Upload, AlertCircle, ArrowLeft, Paperclip } from 'lucide-react'
 import type { DemoDoc } from '@/lib/demo-state/DemoStateProvider'
 import type { SourceType } from '@/lib/ai/parsing'
 
@@ -20,8 +20,8 @@ export default function UploadForm({ action, onBack, onMockSuccess }: Props) {
   const t = useTranslations('documents.upload')
   const tCommon = useTranslations('common')
   const [state, formAction, isPending] = useActionState(action, null)
-  // track selected file metadata so onMockSuccess can build a DemoDoc
   const [pendingFile, setPendingFile] = useState<{ name: string; type: string } | null>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (state && 'success' in state) {
@@ -47,21 +47,42 @@ export default function UploadForm({ action, onBack, onMockSuccess }: Props) {
   return (
     <form action={formAction} className="space-y-5 max-w-lg" noValidate>
       <div className="space-y-1.5">
-        <label htmlFor="file" className="text-xs font-medium text-white/50 uppercase tracking-wider">
+        <label className="text-xs font-medium text-white/50 uppercase tracking-wider">
           {t('fileLabel')}
         </label>
+
+        {/* Hidden native input — programmatically triggered by button below */}
         <input
+          ref={fileRef}
           id="file"
           name="file"
           type="file"
           accept=".pdf,.md,.txt"
           disabled={isPending}
+          aria-hidden="true"
+          tabIndex={-1}
+          className="sr-only"
           onChange={(e) => {
             const f = e.target.files?.[0]
             setPendingFile(f ? { name: f.name, type: f.type } : null)
           }}
-          className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white text-sm file:mr-4 file:py-1 file:px-3 file:border-0 file:bg-neon-blue/10 file:text-white file:text-xs file:font-medium file:uppercase file:tracking-wider focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50 cursor-pointer"
         />
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            disabled={isPending}
+            onClick={() => fileRef.current?.click()}
+            className="h-10 px-4 flex items-center gap-2 border border-white/20 bg-white/5 text-white text-xs font-medium uppercase tracking-wider hover:border-neon-blue/50 hover:text-neon-blue transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+          >
+            <Paperclip size={13} aria-hidden />
+            {t('chooseFile')}
+          </button>
+          <span className="flex-1 text-sm text-white/40 truncate">
+            {pendingFile ? pendingFile.name : t('noFileSelected')}
+          </span>
+        </div>
+
         <p className="text-xs text-white/35">{t('fileHint')}</p>
       </div>
 

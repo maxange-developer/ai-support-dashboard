@@ -138,7 +138,9 @@
       "errorEmbed": "Impossibile generare gli embedding.",
       "errorUnauth": "Prima devi accedere.",
       "errorNoOrg": "Workspace non trovato.",
-      "toastSuccess": "Documento caricato"
+      "toastSuccess": "Documento caricato",
+      "chooseFile": "Scegli file",
+      "noFileSelected": "Nessun file selezionato"
     }
   },
   "playground": {
