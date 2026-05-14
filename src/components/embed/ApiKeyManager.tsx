@@ -10,7 +10,7 @@ import { useDemoState } from '@/lib/demo-state/DemoStateProvider'
 import type { ApiKeyListItem } from '@/lib/db/api-keys'
 
 function maskKey(prefix: string): string {
-  return `${prefix}${'•'.repeat(16)}`
+  return `${prefix}${'•'.repeat(8)}`
 }
 
 type CreateState = { rawKey: string } | { errorCode: string } | null
@@ -209,30 +209,27 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
             return (
               <div
                 key={key.id}
-                className="glass border-2 border-white/10 hover:border-neon-blue/30 transition-colors duration-200 p-4 flex items-center justify-between gap-4"
+                className="glass border-2 border-white/10 hover:border-neon-blue/30 transition-colors duration-200 px-4 py-3 flex items-start justify-between gap-3"
               >
-                <div className="min-w-0 shrink-0">
-                  <p className="text-sm font-medium text-white truncate">{key.name ?? t('unnamed')}</p>
-                  <p className="text-xs text-white/40 mt-0.5">{dateStr}</p>
-                </div>
-
-                <code
-                  className="w-72 truncate h-9 bg-white/5 border border-white/10 px-3 text-sm font-mono text-white/60 flex items-center select-none shrink-0"
-                  aria-label={t('keyMasked')}
-                >
-                  {maskKey(key.key_prefix)}
-                </code>
-
-                <div className="flex items-center shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => setPendingDeleteId(key.id)}
-                    aria-label={tCommon('delete')}
-                    className="h-9 w-9 flex items-center justify-center border border-red-500/30 text-red-400/70 hover:border-red-500/60 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                <div className="min-w-0 flex-1 space-y-1">
+                  <p className="text-sm font-medium text-white/90 truncate">{key.name ?? t('unnamed')}</p>
+                  <code
+                    className="block font-mono text-xs text-white/40 select-none truncate max-w-full"
+                    aria-label={t('keyMasked')}
                   >
-                    <Trash2 size={12} aria-hidden />
-                  </button>
+                    {maskKey(key.key_prefix)}
+                  </code>
+                  <p className="text-[10px] uppercase tracking-wider text-white/30 font-mono">{dateStr}</p>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => setPendingDeleteId(key.id)}
+                  aria-label={tCommon('delete')}
+                  className="shrink-0 p-2 text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-colors rounded"
+                >
+                  <Trash2 size={14} aria-hidden />
+                </button>
               </div>
             )
           })}
