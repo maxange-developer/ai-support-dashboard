@@ -110,7 +110,7 @@ export function SidebarNav({ orgSlug, orgName, workspaces, onNavigate }: Sidebar
               {isActive && (
                 <motion.div
                   layoutId="sidebar-indicator"
-                  className="absolute inset-0 bg-white/5 border-l-2 border-cyan-400"
+                  className="absolute inset-0 bg-white/5 border-l-2 border-blue-500"
                   initial={false}
                   transition={{ type: 'spring', stiffness: 400, damping: 35 }}
                 />

@@ -63,20 +63,20 @@ export default function CostChart({ data }: { data: DailyCost[] }) {
               backdropFilter: 'blur(10px)',
             }}
             labelStyle={{ color: 'rgba(255,255,255,0.6)' }}
-            itemStyle={{ color: '#22d3ee' }}
+            itemStyle={{ color: '#2563eb' }}
             formatter={(value) => {
               const n = typeof value === 'number' ? value : typeof value === 'string' ? parseFloat(value) : 0
               return [`$${n.toFixed(3)}`, 'Cost']
             }}
-            cursor={{ stroke: 'rgba(34,211,238,0.2)', strokeWidth: 1 }}
+            cursor={{ stroke: 'rgba(37,99,235,0.2)', strokeWidth: 1 }}
           />
           <Line
             type="monotone"
             dataKey="cost"
-            stroke="#22d3ee"
+            stroke="#2563eb"
             strokeWidth={2}
-            dot={{ r: 4, fill: '#22d3ee', strokeWidth: 0 }}
-            activeDot={{ r: 6, fill: '#22d3ee', stroke: '#0e7490', strokeWidth: 2 }}
+            dot={{ r: 4, fill: '#2563eb', strokeWidth: 0 }}
+            activeDot={{ r: 6, fill: '#2563eb', stroke: '#1d4ed8', strokeWidth: 2 }}
           />
         </LineChart>
       </ResponsiveContainer>
