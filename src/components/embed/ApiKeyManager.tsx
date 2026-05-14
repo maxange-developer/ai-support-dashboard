@@ -5,12 +5,13 @@ import { useTranslations, useLocale } from 'next-intl'
 import { Plus, Key, AlertCircle, Copy, Check, Trash2, Eye, EyeOff, X } from 'lucide-react'
 import { toast } from 'sonner'
 
-function maskKey(prefix: string): string {
-  return `${prefix}${'•'.repeat(12)}`
-}
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useDemoState } from '@/lib/demo-state/DemoStateProvider'
 import type { ApiKeyListItem } from '@/lib/db/api-keys'
+
+function maskKey(prefix: string): string {
+  return `${prefix}${'•'.repeat(16)}`
+}
 
 type CreateState = { rawKey: string } | { errorCode: string } | null
 type DeleteState = { success: true } | { errorCode: string } | null
@@ -216,7 +217,7 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
                 </div>
 
                 <code
-                  className="flex-1 h-9 bg-white/5 border border-white/10 px-3 text-sm font-mono text-white/60 min-w-0 flex items-center select-none"
+                  className="w-72 truncate h-9 bg-white/5 border border-white/10 px-3 text-sm font-mono text-white/60 flex items-center select-none shrink-0"
                   aria-label={t('keyMasked')}
                 >
                   {maskKey(key.key_prefix)}
