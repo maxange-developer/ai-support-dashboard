@@ -359,10 +359,10 @@ export const MOCK_CONVERSATIONS = [
     org_id: MOCK_ORG_1.id,
     visitor_id: 'visitor-001',
     messages: [
-      { role: 'user' as const, content: 'Come funziona la prova gratuita?', tokens_used: null, cost_cents: null },
-      { role: 'assistant' as const, content: 'La prova gratuita dura 14 giorni senza richiedere la carta di credito. Puoi registrarti su app.acme.example/signup e avere subito accesso a tutte le funzionalità Pro. [1]', tokens_used: 312, cost_cents: 0 },
-      { role: 'user' as const, content: 'Quanti agenti posso aggiungere durante la prova?', tokens_used: null, cost_cents: null },
-      { role: 'assistant' as const, content: 'Durante il periodo di prova hai accesso al piano Pro, che include agenti illimitati. Dopo la scadenza della prova, se non sottoscrivi un piano, l\'account passa automaticamente al piano Free con massimo 3 agenti. [1]', tokens_used: 287, cost_cents: 0 },
+      { role: 'user' as const, content: 'How does the free trial work?', tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: 'The free trial lasts 14 days with no credit card required. Sign up at app.acme.example/signup and get immediate access to all Pro features. [1]', tokens_used: 312, cost_cents: 0 },
+      { role: 'user' as const, content: 'How many agents can I add during the trial?', tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: 'During the trial you have access to the Pro plan, which includes unlimited agents. After the trial ends, if you do not subscribe, the account automatically downgrades to the Free plan with a maximum of 3 agents. [1]', tokens_used: 287, cost_cents: 0 },
     ],
   },
   {
@@ -370,8 +370,8 @@ export const MOCK_CONVERSATIONS = [
     org_id: MOCK_ORG_1.id,
     visitor_id: 'visitor-002',
     messages: [
-      { role: 'user' as const, content: 'Posso avere un rimborso?', tokens_used: null, cost_cents: null },
-      { role: 'assistant' as const, content: 'Sì, hai diritto al rimborso completo entro 14 giorni dall\'acquisto. Vai su Impostazioni > Fatturazione > Richiedi rimborso nella dashboard. Il rimborso viene processato in 5-7 giorni lavorativi. [2]', tokens_used: 298, cost_cents: 0 },
+      { role: 'user' as const, content: 'Can I get a refund?', tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: 'Yes, you are entitled to a full refund within 14 days of purchase. Go to Settings > Billing > Request refund in the dashboard. Refunds are processed within 5–7 business days. [2]', tokens_used: 298, cost_cents: 0 },
     ],
   },
   {
@@ -379,10 +379,10 @@ export const MOCK_CONVERSATIONS = [
     org_id: MOCK_ORG_1.id,
     visitor_id: 'visitor-003',
     messages: [
-      { role: 'user' as const, content: 'Come carico i miei documenti?', tokens_used: null, cost_cents: null },
-      { role: 'assistant' as const, content: 'Vai su Documenti nel menu laterale e clicca "Carica documento". Puoi trascinare PDF o file Markdown fino a 10MB. L\'elaborazione richiede 1-3 minuti. Inizia con FAQ e politiche per ottenere le risposte più accurate. [3]', tokens_used: 321, cost_cents: 0 },
-      { role: 'user' as const, content: 'Che formati sono supportati?', tokens_used: null, cost_cents: null },
-      { role: 'assistant' as const, content: 'Al momento sono supportati PDF e Markdown (.md). Il limite è 10MB per file. Per documenti più grandi, ti consiglio di dividerli in sezioni tematiche prima del caricamento. [3]', tokens_used: 256, cost_cents: 0 },
+      { role: 'user' as const, content: 'How do I upload my documents?', tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: 'Go to Knowledge Base in the sidebar and click "Add document". You can drag and drop PDFs or Markdown files up to 10 MB. Processing takes 1–3 minutes. Start with FAQs and policies for the most accurate answers. [3]', tokens_used: 321, cost_cents: 0 },
+      { role: 'user' as const, content: 'What file formats are supported?', tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: 'Currently PDF and Markdown (.md) are supported. The limit is 10 MB per file. For larger documents, I recommend splitting them into thematic sections before uploading. [3]', tokens_used: 256, cost_cents: 0 },
     ],
   },
   {
@@ -390,10 +390,10 @@ export const MOCK_CONVERSATIONS = [
     org_id: MOCK_ORG_1.id,
     visitor_id: 'visitor-004',
     messages: [
-      { role: 'user' as const, content: 'Come genero una API key?', tokens_used: null, cost_cents: null },
-      { role: 'assistant' as const, content: 'Vai su Impostazioni > API Keys e clicca "Nuova chiave". Assegna un nome descrittivo (es. "Produzione") e copia la chiave mostrata: verrà visualizzata una sola volta. Conservala in un luogo sicuro. [3]', tokens_used: 276, cost_cents: 0 },
-      { role: 'user' as const, content: 'Qual è il rate limit per piano Pro?', tokens_used: null, cost_cents: null },
-      { role: 'assistant' as const, content: 'Il piano Pro ha un rate limit di 100 richieste al minuto. Se superi questo limite ricevi un errore 429 Too Many Requests con header Retry-After che indica quando riprovare. [4]', tokens_used: 244, cost_cents: 0 },
+      { role: 'user' as const, content: 'How do I generate an API key?', tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: 'Go to Settings > API Keys and click "New key". Assign a descriptive name (e.g. "Production") and copy the key shown — it is displayed only once. Store it somewhere secure. [3]', tokens_used: 276, cost_cents: 0 },
+      { role: 'user' as const, content: 'What is the rate limit on the Pro plan?', tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: 'The Pro plan allows 100 requests per minute. If you exceed this limit you receive a 429 Too Many Requests error with a Retry-After header indicating when to retry. [4]', tokens_used: 244, cost_cents: 0 },
     ],
   },
   {
@@ -401,8 +401,8 @@ export const MOCK_CONVERSATIONS = [
     org_id: MOCK_ORG_1.id,
     visitor_id: 'visitor-005',
     messages: [
-      { role: 'user' as const, content: 'Acme è conforme al GDPR?', tokens_used: null, cost_cents: null },
-      { role: 'assistant' as const, content: 'Sì, Acme Corp è conforme al GDPR. Utilizziamo crittografia AES-256 a riposo e TLS 1.3 in transito. Siamo anche certificati SOC 2 Type II. I tuoi documenti e dati rimangono di tua proprietà. [1][5]', tokens_used: 298, cost_cents: 0 },
+      { role: 'user' as const, content: 'Is Acme GDPR compliant?', tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: 'Yes, Acme Corp is GDPR compliant. We use AES-256 encryption at rest and TLS 1.3 in transit. We are also SOC 2 Type II certified. Your documents and data remain your property. [1][5]', tokens_used: 298, cost_cents: 0 },
     ],
   },
   {
@@ -410,8 +410,8 @@ export const MOCK_CONVERSATIONS = [
     org_id: MOCK_ORG_1.id,
     visitor_id: 'visitor-006',
     messages: [
-      { role: 'user' as const, content: 'Come posso integrare Acme nel mio sito?', tokens_used: null, cost_cents: null },
-      { role: 'assistant' as const, content: 'Hai due opzioni: (1) Widget JavaScript: vai su Widget > Personalizza, copia lo snippet e incollalo prima del tag </body> del tuo sito. (2) API REST: usa l\'endpoint POST /chat con la tua API key per integrazioni personalizzate. [3][4]', tokens_used: 334, cost_cents: 0 },
+      { role: 'user' as const, content: 'How can I integrate Acme into my website?', tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: 'You have two options: (1) JavaScript widget: go to Embed > Install snippet, copy the script tag and paste it before your site\'s </body> tag. (2) REST API: use the POST /chat endpoint with your API key for custom integrations. [3][4]', tokens_used: 334, cost_cents: 0 },
     ],
   },
   {
@@ -419,10 +419,10 @@ export const MOCK_CONVERSATIONS = [
     org_id: MOCK_ORG_1.id,
     visitor_id: 'visitor-007',
     messages: [
-      { role: 'user' as const, content: 'Cosa succede se supero i 500 messaggi del piano Free?', tokens_used: null, cost_cents: null },
-      { role: 'assistant' as const, content: 'Il piano Free include 500 conversazioni al mese. Una volta raggiunto il limite, il chatbot smetterà di rispondere fino al rinnovo mensile. Puoi fare upgrade al piano Pro in qualsiasi momento per avere conversazioni illimitate. [1]', tokens_used: 289, cost_cents: 0 },
-      { role: 'user' as const, content: 'Come faccio l\'upgrade?', tokens_used: null, cost_cents: null },
-      { role: 'assistant' as const, content: 'Vai su Impostazioni > Fatturazione e clicca "Cambia piano". L\'upgrade è immediato e ti verrà addebitata la differenza pro-rata per il mese corrente. [2]', tokens_used: 221, cost_cents: 0 },
+      { role: 'user' as const, content: 'What happens when I hit the 500-conversation limit on the Free plan?', tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: 'The Free plan includes 500 conversations per month. Once the limit is reached, the chatbot stops responding until the monthly renewal. You can upgrade to Pro at any time for unlimited conversations. [1]', tokens_used: 289, cost_cents: 0 },
+      { role: 'user' as const, content: 'How do I upgrade?', tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: 'Go to Settings > Billing and click "Change plan". The upgrade is immediate and you will be charged the pro-rata difference for the current month. [2]', tokens_used: 221, cost_cents: 0 },
     ],
   },
   {
@@ -430,8 +430,8 @@ export const MOCK_CONVERSATIONS = [
     org_id: MOCK_ORG_1.id,
     visitor_id: 'visitor-008',
     messages: [
-      { role: 'user' as const, content: 'I miei dati sono al sicuro?', tokens_used: null, cost_cents: null },
-      { role: 'assistant' as const, content: 'Assolutamente sì. Utilizziamo crittografia AES-256 per i dati a riposo e TLS 1.3 per i dati in transito. Il database utilizza Row Level Security (RLS) per garantire isolamento tra tenant. Siamo conformi a GDPR e SOC 2 Type II. [1][5]', tokens_used: 312, cost_cents: 0 },
+      { role: 'user' as const, content: 'Is my data safe?', tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: 'Absolutely. We use AES-256 encryption for data at rest and TLS 1.3 for data in transit. The database uses Row Level Security (RLS) to guarantee tenant isolation. We are GDPR and SOC 2 Type II compliant. [1][5]', tokens_used: 312, cost_cents: 0 },
     ],
   },
   {
@@ -439,10 +439,10 @@ export const MOCK_CONVERSATIONS = [
     org_id: MOCK_ORG_1.id,
     visitor_id: 'visitor-009',
     messages: [
-      { role: 'user' as const, content: 'Posso cancellare il mio account?', tokens_used: null, cost_cents: null },
-      { role: 'assistant' as const, content: 'Sì, puoi cancellare l\'account in Impostazioni > Account > Elimina account. Ai sensi del GDPR hai diritto alla cancellazione di tutti i tuoi dati. Ricorda che la cancellazione è irreversibile: tutti i documenti e le conversazioni verranno eliminati permanentemente. [5]', tokens_used: 301, cost_cents: 0 },
-      { role: 'user' as const, content: 'Posso esportare i dati prima di cancellare?', tokens_used: null, cost_cents: null },
-      { role: 'assistant' as const, content: 'Sì, prima di cancellare l\'account esporta i tuoi dati da Impostazioni > Esporta dati. L\'esportazione è disponibile in formato JSON o CSV e include documenti, conversazioni e messaggi. [1]', tokens_used: 265, cost_cents: 0 },
+      { role: 'user' as const, content: 'Can I delete my account?', tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: 'Yes, you can delete your account under Settings > Account > Delete account. Under GDPR you have the right to erasure of all your data. Please note that deletion is irreversible — all documents and conversations will be permanently removed. [5]', tokens_used: 301, cost_cents: 0 },
+      { role: 'user' as const, content: 'Can I export my data before deleting?', tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: 'Yes, before deleting your account export your data from Settings > Export data. The export is available in JSON or CSV and includes documents, conversations, and messages. [1]', tokens_used: 265, cost_cents: 0 },
     ],
   },
   {
@@ -450,8 +450,8 @@ export const MOCK_CONVERSATIONS = [
     org_id: MOCK_ORG_1.id,
     visitor_id: 'visitor-010',
     messages: [
-      { role: 'user' as const, content: 'Qual è l\'uptime garantito per il piano Pro?', tokens_used: null, cost_cents: null },
-      { role: 'assistant' as const, content: 'Il piano Pro garantisce il 99.5% di uptime mensile. Il piano Enterprise offre il 99.9% di uptime con rimborso pro-rata in caso di violazione del SLA. Il piano Free non ha garanzie di uptime. [5]', tokens_used: 278, cost_cents: 0 },
+      { role: 'user' as const, content: 'What uptime is guaranteed on the Pro plan?', tokens_used: null, cost_cents: null },
+      { role: 'assistant' as const, content: 'The Pro plan guarantees 99.5% monthly uptime. The Enterprise plan offers 99.9% uptime with pro-rata refunds for any SLA breach. The Free plan has no uptime guarantees. [5]', tokens_used: 278, cost_cents: 0 },
     ],
   },
 ]
