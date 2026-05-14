@@ -101,15 +101,16 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
               pendingRef.current += data.text
               setPendingText(pendingRef.current)
             } else if (data.type === 'done') {
-              setMessages((prev) => [
-                ...prev,
-                { role: 'assistant', content: pendingRef.current, sources: data.sources ?? [] },
-              ])
-              // clear streaming state here so there's no empty-bubble flash
-              // between 'done' arriving and the stream physically closing
-              setIsStreaming(false)
+              // capture before clearing — functional updater runs at render time,
+              // not at call time, so pendingRef.current must be saved here
+              const committedContent = pendingRef.current
               pendingRef.current = ''
               setPendingText('')
+              setIsStreaming(false)
+              setMessages((prev) => [
+                ...prev,
+                { role: 'assistant', content: committedContent, sources: data.sources ?? [] },
+              ])
               if (data.conversationId) setConversationId(data.conversationId)
             } else if (data.type === 'error') {
               setErrorCode('errorGeneric')

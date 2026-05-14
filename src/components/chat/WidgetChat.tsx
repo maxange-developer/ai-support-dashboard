@@ -102,13 +102,15 @@ export default function WidgetChat({
               pendingRef.current += data.text
               setPendingText(pendingRef.current)
             } else if (data.type === 'done') {
-              setMessages((prev) => [
-                ...prev,
-                { role: 'assistant', content: pendingRef.current, sources: data.sources ?? [] },
-              ])
-              setIsStreaming(false)
+              // capture before clearing — functional updater runs at render time
+              const committedContent = pendingRef.current
               pendingRef.current = ''
               setPendingText('')
+              setIsStreaming(false)
+              setMessages((prev) => [
+                ...prev,
+                { role: 'assistant', content: committedContent, sources: data.sources ?? [] },
+              ])
               if (data.conversationId) setConversationId(data.conversationId)
             } else if (data.type === 'error') {
               setHasError(true)
