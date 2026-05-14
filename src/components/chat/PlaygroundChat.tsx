@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { Send, ChevronDown, ChevronUp, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { TypingIndicator } from './TypingIndicator'
+import { NeonDiamond } from './NeonDiamond'
 
 interface Source {
   documentId: string
@@ -154,12 +155,10 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
           <div className="flex flex-col items-center justify-center h-full text-center gap-6">
             {hasDocuments ? (
               <>
-                <div className="space-y-2">
-                  <div className="w-10 h-10 border border-neon-blue/30 flex items-center justify-center mx-auto">
-                    <span className="text-white text-lg">✦</span>
-                  </div>
-                  <p className="text-base font-medium text-white/80">{t('emptyTitle')}</p>
-                  <p className="text-sm text-white/50 max-w-sm mx-auto mt-2">{t('emptySubtitle')}</p>
+                <div className="flex flex-col items-center gap-3">
+                  <NeonDiamond />
+                  <p className="text-base font-medium text-white/90 mt-1">{t('emptyTitle')}</p>
+                  <p className="text-sm text-white/50 max-w-sm mx-auto -mt-1">{t('emptySubtitle')}</p>
                 </div>
                 <div className="flex flex-wrap justify-center gap-2 max-w-lg">
                   {quickQuestions.map((q) => (

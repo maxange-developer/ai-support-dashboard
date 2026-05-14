@@ -2,9 +2,10 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
-import { Send, ChevronDown, ChevronUp, FileText, MessageCircle } from 'lucide-react'
+import { Send, ChevronDown, ChevronUp, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { TypingIndicator } from './TypingIndicator'
+import { NeonDiamond } from './NeonDiamond'
 
 interface Source {
   documentId: string
@@ -148,12 +149,7 @@ export default function WidgetChat({
       <div className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0 custom-scrollbar">
         {messages.length === 0 && !isStreaming && (
           <div className="flex flex-col items-center justify-center gap-4 px-6 py-10 text-center">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-cyan-400/20 blur-xl animate-pulse" aria-hidden />
-              <div className="relative h-14 w-14 rounded-full bg-gradient-to-br from-cyan-400/30 to-blue-500/20 border border-cyan-400/40 flex items-center justify-center backdrop-blur">
-                <MessageCircle className="h-6 w-6 text-cyan-300" aria-hidden />
-              </div>
-            </div>
+            <NeonDiamond />
             <div>
               <p className="text-sm font-medium text-white/90">{t('emptyState')}</p>
               <p className="text-xs text-white/50 mt-1">{t('emptyHint')}</p>
