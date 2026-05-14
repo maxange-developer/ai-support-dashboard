@@ -4,6 +4,10 @@ import { useState, useRef, useActionState, useEffect } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Plus, Key, AlertCircle, Copy, Check, Trash2, Eye, EyeOff, X } from 'lucide-react'
 import { toast } from 'sonner'
+
+function maskKey(prefix: string): string {
+  return `${prefix}${'•'.repeat(12)}`
+}
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useDemoState } from '@/lib/demo-state/DemoStateProvider'
 import type { ApiKeyListItem } from '@/lib/db/api-keys'
@@ -36,8 +40,6 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
   const [showRawKey, setShowRawKey] = useState(false)
   const [rawKeyCopied, setRawKeyCopied] = useState(false)
 
-  const [copied, setCopied] = useState<string | null>(null)
-
   const rawKey = createState && 'rawKey' in createState ? createState.rawKey : null
   const createErrorCode = createState && 'errorCode' in createState ? createState.errorCode : null
   const deleteErrorCode = deleteState && 'errorCode' in deleteState ? deleteState.errorCode : null
@@ -51,6 +53,11 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
   // Processed-once guards: same rawKey or deleteState must never fire twice.
   const lastProcessedKeyRef = useRef<string | null>(null)
   const lastProcessedDeleteRef = useRef<DeleteState>(null)
+
+  // Captured pre-submit so the effect can attach the user's chosen name to the
+  // optimistic list item (the input is cleared synchronously before the action
+  // resolves, so reading it later would always return '').
+  const submittedNameRef = useRef<string>('')
 
   // Capture the pending delete ID before onSubmit clears it to null (which
   // would make the effect miss the ID when deleteState finally resolves).
@@ -66,10 +73,12 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
       demoRef.current?.addKey({
         id: crypto.randomUUID(),
         org_id: '',
-        name: null,
+        name: submittedNameRef.current || null,
+        key_prefix: rawKey.slice(0, 16),
         last_used_at: null,
         created_at: new Date().toISOString(),
       })
+      submittedNameRef.current = ''
     }
     // demoRef.current is intentionally omitted — it's a stable ref, not reactive state
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -104,13 +113,6 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
     setSavedRawKey(null)
     setShowRawKey(false)
     setRawKeyCopied(false)
-  }
-
-  async function handleCopy(key: ApiKeyListItem) {
-    const value = `sk-${key.id.slice(0, 8)}`
-    await navigator.clipboard.writeText(value)
-    setCopied(key.id)
-    setTimeout(() => setCopied(null), 2000)
   }
 
   const keyToDelete = keys.find((k) => k.id === pendingDeleteId)
@@ -154,7 +156,15 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
         </div>
       )}
 
-      <form action={createFormAction} className="space-y-1.5" noValidate>
+      <form
+        action={createFormAction}
+        onSubmit={(e) => {
+          const input = e.currentTarget.elements.namedItem('name') as HTMLInputElement | null
+          submittedNameRef.current = input?.value.trim() ?? ''
+        }}
+        className="space-y-1.5"
+        noValidate
+      >
         <label htmlFor="key-name" className="text-xs font-medium text-white/50 uppercase tracking-wider">
           {t('newKey')}
         </label>
@@ -192,7 +202,6 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
       ) : (
         <div className="space-y-2">
           {allKeys.map((key) => {
-            const prefix = `sk-${key.id.slice(0, 8)}`
             const dateStr = key.last_used_at
               ? t('lastUsed', { date: new Date(key.last_used_at).toLocaleDateString(locale) })
               : t('createdOn', { date: new Date(key.created_at).toLocaleDateString(locale) })
@@ -206,25 +215,14 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
                   <p className="text-xs text-white/40 mt-0.5">{dateStr}</p>
                 </div>
 
-                <input
-                  readOnly
-                  type="text"
-                  value={prefix}
-                  className="flex-1 h-9 bg-white/5 border border-white/10 px-3 text-sm font-mono text-white/70 min-w-0 focus:outline-none select-all"
-                  aria-label={t('copyPrefix')}
-                />
+                <code
+                  className="flex-1 h-9 bg-white/5 border border-white/10 px-3 text-sm font-mono text-white/60 min-w-0 flex items-center select-none"
+                  aria-label={t('keyMasked')}
+                >
+                  {maskKey(key.key_prefix)}
+                </code>
 
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => void handleCopy(key)}
-                    aria-label={t('copyPrefix')}
-                    className="h-9 px-3 flex items-center gap-1.5 border border-neon-blue/40 text-white text-xs hover:bg-neon-blue/10 transition-all duration-200"
-                  >
-                    {copied === key.id
-                      ? <><Check size={12} aria-hidden /> {tCommon('copied')}</>
-                      : <><Copy size={12} aria-hidden /> {tCommon('copy')}</>}
-                  </button>
+                <div className="flex items-center shrink-0">
                   <button
                     type="button"
                     onClick={() => setPendingDeleteId(key.id)}

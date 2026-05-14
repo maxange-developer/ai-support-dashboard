@@ -232,6 +232,7 @@
     "lastUsed": "Last used {date}",
     "createdOn": "Created {date}",
     "unnamed": "Unnamed",
+    "keyMasked": "API key (masked)",
     "copyPrefix": "Copy key prefix",
     "showPrefix": "Show key prefix",
     "hidePrefix": "Hide key prefix",

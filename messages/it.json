@@ -213,6 +213,7 @@
     "lastUsed": "Ultimo utilizzo {date}",
     "createdOn": "Creato {date}",
     "unnamed": "Senza nome",
+    "keyMasked": "Chiave API (mascherata)",
     "copyPrefix": "Copia prefisso chiave",
     "showPrefix": "Mostra prefisso chiave",
     "hidePrefix": "Nascondi prefisso chiave",

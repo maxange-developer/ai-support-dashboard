@@ -765,11 +765,20 @@ export const MOCK_API_KEYS = [
     org_id: MOCK_ORG_1.id,
     name: 'Production website',
     plaintext: 'sk-stratos-prod-9f3a82b1c47e6d05',
+    key_prefix: 'sk-stratos-prod-9f3a',
   },
   {
     id: '00000000-0000-0000-0003-000000000002',
     org_id: MOCK_ORG_1.id,
     name: 'Staging',
     plaintext: 'sk-stratos-staging-2c91e4a78bf03d6e',
+    key_prefix: 'sk-stratos-staging-2c91',
+  },
+  {
+    id: '00000000-0000-0000-0003-000000000003',
+    org_id: MOCK_ORG_2.id,
+    name: 'Internal portal',
+    plaintext: 'sk-nimbus-internal-7d4e2a9f3c8b1054',
+    key_prefix: 'sk-nimbus-internal-7d4e',
   },
 ]

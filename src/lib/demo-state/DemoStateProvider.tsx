@@ -16,6 +16,7 @@ export interface DemoKey {
   id: string
   org_id: string
   name: string | null
+  key_prefix: string
   last_used_at: string | null
   created_at: string
 }

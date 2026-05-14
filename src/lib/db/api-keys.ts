@@ -12,6 +12,7 @@ export interface ApiKeyListItem {
   id: string
   org_id: string
   name: string | null
+  key_prefix: string
   last_used_at: string | null
   created_at: string
 }
@@ -51,6 +52,7 @@ export async function listApiKeys(
         id: k.id,
         org_id: k.org_id,
         name: k.name,
+        key_prefix: k.key_prefix,
         // first key (production): created 30d ago, last used 2h ago
         // second key (staging): created 7d ago, never used
         created_at: new Date(Date.now() - (i === 0 ? 30 : 7) * DAY_MS).toISOString(),
@@ -58,15 +60,19 @@ export async function listApiKeys(
       }))
   }
 
+  type RealRow = Omit<ApiKeyListItem, 'key_prefix'>
   const { data, error } = await admin
     .from(KEYS_TABLE)
     .select('id, org_id, name, last_used_at, created_at')
     .eq('org_id', orgId)
     .order('created_at', { ascending: false })
-    .returns<ApiKeyListItem[]>()
+    .returns<RealRow[]>()
 
   if (error) throw new Error(`listApiKeys: ${error.message}`)
-  return data ?? []
+  // Real keys: plaintext is never stored, so we synthesize a stable display
+  // prefix from the key id. Newly-created keys show the real rawKey prefix
+  // optimistically via the demo provider until the page is refreshed.
+  return (data ?? []).map((k) => ({ ...k, key_prefix: `sk-${k.id.slice(0, 8)}` }))
 }
 
 // service role — org_id guard prevents cross-org deletion
