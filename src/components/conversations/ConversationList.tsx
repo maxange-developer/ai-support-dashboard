@@ -9,6 +9,13 @@ import { cn } from '@/lib/utils'
 
 const PERIOD_KEYS = ['today', '7d', '30d', 'all'] as const
 
+// MOCK_CONVERSATIONS stores visitor_ids as 'visitor-<hash>'. The previous
+// render produced 'Visitor visitor-abc123' (double prefix). Strip the prefix
+// and show 6 chars of the hash for table density.
+function formatVisitorId(raw: string): string {
+  return raw.startsWith('visitor-') ? raw.slice(8, 14) : raw.slice(0, 6)
+}
+
 interface Props {
   conversations: ConversationListItem[]
   period: string
@@ -87,7 +94,7 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-white truncate">
                   {conv.visitorId
-                    ? t('visitorWithId', { id: conv.visitorId.slice(0, 8) })
+                    ? t('visitorWithId', { id: formatVisitorId(conv.visitorId) })
                     : t('visitorAnonymous')}
                 </p>
               </div>
