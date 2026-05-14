@@ -21,7 +21,7 @@ A productized SaaS dashboard operators use to:
 - **Answer visitors** — embeddable `<script>` widget + API key auth; answers streamed via SSE with source citations
 - **Measure usage** — conversation history, token costs, top questions, avg response time
 
-Two demo workspaces are included: **Stratos** (product analytics SaaS, Pro plan) and **Nimbus Labs** (internal HR, Free plan). Login with `test@angel1.dev / Test1234!`.
+Two demo workspaces are included: **Stratos** (product analytics SaaS, Pro plan) and **Nimbus Labs** (internal HR, Free plan). Login: click _Enter demo_ — sample data resets each session.
 
 ---
 
@@ -61,7 +61,7 @@ Every table has a Row Level Security policy. The dashboard uses the Supabase ser
 **1. Clone and install**
 ```bash
 git clone <repo-url>
-cd 01-ai-support-dashboard
+cd ai-support-dashboard
 pnpm install
 ```
 
@@ -87,8 +87,6 @@ pnpm tsx scripts/seed-mock.ts   # creates orgs, docs, conversations, API keys, t
 ```bash
 pnpm dev        # http://localhost:3000
 pnpm build      # production build
-pnpm test       # unit tests (Vitest, 13 tests)
-pnpm test:e2e   # E2E (Playwright — needs TEST_EMAIL / TEST_PASSWORD)
 ```
 
 **Zero-config offline mode** — add these to `.env.local` and skip steps 2–3:
@@ -112,7 +110,6 @@ NEXT_PUBLIC_USE_MOCK=true
 | UI | Tailwind CSS v4 + Base UI primitives | Unstyled components, full design control |
 | Charts | Recharts | React 19 compatible |
 | i18n | next-intl | Type-safe, RSC-compatible |
-| Testing | Vitest + Playwright | Unit + full E2E coverage |
 
 ---
 
