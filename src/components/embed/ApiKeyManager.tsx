@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useActionState, useEffect } from 'react'
+import { useState, useRef, useActionState, useEffect } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Plus, Key, AlertCircle, Copy, Check, Trash2, Eye, EyeOff, X } from 'lucide-react'
 import { toast } from 'sonner'
@@ -42,29 +42,55 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
   const createErrorCode = createState && 'errorCode' in createState ? createState.errorCode : null
   const deleteErrorCode = deleteState && 'errorCode' in deleteState ? deleteState.errorCode : null
 
+  // Stable ref to demo context — avoids making the unstable context object a
+  // dep of effects, which would re-fire them every time addKey/deleteKey causes
+  // a provider re-render (infinite loop).
+  const demoRef = useRef(demo)
+  demoRef.current = demo
+
+  // Processed-once guards: same rawKey or deleteState must never fire twice.
+  const lastProcessedKeyRef = useRef<string | null>(null)
+  const lastProcessedDeleteRef = useRef<DeleteState>(null)
+
+  // Capture the pending delete ID before onSubmit clears it to null (which
+  // would make the effect miss the ID when deleteState finally resolves).
+  const confirmedDeleteIdRef = useRef<string | null>(null)
+
   useEffect(() => {
-    if (rawKey) {
+    if (rawKey && rawKey !== lastProcessedKeyRef.current) {
+      lastProcessedKeyRef.current = rawKey
       setSavedRawKey(rawKey)
       setShowRawKey(false)
       setRawKeyCopied(false)
       toast.success(t('toastCreated'))
-      // optimistic add — the key id is embedded in the rawKey prefix for display
-      demo?.addKey({
+      demoRef.current?.addKey({
         id: crypto.randomUUID(),
         org_id: '',
-        name: null, // name not available here; list refreshes on next server render
+        name: null,
         last_used_at: null,
         created_at: new Date().toISOString(),
       })
     }
-  }, [rawKey, t, demo])
+    // demoRef.current is intentionally omitted — it's a stable ref, not reactive state
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawKey])
 
   useEffect(() => {
-    if (deleteState && 'success' in deleteState) {
+    if (
+      deleteState &&
+      'success' in deleteState &&
+      deleteState !== lastProcessedDeleteRef.current
+    ) {
+      lastProcessedDeleteRef.current = deleteState
       toast.success(t('toastDeleted'))
-      if (pendingDeleteId) demo?.deleteKey(pendingDeleteId)
+      if (confirmedDeleteIdRef.current) {
+        demoRef.current?.deleteKey(confirmedDeleteIdRef.current)
+        confirmedDeleteIdRef.current = null
+      }
     }
-  }, [deleteState, t, demo, pendingDeleteId])
+    // demoRef.current is intentionally omitted — it's a stable ref, not reactive state
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteState])
 
   function copyRawKey() {
     if (!savedRawKey) return
@@ -236,7 +262,10 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
               {tCommon('cancel')}
             </button>
             {pendingDeleteId && (
-              <form action={deleteFormAction} onSubmit={() => setPendingDeleteId(null)}>
+              <form action={deleteFormAction} onSubmit={() => {
+                confirmedDeleteIdRef.current = pendingDeleteId
+                setPendingDeleteId(null)
+              }}>
                 <input type="hidden" name="id" value={pendingDeleteId} />
                 <button
                   type="submit"
