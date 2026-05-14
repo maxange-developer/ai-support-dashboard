@@ -1,8 +1,8 @@
 'use client'
 
 import {
-  BarChart,
-  Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -19,7 +19,7 @@ interface ChartPoint {
 export default function CostChart({ data }: { data: DailyCost[] }) {
   if (data.length === 0) {
     return (
-      <div className="h-44 flex items-center justify-center glass border border-white/10">
+      <div className="h-60 flex items-center justify-center glass border border-white/10">
         <p className="text-sm text-white/30">No data for the last 7 days</p>
       </div>
     )
@@ -31,39 +31,54 @@ export default function CostChart({ data }: { data: DailyCost[] }) {
   }))
 
   return (
-    <div className="h-44 glass border border-white/10 p-3">
+    <div className="h-60 w-full glass border border-white/10 p-3">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+        <LineChart data={chartData} margin={{ top: 10, right: 12, left: 0, bottom: 0 }}>
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="rgba(255,255,255,0.06)"
+            vertical={false}
+          />
           <XAxis
             dataKey="day"
-            tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.6)' }}
+            stroke="rgba(255,255,255,0.4)"
+            fontSize={11}
             tickLine={false}
             axisLine={false}
           />
           <YAxis
-            tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.6)' }}
+            stroke="rgba(255,255,255,0.4)"
+            fontSize={11}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(v: number) => `$${v.toFixed(3)}`}
+            tickFormatter={(v: number) => `$${v.toFixed(2)}`}
             width={56}
           />
           <Tooltip
+            contentStyle={{
+              background: 'rgba(10,10,15,0.95)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '8px',
+              fontSize: '12px',
+              backdropFilter: 'blur(10px)',
+            }}
+            labelStyle={{ color: 'rgba(255,255,255,0.6)' }}
+            itemStyle={{ color: '#22d3ee' }}
             formatter={(value) => {
               const n = typeof value === 'number' ? value : typeof value === 'string' ? parseFloat(value) : 0
-              return [`$${n.toFixed(4)}`, 'Cost']
+              return [`$${n.toFixed(3)}`, 'Cost']
             }}
-            contentStyle={{
-              fontSize: 12,
-              border: '1px solid rgba(255,255,255,0.1)',
-              background: 'rgba(0,0,0,0.9)',
-              backdropFilter: 'blur(10px)',
-              color: '#ffffff',
-            }}
-            cursor={{ fill: 'rgba(37,99,235,0.06)' }}
+            cursor={{ stroke: 'rgba(34,211,238,0.2)', strokeWidth: 1 }}
           />
-          <Bar dataKey="cost" fill="#2563eb" fillOpacity={0.8} radius={[4, 4, 0, 0]} maxBarSize={40} />
-        </BarChart>
+          <Line
+            type="monotone"
+            dataKey="cost"
+            stroke="#22d3ee"
+            strokeWidth={2}
+            dot={{ r: 4, fill: '#22d3ee', strokeWidth: 0 }}
+            activeDot={{ r: 6, fill: '#22d3ee', stroke: '#0e7490', strokeWidth: 2 }}
+          />
+        </LineChart>
       </ResponsiveContainer>
     </div>
   )
