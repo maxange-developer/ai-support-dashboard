@@ -8,6 +8,7 @@ import { streamChat } from '@/lib/ai/chat'
 import { mockChatResponse } from '@/lib/mock/ai-responses'
 import { createConversation, insertMessage } from '@/lib/db/conversations'
 import { logger } from '@/lib/logger'
+import { isMockMode, getDemoOrg, DEMO_ORG } from '@/lib/auth/mock-bypass'
 import type { ChatMessage } from '@/lib/ai/chat'
 import type { RetrievalChunk } from '@/lib/ai/retrieval'
 
@@ -61,7 +62,12 @@ export async function POST(request: NextRequest) {
   let orgId: string
   let orgName: string
 
-  if (apiKey) {
+  // Mock bypass: skip real auth entirely, resolve org from slug
+  if (await isMockMode()) {
+    const demoOrg = getDemoOrg(orgSlug) ?? DEMO_ORG
+    orgId = demoOrg.id
+    orgName = demoOrg.name
+  } else if (apiKey) {
     const hash = hashKey(apiKey)
 
     const { data: keyRows } = await admin
