@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { CreateOrgSchema } from '@/lib/validations/organization'
 
-type State = { error: string } | null
+type State = { errorCode: string } | null
 
 export async function createOrgAction(_prev: State, formData: FormData): Promise<State> {
   const parsed = CreateOrgSchema.safeParse({
@@ -14,7 +14,7 @@ export async function createOrgAction(_prev: State, formData: FormData): Promise
   })
 
   if (!parsed.success) {
-    return { error: parsed.error.issues[0].message }
+    return { errorCode: 'errorCreate' }
   }
 
   const supabase = await createClient()
@@ -22,9 +22,10 @@ export async function createOrgAction(_prev: State, formData: FormData): Promise
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) return { error: 'Non autenticato' }
+  if (!user) return { errorCode: 'errorUnauth' }
 
-  // service role: RLS bypass per insert org+membership (user non ancora membro)
+  // service role: RLS bypass for the initial org + membership insert,
+  // since the user is not yet a member of the org being created.
   const admin = createAdminClient()
 
   const { data: org, error: orgError } = await admin
@@ -34,8 +35,8 @@ export async function createOrgAction(_prev: State, formData: FormData): Promise
     .single()
 
   if (orgError) {
-    if (orgError.code === '23505') return { error: 'Slug già in uso, scegline un altro' }
-    return { error: 'Errore nella creazione dell\'organizzazione' }
+    if (orgError.code === '23505') return { errorCode: 'errorSlugTaken' }
+    return { errorCode: 'errorCreate' }
   }
 
   const orgRow = org as { id: string; slug: string }
@@ -46,7 +47,7 @@ export async function createOrgAction(_prev: State, formData: FormData): Promise
 
   if (memberError) {
     await admin.from('organizations').delete().eq('id', orgRow.id)
-    return { error: 'Errore nella creazione della membership' }
+    return { errorCode: 'errorMembership' }
   }
 
   redirect(`/app/${orgRow.slug}`)

@@ -10,8 +10,9 @@ import { chunkText } from '@/lib/ai/chunking'
 import { embedBatch } from '@/lib/ai/embeddings'
 import { insertDocument, updateDocumentStatus, insertChunks, deleteDocumentsFromDB } from '@/lib/db/documents'
 import { logger } from '@/lib/logger'
+import { isMockMode } from '@/lib/auth/mock-bypass'
 
-type State = { error: string } | null
+type State = { errorCode: string } | null
 type MembershipRow = { org_id: string }
 type OrgRow = { id: string }
 
@@ -20,18 +21,22 @@ export async function uploadDocument(
   _prev: State,
   formData: FormData,
 ): Promise<State> {
-  // 1. validate file
   const file = formData.get('file')
   const validationError = validateUploadFile(file)
   if (validationError) return validationError
   const validFile = file as File
 
-  // 2. auth + membership check
+  // Mock mode: pretend the upload succeeded and bounce to the list.
+  if (await isMockMode()) {
+    revalidatePath(`/app/${orgSlug}/documents`)
+    redirect(`/app/${orgSlug}/documents`)
+  }
+
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) return { error: 'Non autenticato' }
+  if (!user) return { errorCode: 'errorUnauth' }
 
   const { data: membershipData } = await supabase
     .from('memberships')
@@ -40,7 +45,7 @@ export async function uploadDocument(
     .returns<MembershipRow[]>()
 
   const orgIds = membershipData?.map((m) => m.org_id) ?? []
-  if (orgIds.length === 0) return { error: 'Nessuna organizzazione trovata' }
+  if (orgIds.length === 0) return { errorCode: 'errorNoOrg' }
 
   const { data: orgRows } = await supabase
     .from('organizations')
@@ -50,12 +55,11 @@ export async function uploadDocument(
     .returns<OrgRow[]>()
 
   const org = orgRows?.[0]
-  if (!org) return { error: 'Organizzazione non trovata' }
+  if (!org) return { errorCode: 'errorNoOrg' }
 
-  // 3. read buffer
   const buffer = await validFile.arrayBuffer()
 
-  // 4. storage upload — service role: bypasses storage RLS
+  // service role: bypasses storage RLS for the multi-tenant bucket.
   const admin = createAdminClient()
   const storageKey = `${org.id}/${Date.now()}-${validFile.name}`
   const { error: storageError } = await admin.storage
@@ -64,19 +68,17 @@ export async function uploadDocument(
 
   if (storageError) {
     logger.error('storage upload failed', storageError.message)
-    return { error: `Upload fallito: ${storageError.message}` }
+    return { errorCode: 'errorUpload' }
   }
 
-  // 5. parse
   let parsed: Awaited<ReturnType<typeof parseFile>>
   try {
     parsed = await parseFile(buffer, validFile.name)
   } catch (err) {
     logger.error('parseFile failed', err)
-    return { error: 'Errore nel parsing del file' }
+    return { errorCode: 'errorParse' }
   }
 
-  // 6. insert document (status defaults to 'processing')
   let docId: string
   try {
     docId = await insertDocument(admin, {
@@ -87,10 +89,9 @@ export async function uploadDocument(
     })
   } catch (err) {
     logger.error('insertDocument failed', err)
-    return { error: 'Errore durante il salvataggio del documento' }
+    return { errorCode: 'errorSave' }
   }
 
-  // 7–9. chunk → embed → insertChunks; mark error on failure
   try {
     const chunks = chunkText(parsed.content)
     const embeddings = await embedBatch(chunks.map((c) => c.content))
@@ -107,10 +108,9 @@ export async function uploadDocument(
   } catch (err) {
     logger.error('embedding/chunks failed', err)
     await updateDocumentStatus(admin, docId, 'error').catch(() => undefined)
-    return { error: 'Errore durante la generazione degli embedding' }
+    return { errorCode: 'errorEmbed' }
   }
 
-  // 10. mark ready + revalidate + redirect
   await updateDocumentStatus(admin, docId, 'ready')
   revalidatePath(`/app/${orgSlug}/documents`)
   redirect(`/app/${orgSlug}/documents`)
@@ -120,14 +120,19 @@ export async function deleteDocumentsAction(
   orgSlug: string,
   orgId: string,
   ids: string[],
-): Promise<{ error?: string }> {
+): Promise<{ errorCode?: string }> {
   if (ids.length === 0) return {}
+
+  if (await isMockMode()) {
+    revalidatePath(`/app/${orgSlug}/documents`)
+    return {}
+  }
 
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
+  if (!user) return { errorCode: 'errorUnauth' }
 
   const { data: membershipData } = await supabase
     .from('memberships')
@@ -136,14 +141,14 @@ export async function deleteDocumentsAction(
     .eq('org_id', orgId)
     .returns<MembershipRow[]>()
 
-  if (!membershipData || membershipData.length === 0) return { error: 'Access denied' }
+  if (!membershipData || membershipData.length === 0) return { errorCode: 'errorUnauth' }
 
   const admin = createAdminClient()
   try {
     await deleteDocumentsFromDB(admin, ids, orgId)
   } catch (err) {
     logger.error('deleteDocumentsAction failed', err)
-    return { error: 'Failed to delete documents' }
+    return { errorCode: 'error' }
   }
 
   revalidatePath(`/app/${orgSlug}/documents`)

@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { SignupSchema } from '@/lib/validations/auth'
 
-type State = { error: string } | { pending: string } | null
+type State = { errorCode: string } | { pendingCode: string } | null
 
 export async function signupAction(_prev: State, formData: FormData): Promise<State> {
   const parsed = SignupSchema.safeParse({
@@ -14,7 +14,7 @@ export async function signupAction(_prev: State, formData: FormData): Promise<St
   })
 
   if (!parsed.success) {
-    return { error: parsed.error.issues[0].message }
+    return { errorCode: 'loginGeneric' }
   }
 
   const supabase = await createClient()
@@ -28,12 +28,12 @@ export async function signupAction(_prev: State, formData: FormData): Promise<St
   })
 
   if (error) {
-    return { error: error.message }
+    return { errorCode: 'loginGeneric' }
   }
 
   if (data.session) {
     redirect('/onboarding')
   }
 
-  return { pending: 'Controlla la tua email per confermare il tuo account.' }
+  return { pendingCode: 'confirmationSent' }
 }

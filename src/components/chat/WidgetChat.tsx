@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 import { Send, ChevronDown, ChevronUp, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -23,10 +24,11 @@ export default function WidgetChat({
   orgSlug: string
   apiKey: string | undefined
 }) {
+  const t = useTranslations('widget')
   const [messages, setMessages] = useState<Message[]>([])
   const [pendingText, setPendingText] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [hasError, setHasError] = useState(false)
   const [conversationId, setConversationId] = useState<string | undefined>()
   const [input, setInput] = useState('')
 
@@ -53,7 +55,7 @@ export default function WidgetChat({
 
       setInput('')
       if (textareaRef.current) textareaRef.current.style.height = 'auto'
-      setError(null)
+      setHasError(false)
       setMessages((prev) => [...prev, { role: 'user', content: text }])
       setIsStreaming(true)
       pendingRef.current = ''
@@ -67,8 +69,7 @@ export default function WidgetChat({
         })
 
         if (!response.ok || !response.body) {
-          const err = (await response.json().catch(() => ({}))) as { error?: string }
-          throw new Error(err.error ?? 'Request failed')
+          throw new Error('Request failed')
         }
 
         const reader = response.body.getReader()
@@ -109,12 +110,12 @@ export default function WidgetChat({
               setPendingText('')
               if (data.conversationId) setConversationId(data.conversationId)
             } else if (data.type === 'error') {
-              setError(data.error ?? 'Error generating response')
+              setHasError(true)
             }
           }
         }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Network error')
+      } catch {
+        setHasError(true)
       } finally {
         setIsStreaming(false)
         pendingRef.current = ''
@@ -136,13 +137,13 @@ export default function WidgetChat({
       {/* Header */}
       <div className="px-4 py-3 border-b border-white/10 flex items-center gap-2 shrink-0 glass">
         <span className="size-2 rounded-full bg-neon-green" aria-hidden />
-        <span className="text-sm font-semibold text-white">Support</span>
+        <span className="text-sm font-semibold text-white">{t('headerTitle')}</span>
       </div>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0 custom-scrollbar">
         {messages.length === 0 && !isStreaming && (
-          <p className="text-xs text-white/40 text-center pt-6">How can I help you?</p>
+          <p className="text-xs text-white/40 text-center pt-6">{t('emptyState')}</p>
         )}
 
         {messages.map((msg, i) => (
@@ -166,7 +167,7 @@ export default function WidgetChat({
           </div>
         )}
 
-        {error && <p className="text-xs text-red-400 text-center py-1">{error}</p>}
+        {hasError && <p className="text-xs text-red-400 text-center py-1">{t('errorGeneric')}</p>}
         <div ref={messagesEndRef} />
       </div>
 
@@ -180,7 +181,7 @@ export default function WidgetChat({
             resizeTextarea()
           }}
           onKeyDown={handleKeyDown}
-          placeholder="Write a message…"
+          placeholder={t('inputPlaceholder')}
           disabled={isStreaming}
           rows={1}
           className="flex-1 resize-none min-h-[2.5rem] max-h-24 px-3 py-2 bg-white/5 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50 overflow-y-auto scrollbar-hide"
@@ -190,7 +191,7 @@ export default function WidgetChat({
           type="button"
           onClick={() => void handleSubmit()}
           disabled={isStreaming || !input.trim()}
-          aria-label="Send"
+          aria-label={t('send')}
           className="h-10 w-10 flex items-center justify-center border-2 border-neon-blue text-white relative overflow-hidden hover:text-black motion-reduce:hover:text-white transition-all duration-300 group disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
         >
           <span className="absolute inset-0 bg-neon-blue transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
@@ -202,9 +203,11 @@ export default function WidgetChat({
 }
 
 function WidgetMessage({ message }: { message: Message }) {
+  const t = useTranslations('widget')
   const [showSources, setShowSources] = useState(false)
   const isUser = message.role === 'user'
   const hasSources = !isUser && (message.sources?.length ?? 0) > 0
+  const sourcesCount = message.sources?.length ?? 0
 
   return (
     <div className={cn('flex', isUser ? 'justify-end' : 'justify-start')}>
@@ -226,7 +229,9 @@ function WidgetMessage({ message }: { message: Message }) {
               className="flex items-center gap-1 text-[10px] text-white/35 hover:text-neon-pink transition-colors"
             >
               {showSources ? <ChevronUp size={10} aria-hidden /> : <ChevronDown size={10} aria-hidden />}
-              {message.sources!.length} source{message.sources!.length !== 1 ? 's' : ''}
+              {sourcesCount === 1
+                ? t('sourcesSingular', { count: sourcesCount })
+                : t('sourcesPlural', { count: sourcesCount })}
             </button>
             {showSources && (
               <ul className="mt-1.5 space-y-1 border-l-2 border-neon-pink pl-2">

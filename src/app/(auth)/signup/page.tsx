@@ -4,19 +4,24 @@ import dynamic from 'next/dynamic'
 import { useActionState } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import { AlertCircle } from 'lucide-react'
 import { signupAction } from './actions'
 import { createClient } from '@/lib/supabase/client'
 
 const ThreeBackground = dynamic(() => import('@/components/ThreeBackground'), { ssr: false })
 
-type State = { error: string } | { pending: string } | null
+type State = { errorCode: string } | { pendingCode: string } | null
 
 export default function SignupPage() {
   const [state, formAction, isPending] = useActionState<State, FormData>(signupAction, null)
   const t = useTranslations('auth')
 
   async function handleGoogleSignup() {
+    if (process.env.NEXT_PUBLIC_USE_MOCK === 'true') {
+      toast.error(t('googleDemoNotice'))
+      return
+    }
     const supabase = createClient()
     await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -24,7 +29,7 @@ export default function SignupPage() {
     })
   }
 
-  if (state && 'pending' in state) {
+  if (state && 'pendingCode' in state) {
     return (
       <>
         <ThreeBackground />
@@ -34,7 +39,7 @@ export default function SignupPage() {
               <span className="text-white text-lg">✓</span>
             </div>
             <p className="text-lg font-semibold text-white">{t('checkEmail')}</p>
-            <p className="text-sm text-white/50">{state.pending}</p>
+            <p className="text-sm text-white/50">{t(state.pendingCode as 'confirmationSent')}</p>
           </div>
         </div>
       </>
@@ -72,10 +77,10 @@ export default function SignupPage() {
           </div>
 
           <form action={formAction} className="space-y-4" noValidate>
-            {state && 'error' in state && state.error && (
+            {state && 'errorCode' in state && state.errorCode && (
               <div className="flex items-center gap-2 p-3 border border-red-500/30 bg-red-500/8 text-red-400">
                 <AlertCircle size={14} className="shrink-0" aria-hidden />
-                <p className="text-sm">{state.error}</p>
+                <p className="text-sm">{t(state.errorCode as 'loginGeneric')}</p>
               </div>
             )}
 

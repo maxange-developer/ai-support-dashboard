@@ -78,7 +78,7 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
 
       {/* Org name */}
       <div className="px-5 pt-4 pb-2">
-        <p className="text-xs text-white/40 uppercase tracking-widest font-medium">Organization</p>
+        <p className="text-xs text-white/40 uppercase tracking-widest font-medium">{t('organization')}</p>
         <p className="text-sm text-white/80 font-medium mt-0.5 truncate">{orgName}</p>
       </div>
 
@@ -137,7 +137,7 @@ export function SidebarNav({ orgSlug, orgName, onNavigate }: SidebarProps) {
 
       {/* Footer */}
       <div className="px-5 pb-4 pt-2 border-t border-white/10 mt-auto">
-        <p className="text-[10px] text-white/25 uppercase tracking-widest">AI Support Dashboard</p>
+        <p className="text-[10px] text-white/25 uppercase tracking-widest">{t('appLabel')}</p>
       </div>
     </div>
   )

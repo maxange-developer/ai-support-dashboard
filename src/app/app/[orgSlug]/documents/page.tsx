@@ -4,6 +4,7 @@ import { getDocumentsByOrg } from '@/lib/db/documents'
 import { uploadDocument, deleteDocumentsAction } from './actions'
 import DocumentsView from '@/components/documents/DocumentsView'
 import { getTranslations } from 'next-intl/server'
+import { isMockMode, DEMO_ORG } from '@/lib/auth/mock-bypass'
 
 type OrgRow = { id: string }
 
@@ -13,21 +14,30 @@ export default async function DocumentsPage({
   params: Promise<{ orgSlug: string }>
 }) {
   const { orgSlug } = await params
-  const supabase = await createClient()
-
-  const { data: orgRows } = await supabase
-    .from('organizations')
-    .select('id')
-    .eq('slug', orgSlug)
-    .returns<OrgRow[]>()
-
-  const org = orgRows?.[0]
-  if (!org) notFound()
-
-  const documents = await getDocumentsByOrg(supabase, org.id)
-  const boundDelete = deleteDocumentsAction.bind(null, orgSlug, org.id)
-  const boundUpload = uploadDocument.bind(null, orgSlug)
   const t = await getTranslations('documents')
+
+  const mock = await isMockMode()
+
+  let orgId: string
+
+  if (mock) {
+    orgId = DEMO_ORG.id
+  } else {
+    const supabase = await createClient()
+    const { data: orgRows } = await supabase
+      .from('organizations')
+      .select('id')
+      .eq('slug', orgSlug)
+      .returns<OrgRow[]>()
+    const org = orgRows?.[0]
+    if (!org) notFound()
+    orgId = org.id
+  }
+
+  const supabaseRead = await createClient()
+  const documents = await getDocumentsByOrg(supabaseRead, orgId)
+  const boundDelete = deleteDocumentsAction.bind(null, orgSlug, orgId)
+  const boundUpload = uploadDocument.bind(null, orgSlug)
 
   return (
     <div className="space-y-6 animate-fade-up">
@@ -36,7 +46,9 @@ export default async function DocumentsPage({
           {t('title')}<span className="text-neon-blue">.</span>
         </h1>
         <p className="text-white/40 text-sm mt-1">
-          {documents.length} document{documents.length !== 1 ? 's' : ''} uploaded
+          {documents.length === 1
+            ? t('subtitleSingular', { count: documents.length })
+            : t('subtitlePlural', { count: documents.length })}
         </p>
       </div>
       <DocumentsView documents={documents} orgSlug={orgSlug} deleteAction={boundDelete} uploadAction={boundUpload} />

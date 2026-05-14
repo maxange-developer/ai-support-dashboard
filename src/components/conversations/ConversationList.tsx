@@ -2,16 +2,12 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import type { ConversationListItem, MessageRow } from '@/lib/db/analytics'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 
-const PERIODS = [
-  { value: 'today', label: 'Today' },
-  { value: '7d', label: '7 days' },
-  { value: '30d', label: '30 days' },
-  { value: 'all', label: 'All' },
-]
+const PERIOD_KEYS = ['today', '7d', '30d', 'all'] as const
 
 interface Props {
   conversations: ConversationListItem[]
@@ -33,6 +29,7 @@ function Stat({ label, value, color = 'white' }: { label: string; value: string;
 
 export default function ConversationList({ conversations, period, orgSlug, getMessages }: Props) {
   const router = useRouter()
+  const t = useTranslations('conversations')
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<MessageRow[]>([])
   const [selectedConv, setSelectedConv] = useState<ConversationListItem | null>(null)
@@ -50,36 +47,34 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
 
   return (
     <div className="space-y-4">
-      {/* Period filter */}
       <div className="flex gap-2 flex-wrap">
-        {PERIODS.map((p) => (
+        {PERIOD_KEYS.map((key) => (
           <button
-            key={p.value}
-            onClick={() => router.push(`/app/${orgSlug}/conversations?period=${p.value}`)}
+            key={key}
+            onClick={() => router.push(`/app/${orgSlug}/conversations?period=${key}`)}
             className={cn(
               'px-4 py-1.5 text-xs font-semibold uppercase tracking-wider border transition-all duration-200',
-              period === p.value
+              period === key
                 ? 'bg-neon-blue/10 text-white border-neon-blue/40'
                 : 'bg-transparent text-white/40 border-white/15 hover:text-white hover:border-white/30',
             )}
           >
-            {p.label}
+            {t(`periods.${key}`)}
           </button>
         ))}
       </div>
 
       {conversations.length === 0 ? (
         <div className="glass border-2 border-white/10 py-16 text-center">
-          <p className="text-sm text-white/35">No conversations in the selected period.</p>
+          <p className="text-sm text-white/35">{t('emptyState')}</p>
         </div>
       ) : (
         <div className="glass border-2 border-white/10 overflow-hidden">
-          {/* Table header */}
           <div className="flex items-center gap-4 px-4 py-3 border-b border-white/8 bg-white/2">
-            <p className="flex-1 text-xs font-medium text-white/40 uppercase tracking-wider">Visitor</p>
-            <p className="text-xs font-medium text-white/40 uppercase tracking-wider hidden sm:block">Date</p>
-            <p className="text-xs font-medium text-white/40 uppercase tracking-wider text-right w-16">Msgs</p>
-            <p className="text-xs font-medium text-white/40 uppercase tracking-wider text-right w-20">Cost</p>
+            <p className="flex-1 text-xs font-medium text-white/40 uppercase tracking-wider">{t('table.visitor')}</p>
+            <p className="text-xs font-medium text-white/40 uppercase tracking-wider hidden sm:block">{t('table.date')}</p>
+            <p className="text-xs font-medium text-white/40 uppercase tracking-wider text-right w-16">{t('table.messages')}</p>
+            <p className="text-xs font-medium text-white/40 uppercase tracking-wider text-right w-20">{t('table.cost')}</p>
           </div>
 
           {conversations.map((conv) => (
@@ -90,7 +85,9 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
             >
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-white truncate">
-                  {conv.visitorId ? `Visitor ${conv.visitorId.slice(0, 8)}` : 'Anonymous'}
+                  {conv.visitorId
+                    ? t('visitorWithId', { id: conv.visitorId.slice(0, 8) })
+                    : t('visitorAnonymous')}
                 </p>
               </div>
               <p className="text-xs text-white/35 hidden sm:block shrink-0">
@@ -110,31 +107,31 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
           <DialogHeader>
             <DialogTitle className="text-white text-sm font-semibold">
               {selectedConv
-                ? new Date(selectedConv.startedAt).toLocaleString('en-GB')
-                : 'Conversation'}
+                ? t('modal.title', { date: new Date(selectedConv.startedAt).toLocaleString('en-GB') })
+                : t('title')}
             </DialogTitle>
           </DialogHeader>
 
           {selectedConv && (
             <div className="flex items-center gap-3 flex-wrap">
-              <Stat label="Messages" value={String(selectedConv.messageCount)} />
+              <Stat label={t('modal.stats.messages')} value={String(selectedConv.messageCount)} />
               <Stat
-                label="Tokens"
+                label={t('modal.stats.tokens')}
                 value={
                   isPending
                     ? '—'
                     : String(messages.filter((m) => m.role === 'assistant').reduce((s, m) => s + (m.tokens_used ?? 0), 0))
                 }
               />
-              <Stat label="Cost" value={`$${(selectedConv.costCents / 100).toFixed(4)}`} color="neon-blue" />
+              <Stat label={t('modal.stats.cost')} value={`$${(selectedConv.costCents / 100).toFixed(4)}`} color="neon-blue" />
             </div>
           )}
 
           <div className="overflow-y-auto max-h-[52vh] space-y-3 custom-scrollbar">
             {isPending ? (
-              <p className="py-4 text-center text-sm text-white/35">Loading…</p>
+              <p className="py-4 text-center text-sm text-white/35">{t('modal.loading')}</p>
             ) : messages.length === 0 ? (
-              <p className="py-4 text-center text-sm text-white/35">No messages.</p>
+              <p className="py-4 text-center text-sm text-white/35">{t('modal.empty')}</p>
             ) : (
               messages.map((msg) => (
                 <div

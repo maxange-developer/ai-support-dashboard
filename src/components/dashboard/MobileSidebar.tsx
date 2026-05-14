@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Menu, X } from 'lucide-react'
 import { SidebarNav } from './Sidebar'
 
@@ -11,13 +12,14 @@ interface MobileSidebarProps {
 
 export default function MobileSidebar({ orgSlug, orgName }: MobileSidebarProps) {
   const [open, setOpen] = useState(false)
+  const t = useTranslations('nav')
 
   return (
     <>
       <button
         className="md:hidden p-2 text-white/40 hover:text-neon-blue hover:bg-neon-blue/8 transition-all duration-200"
         onClick={() => setOpen(true)}
-        aria-label="Apri menu"
+        aria-label={t('openMenu')}
       >
         <Menu size={18} />
       </button>
@@ -33,7 +35,7 @@ export default function MobileSidebar({ orgSlug, orgName }: MobileSidebarProps) 
             <button
               className="absolute top-3 right-3 p-1.5 text-white/40 hover:text-white hover:bg-white/8 transition-all"
               onClick={() => setOpen(false)}
-              aria-label="Chiudi menu"
+              aria-label={t('closeMenu')}
             >
               <X size={15} />
             </button>

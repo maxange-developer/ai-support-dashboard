@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { LogOut } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import MobileSidebar from './MobileSidebar'
@@ -14,6 +15,7 @@ interface HeaderProps {
 
 export default function Header({ orgSlug, orgName, userEmail }: HeaderProps) {
   const router = useRouter()
+  const t = useTranslations('nav')
 
   async function handleLogout() {
     const supabase = createClient()
@@ -32,7 +34,7 @@ export default function Header({ orgSlug, orgName, userEmail }: HeaderProps) {
         <LanguageSwitcher />
         <button
           onClick={handleLogout}
-          aria-label="Logout"
+          aria-label={t('logout')}
           className="p-2 text-white/40 hover:text-neon-blue hover:bg-neon-blue/8 transition-all duration-200"
         >
           <LogOut size={15} />

@@ -1,13 +1,15 @@
 'use server'
 
+import { randomBytes } from 'crypto'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createApiKey, deleteApiKey } from '@/lib/db/api-keys'
 import { logger } from '@/lib/logger'
+import { isMockMode } from '@/lib/auth/mock-bypass'
 
-type CreateState = { rawKey: string } | { error: string } | null
-type DeleteState = { error: string } | null
+type CreateState = { rawKey: string } | { errorCode: string } | null
+type DeleteState = { errorCode: string } | null
 
 type MembershipRow = { org_id: string }
 type OrgRow = { id: string }
@@ -44,10 +46,15 @@ export async function createKeyAction(
   formData: FormData,
 ): Promise<CreateState> {
   const name = (formData.get('name') as string | null)?.trim() ?? ''
-  if (!name) return { error: 'Il nome è obbligatorio' }
+  if (!name) return { errorCode: 'errorRequired' }
+
+  if (await isMockMode()) {
+    revalidatePath(`/app/${orgSlug}/embed`)
+    return { rawKey: `sk-demo-${randomBytes(16).toString('hex')}` }
+  }
 
   const orgId = await resolveOrgId(orgSlug)
-  if (!orgId) return { error: 'Non autorizzato' }
+  if (!orgId) return { errorCode: 'errorUnauth' }
 
   try {
     const { rawKey } = await createApiKey(createAdminClient(), orgId, name)
@@ -55,7 +62,7 @@ export async function createKeyAction(
     return { rawKey }
   } catch (err) {
     logger.error('createApiKey failed', err)
-    return { error: 'Errore durante la creazione della chiave' }
+    return { errorCode: 'errorCreate' }
   }
 }
 
@@ -65,10 +72,15 @@ export async function deleteKeyAction(
   formData: FormData,
 ): Promise<DeleteState> {
   const id = formData.get('id') as string | null
-  if (!id) return { error: 'ID mancante' }
+  if (!id) return { errorCode: 'errorMissingId' }
+
+  if (await isMockMode()) {
+    revalidatePath(`/app/${orgSlug}/embed`)
+    return null
+  }
 
   const orgId = await resolveOrgId(orgSlug)
-  if (!orgId) return { error: 'Non autorizzato' }
+  if (!orgId) return { errorCode: 'errorUnauth' }
 
   try {
     await deleteApiKey(createAdminClient(), id, orgId)
@@ -76,6 +88,6 @@ export async function deleteKeyAction(
     return null
   } catch (err) {
     logger.error('deleteApiKey failed', err)
-    return { error: "Errore durante l'eliminazione" }
+    return { errorCode: 'errorDelete' }
   }
 }

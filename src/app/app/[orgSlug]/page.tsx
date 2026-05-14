@@ -1,17 +1,14 @@
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { MessageCircle, TrendingUp, DollarSign, BarChart2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getConversationStats, getCostStats, getTopQuestions } from '@/lib/db/analytics'
 import CostChart from '@/components/dashboard/CostChart'
 import { getTranslations } from 'next-intl/server'
+import { getDemoOrg } from '@/lib/auth/mock-bypass'
 
 type OrgRow = { id: string; name: string }
-
-const MOCK_ORGS: Record<string, OrgRow> = {
-  acme: { id: '00000000-0000-0000-0000-000000000001', name: 'Acme Corp' },
-  beta: { id: '00000000-0000-0000-0000-000000000002', name: 'Beta SaaS' },
-}
 
 export default async function OrgHomePage({
   params,
@@ -23,7 +20,7 @@ export default async function OrgHomePage({
   let org: OrgRow | undefined
 
   if (process.env.USE_MOCK_DATA === 'true') {
-    org = MOCK_ORGS[orgSlug]
+    org = getDemoOrg(orgSlug) ?? undefined
   } else {
     const supabase = await createClient()
     const { data: orgRows } = await supabase
@@ -55,47 +52,44 @@ export default async function OrgHomePage({
         <h1 className="font-bold text-white" style={{ fontSize: 'var(--fs-page)' }}>
           {t('title')}<span className="text-neon-blue">.</span>
         </h1>
-        <p className="text-white/40 text-sm mt-1">Overview of conversations and AI costs</p>
+        <p className="text-white/40 text-sm mt-1">{t('subtitle')}</p>
       </div>
 
-      {/* Stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <StatCard
-          title="Total conversations"
+          title={t('stats.totalChats')}
           value={stats.total}
           icon={<MessageCircle size={16} aria-hidden />}
         />
         <StatCard
-          title="Today's conversations"
+          title={t('stats.todayChats')}
           value={stats.today}
-          sub={`${stats.week} in the last 7 days`}
+          sub={t('stats.todayChatsSub', { count: stats.week })}
           icon={<TrendingUp size={16} aria-hidden />}
         />
         <StatCard
-          title="Total cost"
+          title={t('stats.totalCost')}
           value={`$${totalDollars}`}
           icon={<DollarSign size={16} aria-hidden />}
         />
         <StatCard
-          title="Avg cost / conversation"
+          title={t('stats.avgCost')}
           value={`$${avgDollars}`}
           icon={<BarChart2 size={16} aria-hidden />}
         />
       </div>
 
-      {/* Cost chart */}
       <section className="space-y-3">
         <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider">
-          Cost — last 7 days
+          {t('costChartTitle')}
         </h2>
         <CostChart data={costStats.daily} />
       </section>
 
-      {/* Top questions */}
       {topQuestions.length > 0 && (
         <section className="space-y-3">
           <h2 className="text-xs font-semibold text-white/60 uppercase tracking-wider">
-            Top questions
+            {t('topQuestionsTitle')}
           </h2>
           <div className="glass border-2 border-white/10 divide-y divide-white/8">
             {topQuestions.map((q, i) => (
@@ -112,11 +106,13 @@ export default async function OrgHomePage({
       {topQuestions.length === 0 && stats.total === 0 && (
         <div className="glass border-2 border-white/10 p-8 text-center">
           <p className="text-white/40 text-sm">
-            No conversations yet. Use the{' '}
-            <a href={`/app/${orgSlug}/playground`} className="text-white hover:text-white/70 transition-colors">
-              playground
-            </a>{' '}
-            or embed the widget to get started.
+            {t.rich('emptyState', {
+              playgroundLink: (chunks) => (
+                <Link href={`/app/${orgSlug}/playground`} className="text-white hover:text-white/70 transition-colors">
+                  {chunks}
+                </Link>
+              ),
+            })}
           </p>
         </div>
       )}

@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { motion, useReducedMotion, type Transition } from 'framer-motion'
+import { toast } from 'sonner'
 import { createClient } from '@/lib/supabase/client'
 
 const ThreeBackground = dynamic(() => import('@/components/ThreeBackground'), { ssr: false })
@@ -38,6 +39,10 @@ export default function LoginPage() {
     : { delay: 0.5, duration: 0.5, ease: 'easeOut' }
 
   async function handleGoogleLogin() {
+    if (process.env.NEXT_PUBLIC_USE_MOCK === 'true') {
+      toast.error(t('googleDemoNotice'))
+      return
+    }
     const supabase = createClient()
     await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -55,7 +60,6 @@ export default function LoginPage() {
       <ThreeBackground />
       <div className="relative z-10 min-h-screen flex items-center justify-center px-4">
         <div className="w-full max-w-sm glass border border-neon-blue/30 p-8">
-          {/* Logo — flip+scale intro */}
           <motion.div
             initial={logoVariants.initial}
             animate={logoVariants.animate}
@@ -65,7 +69,7 @@ export default function LoginPage() {
           >
             <Image
               src="/images/logo-a1-w.webp"
-              alt="Angel1"
+              alt="Lore"
               width={180}
               height={72}
               className="object-contain w-auto"
@@ -73,32 +77,32 @@ export default function LoginPage() {
             />
           </motion.div>
 
-          {/* Card content — staggered fade-up after logo settles */}
           <motion.div
             initial={cardVariants.initial}
             animate={cardVariants.animate}
             transition={cardTransition}
             className="space-y-6"
           >
-            {/* Title */}
             <div className="text-center space-y-1">
               <h1 className="font-bold text-white" style={{ fontSize: 'var(--fs-page)' }}>
-                AI Support<span className="text-neon-blue">.</span>
+                {t('loginTitle')}<span className="text-neon-blue">.</span>
               </h1>
-              <p className="text-sm text-white/50">Powered by RAG technology</p>
+              <p className="text-sm text-white/50">{t('loginTagline')}</p>
             </div>
 
-            {/* Google sign-in */}
-            <button
-              type="button"
-              onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center gap-2 py-2.5 border-2 border-neon-blue text-white text-sm font-semibold uppercase tracking-wider relative overflow-hidden hover:text-black transition-all duration-300 group"
-            >
-              <span className="absolute inset-0 bg-neon-blue scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
-              <span className="relative z-10">{t('continueGoogle')}</span>
-            </button>
+            {/* Demo bypass — primary CTA */}
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={handleDemo}
+                className="w-full py-3 border-2 border-neon-blue text-white font-semibold uppercase tracking-wider text-sm overflow-hidden relative hover:text-black motion-reduce:hover:text-white transition-all duration-300 group"
+              >
+                <span className="absolute inset-0 bg-neon-blue transform scale-x-0 group-hover:scale-x-100 motion-reduce:hidden transition-transform duration-300 origin-left" />
+                <span className="relative z-10">{t('enterDemo')}</span>
+              </button>
+              <p className="text-xs text-white/40 text-center">{t('demoHint')}</p>
+            </div>
 
-            {/* Separator */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-white/10" />
@@ -108,19 +112,14 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Demo bypass */}
-            <div className="space-y-2">
-              <button
-                type="button"
-                onClick={handleDemo}
-                className="w-full py-2.5 border border-dashed border-white/20 text-white/40 text-sm hover:border-neon-blue hover:text-neon-blue transition-all duration-200"
-              >
-                Enter Demo
-              </button>
-              <p className="text-xs text-white/20 text-center">
-                Preview only — no real data
-              </p>
-            </div>
+            {/* Google sign-in — secondary */}
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="w-full flex items-center justify-center gap-2 py-2.5 border border-white/20 text-white/70 text-sm hover:border-white/40 hover:text-white transition-all duration-200"
+            >
+              <span>{t('continueGoogle')}</span>
+            </button>
           </motion.div>
         </div>
       </div>
