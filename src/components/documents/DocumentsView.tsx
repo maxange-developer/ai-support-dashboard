@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import { FileText, Plus, Trash2, X, CheckSquare, Square, AlertCircle } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
+import { useDemoState, type DemoDoc } from '@/lib/demo-state/DemoStateProvider'
 import type { DocumentListItem } from '@/lib/db/documents'
 import UploadForm from './UploadForm'
 
@@ -30,6 +31,14 @@ export default function DocumentsView({ documents, deleteAction, uploadAction }:
   const t = useTranslations('documents')
   const tCommon = useTranslations('common')
   const locale = useLocale()
+  const demo = useDemoState()
+
+  // In mock mode merge optimistic additions and filter out deleted docs
+  const allDocs: DocumentListItem[] = demo
+    ? [...(demo.addedDocs as DocumentListItem[]), ...documents].filter(
+        (d) => !demo.deletedDocIds.has(d.id),
+      )
+    : documents
   const [view, setView] = useState<'list' | 'upload'>('list')
   const [selecting, setSelecting] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
@@ -59,6 +68,7 @@ export default function DocumentsView({ documents, deleteAction, uploadAction }:
     if (result.errorCode) {
       setDeleteErrorCode(result.errorCode)
     } else {
+      demo?.deleteDocs(Array.from(selected))
       setConfirmOpen(false)
       cancelSelection()
       toast.success(t('toastDeleted'))
@@ -100,7 +110,7 @@ export default function DocumentsView({ documents, deleteAction, uploadAction }:
           </button>
           <button
             onClick={() => setSelecting(true)}
-            disabled={documents.length === 0}
+            disabled={allDocs.length === 0}
             className="h-9 px-4 border-2 border-red-500/60 text-red-400 text-xs font-semibold uppercase tracking-wider hover:bg-red-500 hover:text-black transition-all duration-300 shrink-0 flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <Trash2 size={14} aria-hidden /> {tCommon('delete')}
@@ -109,17 +119,24 @@ export default function DocumentsView({ documents, deleteAction, uploadAction }:
       ) : null}
 
       {view === 'upload' ? (
-        <UploadForm action={uploadAction} onBack={() => setView('list')} />
+        <UploadForm
+          action={uploadAction}
+          onBack={() => setView('list')}
+          onMockSuccess={(doc) => {
+            demo?.addDoc(doc)
+            setView('list')
+          }}
+        />
       ) : (
         <div className="flex flex-col">
-          {documents.length === 0 ? (
+          {allDocs.length === 0 ? (
             <div className="rounded-lg border border-white/10 bg-white/[0.02] p-12 text-center">
               <FileText size={36} className="text-white/30 mx-auto mb-4" aria-hidden />
               <p className="text-sm text-white/50 max-w-sm mx-auto">{t('emptyState')}</p>
             </div>
           ) : (
             <div className="space-y-2">
-              {documents.map((doc) => {
+              {allDocs.map((doc) => {
                 const cls = STATUS_CLS[doc.status]
                 const statusLabel = t(`status.${doc.status}`)
                 const sourceLabel = t(`source.${doc.source_type}`)

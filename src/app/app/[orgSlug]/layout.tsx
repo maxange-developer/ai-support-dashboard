@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import Sidebar from '@/components/dashboard/Sidebar'
 import Header from '@/components/dashboard/Header'
+import { DemoStateProvider } from '@/lib/demo-state/DemoStateProvider'
 import { isMockMode, getDemoOrg, DEMO_USER_EMAIL } from '@/lib/auth/mock-bypass'
 
 type OrgRow = { id: string; name: string; slug: string }
@@ -24,7 +25,9 @@ export default async function DashboardLayout({
         <Sidebar orgSlug={org.slug} orgName={org.name} />
         <div className="flex-1 flex flex-col h-screen overflow-hidden min-w-0">
           <Header orgSlug={org.slug} orgName={org.name} userEmail={DEMO_USER_EMAIL} />
-          <main className="flex-1 overflow-y-auto scrollbar-hide p-6">{children}</main>
+          <main className="flex-1 overflow-y-auto scrollbar-hide p-6">
+            <DemoStateProvider>{children}</DemoStateProvider>
+          </main>
         </div>
       </div>
     )

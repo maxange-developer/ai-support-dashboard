@@ -1,9 +1,11 @@
 'use client'
 
-import { useActionState, useEffect } from 'react'
+import { useActionState, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { Upload, AlertCircle, ArrowLeft } from 'lucide-react'
+import type { DemoDoc } from '@/lib/demo-state/DemoStateProvider'
+import type { SourceType } from '@/lib/ai/parsing'
 
 type State = { success: true } | { errorCode: string } | null
 type BoundAction = (prev: State, formData: FormData) => Promise<State>
@@ -11,19 +13,36 @@ type BoundAction = (prev: State, formData: FormData) => Promise<State>
 interface Props {
   action: BoundAction
   onBack?: () => void
+  onMockSuccess?: (doc: DemoDoc) => void
 }
 
-export default function UploadForm({ action, onBack }: Props) {
+export default function UploadForm({ action, onBack, onMockSuccess }: Props) {
   const t = useTranslations('documents.upload')
   const tCommon = useTranslations('common')
   const [state, formAction, isPending] = useActionState(action, null)
+  // track selected file metadata so onMockSuccess can build a DemoDoc
+  const [pendingFile, setPendingFile] = useState<{ name: string; type: string } | null>(null)
 
   useEffect(() => {
     if (state && 'success' in state) {
       toast.success(t('toastSuccess'))
-      onBack?.()
+      if (onMockSuccess && pendingFile) {
+        const ext = pendingFile.name.split('.').pop()?.toLowerCase() ?? ''
+        const sourceType: SourceType =
+          ext === 'pdf' ? 'pdf' : ext === 'md' ? 'markdown' : 'manual'
+        onMockSuccess({
+          id: crypto.randomUUID(),
+          org_id: '',
+          title: pendingFile.name.replace(/\.(pdf|md|txt)$/i, ''),
+          source_type: sourceType,
+          status: 'ready',
+          created_at: new Date().toISOString(),
+        })
+      } else {
+        onBack?.()
+      }
     }
-  }, [state, t, onBack])
+  }, [state, t, onBack, onMockSuccess, pendingFile])
 
   return (
     <form action={formAction} className="space-y-5 max-w-lg" noValidate>
@@ -37,6 +56,10 @@ export default function UploadForm({ action, onBack }: Props) {
           type="file"
           accept=".pdf,.md,.txt"
           disabled={isPending}
+          onChange={(e) => {
+            const f = e.target.files?.[0]
+            setPendingFile(f ? { name: f.name, type: f.type } : null)
+          }}
           className="w-full bg-white/5 border border-white/20 px-3 py-2.5 text-white text-sm file:mr-4 file:py-1 file:px-3 file:border-0 file:bg-neon-blue/10 file:text-white file:text-xs file:font-medium file:uppercase file:tracking-wider focus:outline-none focus:border-neon-blue transition-colors duration-200 disabled:opacity-50 cursor-pointer"
         />
         <p className="text-xs text-white/35">{t('fileHint')}</p>

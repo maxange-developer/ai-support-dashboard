@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { Plus, Key, AlertCircle, Copy, Check, Trash2, Eye, EyeOff, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { useDemoState } from '@/lib/demo-state/DemoStateProvider'
 import type { ApiKeyListItem } from '@/lib/db/api-keys'
 
 type CreateState = { rawKey: string } | { errorCode: string } | null
@@ -20,9 +21,15 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
   const t = useTranslations('apiKeys')
   const tCommon = useTranslations('common')
   const locale = useLocale()
+  const demo = useDemoState()
   const [createState, createFormAction, isCreating] = useActionState(createAction, null)
   const [deleteState, deleteFormAction, isDeleting] = useActionState(deleteAction, null)
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null)
+
+  // Merged key list: optimistic additions first, seed keys filtered by deletions
+  const allKeys: ApiKeyListItem[] = demo
+    ? [...demo.addedKeys, ...keys].filter((k) => !demo.deletedKeyIds.has(k.id))
+    : keys
 
   // One-time amber disclosure box
   const [savedRawKey, setSavedRawKey] = useState<string | null>(null)
@@ -41,14 +48,23 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
       setShowRawKey(false)
       setRawKeyCopied(false)
       toast.success(t('toastCreated'))
+      // optimistic add — the key id is embedded in the rawKey prefix for display
+      demo?.addKey({
+        id: crypto.randomUUID(),
+        org_id: '',
+        name: null, // name not available here; list refreshes on next server render
+        last_used_at: null,
+        created_at: new Date().toISOString(),
+      })
     }
-  }, [rawKey, t])
+  }, [rawKey, t, demo])
 
   useEffect(() => {
     if (deleteState && 'success' in deleteState) {
       toast.success(t('toastDeleted'))
+      if (pendingDeleteId) demo?.deleteKey(pendingDeleteId)
     }
-  }, [deleteState, t])
+  }, [deleteState, t, demo, pendingDeleteId])
 
   function copyRawKey() {
     if (!savedRawKey) return
@@ -142,14 +158,14 @@ export default function ApiKeyManager({ keys, createAction, deleteAction }: ApiK
         </div>
       )}
 
-      {keys.length === 0 ? (
+      {allKeys.length === 0 ? (
         <div className="rounded-lg border border-white/10 bg-white/[0.02] p-12 text-center">
           <Key size={28} className="text-white/30 mx-auto mb-4" aria-hidden />
           <p className="text-sm text-white/50 max-w-sm mx-auto">{t('emptyState')}</p>
         </div>
       ) : (
         <div className="space-y-2">
-          {keys.map((key) => {
+          {allKeys.map((key) => {
             const prefix = `sk-${key.id.slice(0, 8)}`
             const dateStr = key.last_used_at
               ? t('lastUsed', { date: new Date(key.last_used_at).toLocaleDateString(locale) })
