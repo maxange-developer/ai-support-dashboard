@@ -146,8 +146,6 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
     }
   }
 
-  const showQuickQuestions = messages.length === 0 && !isStreaming && hasDocuments
-
   return (
     <div className="flex flex-col glass border-2 border-white/10 h-[calc(100vh-7rem)]">
       <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0 custom-scrollbar">
@@ -167,23 +165,21 @@ export default function PlaygroundChat({ orgSlug, hasDocuments }: PlaygroundChat
                 </>
               )}
             </div>
-            {hasDocuments && (
-              <div className="flex flex-wrap justify-center gap-2 max-w-lg">
-                {quickQuestions.map((q) => (
-                  <button
-                    key={q}
-                    onClick={() => void sendMessage(q)}
-                    className="glass border border-neon-blue/30 text-white/80 text-sm px-4 py-2 rounded-full hover:border-neon-blue hover:text-white transition-all duration-200"
-                  >
-                    {q}
-                  </button>
-                ))}
-              </div>
-            )}
+            <div className="flex flex-wrap justify-center gap-2 max-w-lg">
+              {quickQuestions.map((q) => (
+                <button
+                  key={q}
+                  onClick={() => void sendMessage(q)}
+                  className="glass border border-neon-blue/30 text-white/80 text-sm px-4 py-2 rounded-full hover:border-neon-blue hover:text-white transition-all duration-200"
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
-        {!showQuickQuestions && messages.map((msg, i) => (
+        {messages.length > 0 && messages.map((msg, i) => (
           <MessageBubble key={i} message={msg} />
         ))}
 
