@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import type { ConversationListItem, MessageRow } from '@/lib/db/analytics'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
@@ -30,6 +30,7 @@ function Stat({ label, value, color = 'white' }: { label: string; value: string;
 export default function ConversationList({ conversations, period, orgSlug, getMessages }: Props) {
   const router = useRouter()
   const t = useTranslations('conversations')
+  const locale = useLocale()
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<MessageRow[]>([])
   const [selectedConv, setSelectedConv] = useState<ConversationListItem | null>(null)
@@ -91,7 +92,7 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
                 </p>
               </div>
               <p className="text-xs text-white/35 hidden sm:block shrink-0">
-                {new Date(conv.startedAt).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                {new Date(conv.startedAt).toLocaleString(locale, { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
               </p>
               <p className="text-xs text-white/50 text-right w-16 font-mono shrink-0">{conv.messageCount}</p>
               <p className="text-xs text-white text-right w-20 font-mono shrink-0">
@@ -107,7 +108,7 @@ export default function ConversationList({ conversations, period, orgSlug, getMe
           <DialogHeader>
             <DialogTitle className="text-white text-sm font-semibold">
               {selectedConv
-                ? t('modal.title', { date: new Date(selectedConv.startedAt).toLocaleString('en-GB') })
+                ? t('modal.title', { date: new Date(selectedConv.startedAt).toLocaleString(locale) })
                 : t('title')}
             </DialogTitle>
           </DialogHeader>

@@ -17,11 +17,11 @@ const MOCK_COST_STATS: CostStats = {
   ],
 }
 const MOCK_TOP_QUESTIONS: TopQuestion[] = [
-  { content: 'Come funziona il rimborso?', count: 12 },
-  { content: 'Come integro la vostra API?', count: 9 },
-  { content: 'Supportate SSO con Google?', count: 7 },
-  { content: 'Posso esportare i dati?', count: 5 },
-  { content: 'Qual è il piano gratuito?', count: 4 },
+  { content: 'How does the refund policy work?', count: 12 },
+  { content: 'How do I integrate your API?', count: 9 },
+  { content: 'Do you support Google SSO?', count: 7 },
+  { content: 'Can I export my data?', count: 5 },
+  { content: "What's included in the free plan?", count: 4 },
 ]
 
 export interface ConversationStats {
