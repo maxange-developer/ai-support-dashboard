@@ -38,6 +38,7 @@
 
     "enterDemo": "Enter demo",
     "demoHint": "Explore with sample data — no account needed",
+    "demoSession": "Logged in as Acme Corp · sample data · resets each session",
     "continueGoogle": "Continue with Google",
     "googleDemoNotice": "Google sign-in is disabled in this demo. Use \"Enter demo\" to explore.",
     "or": "or",

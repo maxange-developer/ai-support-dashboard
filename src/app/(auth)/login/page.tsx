@@ -101,6 +101,9 @@ export default function LoginPage() {
                 <span className="relative z-10">{t('enterDemo')}</span>
               </button>
               <p className="text-xs text-white/40 text-center">{t('demoHint')}</p>
+              <p className="mt-3 text-xs text-white/40 text-center font-mono tracking-wide">
+                {t('demoSession')}
+              </p>
             </div>
 
             <div className="relative">
