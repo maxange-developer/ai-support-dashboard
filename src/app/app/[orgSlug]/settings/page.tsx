@@ -5,7 +5,7 @@ import { listApiKeys } from '@/lib/db/api-keys'
 import { createKeyAction, deleteKeyAction } from '../embed/actions'
 import ApiKeyManager from '@/components/embed/ApiKeyManager'
 import { getTranslations } from 'next-intl/server'
-import { isMockMode, DEMO_ORG, DEMO_USER_EMAIL } from '@/lib/auth/mock-bypass'
+import { isMockMode, getDemoOrg, DEMO_USER_EMAIL } from '@/lib/auth/mock-bypass'
 
 type OrgRow = { id: string; name: string; slug: string; plan: string }
 
@@ -29,7 +29,9 @@ export default async function SettingsPage({
   let isAdmin = false
 
   if (await isMockMode()) {
-    org = { ...DEMO_ORG }
+    const demoOrg = getDemoOrg(orgSlug)
+    if (!demoOrg) notFound()
+    org = { ...demoOrg }
     userEmail = DEMO_USER_EMAIL
     isAdmin = true
   } else {

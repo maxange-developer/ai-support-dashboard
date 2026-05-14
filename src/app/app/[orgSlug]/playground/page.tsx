@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import PlaygroundChat from '@/components/chat/PlaygroundChat'
 import { getTranslations } from 'next-intl/server'
-import { isMockMode, DEMO_ORG } from '@/lib/auth/mock-bypass'
+import { isMockMode, getDemoOrg } from '@/lib/auth/mock-bypass'
 
 type OrgRow = { id: string }
 
@@ -18,7 +18,9 @@ export default async function PlaygroundPage({
   let org: OrgRow | undefined
 
   if (useMock) {
-    org = { id: DEMO_ORG.id }
+    const demoOrg = getDemoOrg(orgSlug)
+    if (!demoOrg) notFound()
+    org = { id: demoOrg.id }
   } else {
     const supabase = await createClient()
     const { data: orgRows } = await supabase

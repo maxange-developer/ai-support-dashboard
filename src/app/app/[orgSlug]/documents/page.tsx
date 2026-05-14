@@ -4,7 +4,7 @@ import { getDocumentsByOrg } from '@/lib/db/documents'
 import { uploadDocument, deleteDocumentsAction } from './actions'
 import DocumentsView from '@/components/documents/DocumentsView'
 import { getTranslations } from 'next-intl/server'
-import { isMockMode, DEMO_ORG } from '@/lib/auth/mock-bypass'
+import { isMockMode, getDemoOrg } from '@/lib/auth/mock-bypass'
 
 type OrgRow = { id: string }
 
@@ -21,7 +21,9 @@ export default async function DocumentsPage({
   let orgId: string
 
   if (mock) {
-    orgId = DEMO_ORG.id
+    const demoOrg = getDemoOrg(orgSlug)
+    if (!demoOrg) notFound()
+    orgId = demoOrg.id
   } else {
     const supabase = await createClient()
     const { data: orgRows } = await supabase

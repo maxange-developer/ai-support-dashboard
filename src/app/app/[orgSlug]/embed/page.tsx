@@ -6,7 +6,7 @@ import { createKeyAction, deleteKeyAction } from './actions'
 import ApiKeyManager from '@/components/embed/ApiKeyManager'
 import EmbedSnippet from '@/components/embed/EmbedSnippet'
 import { getTranslations } from 'next-intl/server'
-import { isMockMode, DEMO_ORG } from '@/lib/auth/mock-bypass'
+import { isMockMode, getDemoOrg } from '@/lib/auth/mock-bypass'
 
 type OrgRow = { id: string; slug: string }
 
@@ -20,7 +20,9 @@ export default async function EmbedPage({
   let org: OrgRow | undefined
 
   if (await isMockMode()) {
-    org = { id: DEMO_ORG.id, slug: orgSlug }
+    const demoOrg = getDemoOrg(orgSlug)
+    if (!demoOrg) notFound()
+    org = { id: demoOrg.id, slug: orgSlug }
   } else {
     const supabase = await createClient()
 

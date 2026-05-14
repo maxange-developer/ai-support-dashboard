@@ -5,7 +5,7 @@ import { listConversations } from '@/lib/db/analytics'
 import { getConversationMessages } from './actions'
 import ConversationList from '@/components/conversations/ConversationList'
 import { getTranslations } from 'next-intl/server'
-import { isMockMode, DEMO_ORG } from '@/lib/auth/mock-bypass'
+import { isMockMode, getDemoOrg } from '@/lib/auth/mock-bypass'
 
 type OrgRow = { id: string }
 
@@ -21,7 +21,9 @@ export default async function ConversationsPage({
 
   let orgId: string
   if (await isMockMode()) {
-    orgId = DEMO_ORG.id
+    const demoOrg = getDemoOrg(orgSlug)
+    if (!demoOrg) notFound()
+    orgId = demoOrg.id
   } else {
     const supabase = await createClient()
     const { data: orgRows } = await supabase
