@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import AngelLogo from '@/components/AngelLogo'
 import { useTranslations } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
@@ -68,14 +68,7 @@ export function SidebarNav({ orgSlug, orgName, workspaces, onNavigate }: Sidebar
     <div className="flex h-full flex-col">
       {/* Logo */}
       <div className="flex h-16 items-center justify-center px-4 border-b border-white/10 shrink-0">
-        <Image
-          src="/images/logo-a1-w.webp"
-          width={120}
-          height={48}
-          alt="Angel1"
-          className="object-contain w-auto h-auto"
-          priority
-        />
+        <AngelLogo size="header" />
       </div>
 
       {/* Workspace switcher (or static name when only one workspace is available) */}

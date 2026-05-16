@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import Image from 'next/image'
+import AngelLogo from '@/components/AngelLogo'
 import { useTranslations } from 'next-intl'
 import { motion, useReducedMotion, type Transition } from 'framer-motion'
 import { toast } from 'sonner'
@@ -67,14 +67,7 @@ export default function LoginPage() {
             style={{ perspective: 800 }}
             className="flex justify-center mb-6"
           >
-            <Image
-              src="/images/logo-a1-w.webp"
-              alt="Lore"
-              width={180}
-              height={72}
-              className="object-contain w-auto"
-              priority
-            />
+            <AngelLogo size="footer" />
           </motion.div>
 
           <motion.div
