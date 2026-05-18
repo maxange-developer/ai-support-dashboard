@@ -1,95 +1,69 @@
-# AI Support Dashboard
+# Lore
 
-> Multi-tenant RAG-powered customer-support platform — operators upload docs, visitors get instant answers via an embeddable chat widget.
+Multi-tenant RAG copilot for B2B SaaS support teams. Operators upload docs, customers get instant cited answers via an embeddable chat widget.
 
-**Live demo:** [ai-support-dashboard-six.vercel.app](https://ai-support-dashboard-six.vercel.app)
+**Live demo →** [lore.massimilianoangelone.com](https://lore.massimilianoangelone.com)
 
-![Next.js](https://img.shields.io/badge/Next.js_16-black?logo=next.js)
-![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue?logo=typescript)
-![Supabase](https://img.shields.io/badge/Supabase-pgvector-3ECF8E?logo=supabase)
-![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o--mini-412991?logo=openai)
-![Tailwind](https://img.shields.io/badge/Tailwind_CSS_v4-06B6D4?logo=tailwindcss)
-![Vercel](https://img.shields.io/badge/Deploy-Vercel-black?logo=vercel)
+One-click *Enter demo* — no signup. Two pre-seeded workspaces (Stratos, Nimbus Labs) reset on each session.
 
----
+![Lore dashboard](docs/hero.webp)
 
 ## What it is
 
-A productized SaaS dashboard operators use to:
-
-- **Upload knowledge** — PDF or Markdown docs ingested, chunked, and embedded into pgvector
-- **Answer visitors** — embeddable `<script>` widget + API key auth; answers streamed via SSE with source citations
-- **Measure usage** — conversation history, token costs, top questions, avg response time
-
-Two demo workspaces are included: **Stratos** (product analytics SaaS, Pro plan) and **Nimbus Labs** (internal HR, Free plan). Login: click _Enter demo_ — sample data resets each session.
-
----
+A dashboard for support operators with three jobs: ingest a knowledge base (PDF or Markdown), serve cited answers through an embeddable widget, and track usage across tenants. Every query is scoped to an organisation via Supabase Row Level Security — no application-level tenant code touches data access.
 
 ## Features
 
-| Area | Details |
-|------|---------|
-| Document management | Upload PDF/Markdown → parse → chunk (512 tokens) → embed → store in pgvector |
-| Chat widget | Embeddable via `<script>` tag + API key; SSE streaming with typing indicator |
-| RAG pipeline | `text-embedding-3-small` query embedding → pgvector cosine similarity → `gpt-4o-mini` answer |
-| Analytics dashboard | Token cost by day (Recharts), conversation list, top questions, avg response time |
-| Multi-tenant | Supabase RLS — every query is org-scoped; no cross-tenant data leakage |
-| API key management | Create/revoke keys; hashed (SHA-256) at rest, never stored in plaintext |
-| Mock mode | Full offline demo: no AI key, no DB needed — `USE_MOCK_AUTH + USE_MOCK_AI + USE_MOCK_DATA` |
-| i18n | EN / IT / ES via next-intl |
+- **Document ingestion** — PDF/Markdown upload → chunk (512 tok) → `text-embedding-3-small` → pgvector
+- **Embeddable widget** — `<script>` tag + API key auth, SSE streaming with source citations
+- **Multi-tenant by design** — RLS at the database boundary, every query org-scoped
+- **API key management** — SHA-256 hashed at rest, plaintext never persisted
+- **Onboarding flow** — first-run workspace setup, document upload guide, API key issue
+- **Analytics dashboard** — token costs over time (Recharts), top questions, avg response time
+- **Mock mode** — three env flags run the app fully offline, no API keys required
 
----
+## Stack
 
-## Interesting engineering decisions
+```
+Framework    Next.js 16 (App Router) + React 19 + TypeScript strict
+Database     Supabase (Postgres + Auth + RLS) + pgvector
+AI           OpenAI gpt-4o-mini + text-embedding-3-small
+UI           Tailwind CSS v4 + Base UI + framer-motion + Three.js (login background)
+Charts       Recharts
+PDF parsing  unpdf
+i18n         next-intl (en / it / es)
+Tests        Vitest (unit) + Playwright (e2e)
+Hosting      Vercel
+```
 
-### Hybrid retrieval with source attribution
-The `/api/chat` route embeds the user message, runs pgvector cosine similarity, injects the top chunks into the system prompt with doc titles, and streams the answer as SSE. The `done` event carries a `sources` array back to the client so the widget can surface citations without a second round-trip.
+## Architecture
 
-### Mock-first architecture
-Three independent env flags (`USE_MOCK_AUTH`, `USE_MOCK_AI`, `USE_MOCK_DATA`) let the app run 100% offline. Mock fixtures live in `src/lib/mock/` and mirror the real DB schema; the seeder script (`scripts/seed-mock.ts`) uses `upsert` so it's safe to run repeatedly. This means the Vercel preview URL works without any secrets.
+```mermaid
+flowchart LR
+  A[Operator] -->|upload PDF or MD| B[Ingest]
+  B --> C[Chunk 512 tok]
+  C --> D[Embed]
+  D --> E[(pgvector)]
+  F[Visitor] -->|widget| G[/api/chat/]
+  G --> H[Embed query]
+  H --> E
+  E -->|top-k chunks| I[gpt-4o-mini]
+  I -->|SSE + citations| F
+```
 
-### SSE streaming from a Next.js Route Handler
-Rather than waiting for the full LLM response, the chat route returns a `ReadableStream` with `Content-Type: text/event-stream`. The client reads it chunk-by-chunk and renders tokens as they arrive, keeping time-to-first-token under 300 ms even on the free OpenAI tier.
+Each operator workspace is an `org` row. RLS policies on `documents`, `chunks`, `conversations`, `messages` enforce `org_id = auth.jwt() ->> 'org_id'`. The widget path bypasses session auth and uses API key authentication with SHA-256-hashed tokens.
 
-### Supabase RLS everywhere
-Every table has a Row Level Security policy. The dashboard uses the Supabase service role only for analytics queries (conversations and messages have no user-facing SELECT policy by design — they're operator-only). The chat widget path goes through API key auth, not session cookies.
+## Run locally
 
----
-
-## Setup
-
-**1. Clone and install**
 ```bash
-git clone <repo-url>
-cd ai-support-dashboard
+git clone https://github.com/maxange-developer/lore.git
+cd lore
 pnpm install
-```
-
-**2. Configure environment**
-```bash
 cp .env.example .env.local
-# Required:
-#   NEXT_PUBLIC_SUPABASE_URL
-#   NEXT_PUBLIC_SUPABASE_ANON_KEY
-#   SUPABASE_SERVICE_ROLE_KEY
-#   OPENAI_API_KEY
-#   NEXT_PUBLIC_APP_URL
 ```
 
-Run migrations from `supabase/migrations/` in order via the Supabase SQL editor.
+**Zero-config offline mode** — flip these four flags in `.env.local` and skip Supabase + OpenAI setup:
 
-**3. Seed demo data**
-```bash
-pnpm tsx scripts/seed-mock.ts   # creates orgs, docs, conversations, API keys, test user
-```
-
-**4. Start**
-```bash
-pnpm dev        # http://localhost:3000
-pnpm build      # production build
-```
-
-**Zero-config offline mode** — add these to `.env.local` and skip steps 2–3:
 ```bash
 USE_MOCK_AUTH=true
 USE_MOCK_AI=true
@@ -97,43 +71,52 @@ USE_MOCK_DATA=true
 NEXT_PUBLIC_USE_MOCK=true
 ```
 
----
-
-## Stack
-
-| Layer | Choice | Why |
-|-------|--------|-----|
-| Framework | Next.js 16 App Router | Server Components + RSC streaming |
-| Database | Supabase Postgres + pgvector | Auth, RLS, and vector search in one service |
-| LLM | OpenAI gpt-4o-mini | Fast streaming, low cost per token |
-| Embeddings | OpenAI text-embedding-3-small | 1536 dims, fast, cost-effective |
-| UI | Tailwind CSS v4 + Base UI primitives | Unstyled components, full design control |
-| Charts | Recharts | React 19 compatible |
-| i18n | next-intl | Type-safe, RSC-compatible |
-
----
-
-## Deploy
-
 ```bash
-vercel link       # connect to Vercel project once
-# add env vars in Vercel dashboard
-vercel --prod
+pnpm demo:seed   # seeds 2 orgs, 5 docs, 5 conversations, 12 messages, 2 API keys
+pnpm dev         # http://localhost:3000 → click "Enter demo"
 ```
 
-The app auto-detects `NEXT_PUBLIC_USE_MOCK=true` on the preview URL so reviewers see live data without needing a real Supabase project.
+For a real-flavour run with live OpenAI calls, set the four flags to `false` and provide `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `OPENAI_API_KEY`, `NEXT_PUBLIC_APP_URL`. Migrations live under `supabase/migrations/` and run via the Supabase SQL editor.
 
----
+## Project structure
 
-## What's next
+```
+src/
+  app/
+    (auth)/            Auth route group (login, signup)
+    actions/           Server Actions
+    api/               Route handlers (chat SSE, ingest, widget)
+    app/               Authenticated dashboard
+    onboarding/        First-run setup flow
+    widget/            Embeddable widget standalone route
+  components/
+    chat/              Chat UI + streaming primitives
+    conversations/     History views
+    dashboard/         Analytics, top questions, costs
+    documents/         Upload + management
+    embed/             Embeddable widget components
+    ui/                Base UI primitives
+  lib/
+    ai/                Retrieve, chat, embeddings (OpenAI + pgvector)
+    auth/              Supabase auth helpers
+    db/                Server queries
+    demo-state/        Per-session demo reset
+    mock/              Offline fixtures mirroring the DB
+    supabase/          Client + service-role factories
+    validations/       Zod schemas
+scripts/               seed-mock, translate-i18n
+supabase/migrations/   Database schema
+tests/                 Vitest + Playwright
+```
 
-- **Conversation history in chat** — currently single-turn; multi-turn context window is the next RAG improvement
-- **Webhook delivery** — operators subscribe to `conversation.created` / `message.created` events
-- **Usage-based billing** — Stripe metered billing tied to token consumption per org
-- **Widget customisation** — theme, welcome message, and suggested questions configurable from the dashboard
+## Scope
 
----
+Lore was built over three weeks as a portfolio engagement to demonstrate a multi-tenant RAG architecture end-to-end. The live deploy serves mock data (two seeded orgs, no real customers) and a demo bypass on login. No paying tenants. The performance and cost figures cited in the [case study](https://massimilianoangelone.com/work/lore) are operational targets validated against the seeded dataset, not field metrics.
 
 ## License
 
-MIT
+MIT.
+
+## Author
+
+Built by [Massimiliano Angelone](https://massimilianoangelone.com) — AI-Enhanced MVP Developer, Tenerife.
