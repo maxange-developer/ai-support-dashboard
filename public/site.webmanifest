@@ -1,0 +1,21 @@
+{
+  "name": "Lore — RAG Copilot",
+  "short_name": "Lore",
+  "description": "Multi-tenant RAG copilot with embeddable widget and streaming chat.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#1F8BFF",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
